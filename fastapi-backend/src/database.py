@@ -3,8 +3,12 @@ from beanie import init_beanie
 from typing import Optional
 import logging
 
+from features.users.models import User
 from features.resume.models import Resume
 from config import settings
+
+# Beanie models
+Models = [Resume, User]
 
 logger = logging.getLogger(__name__)
 
@@ -17,19 +21,20 @@ db_manager = DatabaseManager()
 async def connect_to_mongo():
     """Create database connection"""
     try:
-        db_manager.client = AsyncIOMotorClient(settings.mongodb_url)
+        db_manager.client = AsyncIOMotorClient(settings.database_url)
         db_manager.database = db_manager.client[settings.database_name]
         
         # Initialize Beanie with document models
         await init_beanie(
             database=db_manager.database,
-            document_models=[Resume]
+            document_models=Models
         )
         
         # Create indexes
         await create_indexes()
         
         logger.info("Connected to MongoDB")
+
     except Exception as e:
         logger.error(f"Error connecting to MongoDB: {e}")
         raise

@@ -1,3 +1,6 @@
+'''Module which have function to configure global logging
+'''
+
 import logging
 import sys
 from pathlib import Path
@@ -10,7 +13,13 @@ def setup_logging(
     max_file_size: int = 10 * 1024 * 1024,  # 10MB
     backup_count: int = 5
 ) -> None:
-    """Setup application logging"""
+    """Setup application logging
+    
+    
+    Attributes
+    ----------
+    log_level: Level of log
+    """
     
     # Create logs directory if it doesn't exist
     if log_file:

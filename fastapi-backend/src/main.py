@@ -1,15 +1,20 @@
 from core.logging import setup_logging
-from utils.server import create_server
+from core.server import create_server
 
 import uvicorn
 import logging
 
 import os
 from features.resume.router import router as resumes_router
-
+setup_logging(
+    log_level = "INFO",
+    log_file = "logs/app.log",
+    max_file_size = 8 * 1024 * 1024,    # 8MB per file
+    backup_count = 3                    # Keep 3 old log files
+)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("main")
 
 app = create_server()
 
@@ -24,15 +29,16 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
-def main():
-    # set up logging
-    setup_logging(
-        log_level = "INFO",
-        log_file = "logs/app.log",
-        max_file_size = 8 * 1024 * 1024,    # 8MB per file
-        backup_count = 3                    # Keep 3 old log files
-    )
+@app.get('/get-all-users')
+async def get_all():
+    from features.users.models import User
+    users = await User.get("686189be9e09fb7d73dc08b5")
     
+    return {
+        "users": users
+    }
+    
+def main():
     from dotenv import load_dotenv
     load_dotenv()
     logger.info(f"Environment variables loaded successfully, test env: {os.getenv('TEST')}")

@@ -1,3 +1,7 @@
+''' All models related to resume
+'''
+
+
 from beanie import Document, Link, PydanticObjectId
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
@@ -15,8 +19,7 @@ class ContactInfo(BaseModel):
 class ProjectDetails(BaseModel):
     title: str
     description: Optional[str] = None
-    live_link: Optional[str] = None
-    github_link: Optional[str] = None
+    project_link: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
     location: Optional[str] = None

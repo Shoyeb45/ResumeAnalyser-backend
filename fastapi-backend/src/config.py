@@ -1,8 +1,9 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
 import os
+
 class Settings(BaseSettings):
-    database_url: str =  Field(..., alias="DATABASE_URL")
+    database_url: str
     database_name: str
     jwt_secret: str
     algorithm: str = "HS256"

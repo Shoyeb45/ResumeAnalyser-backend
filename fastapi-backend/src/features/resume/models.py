@@ -47,7 +47,37 @@ class Achievement(BaseModel):
     date_achieved: Optional[date] = None
     organization: Optional[str] = None
 
+class Langauge(BaseModel):
+    language: Optional[str] = None
+    proficiency: Optional[str] = None
 
+class Certification(BaseModel):
+    certification_name: Optional[str] = None
+    description: Optional[str] = None
+
+class WorkExperience(BaseModel):
+    ''' WorkExpriece Model for the resume'''
+    company_name: Optional[str] = None
+    start_date: Optional[date] = None    
+    end_date: Optional[date] = None
+    location: Optional[str] = None
+    job_title: Optional[str] = None
+    bullet_points: List[str] = Field(default_factory=list)
+    
+class Publication(BaseModel):
+    '''Publications Model for the resume'''
+    publication_name: Optional[str] = None
+    authors: List[str] = Field(default_factory=list)
+    description: str = None
+    
+class Extracurricular(BaseModel):
+    '''Extracurricular Model for the resume'''
+    organisation_name: str = None
+    start_date: Optional[date] = None    
+    end_date: Optional[date] = None
+    title: str = None
+    bullet_points: List[str] = Field(default_factory=list)
+    
 class Resume(Document):
     """Main Resume document containing all resume data"""
     # Reference to user
@@ -66,6 +96,11 @@ class Resume(Document):
     education: List[Education] = Field(default_factory=list)
     skills: List[SkillGroup] = Field(default_factory=list)
     achievements: List[Achievement] = Field(default_factory=list)
+    langauges: List[Langauge] = Field(default_factory=list)
+    certifications: List[Certification] = Field(default_factory=list)
+    work_experiences: List[WorkExperience] = Field(default_factory=list)
+    publications: List[Publication] = Field(default_factory=list)
+    extracurriculars: List[Extracurricular] = Field(default_factory=list)
     
     # Additional useful fields
     keywords: List[str] = Field(default_factory=list)  # For search optimization
@@ -81,3 +116,5 @@ class Resume(Document):
             IndexModel("keywords"),  # For text search
             IndexModel("analysis_score"),
         ]
+        
+        

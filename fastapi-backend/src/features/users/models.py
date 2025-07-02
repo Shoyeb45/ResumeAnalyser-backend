@@ -17,7 +17,7 @@ class User(Document):
         name = "User"  # matches collection name used by Express backend
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "shoyeb@gmail.com",
                 "password": "hashed_password_here",

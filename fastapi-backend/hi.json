@@ -1,0 +1,311 @@
+{
+    "success": true,
+    "errorCode": 10000,
+    "errorMsg": null,
+    "result": {
+        "resumeDiagnose": {
+            "personalInfo": {
+                "itemId": "6863624f194860255d40bbe1_personalInfo",
+                "diagnoseResultList": [],
+                "itemUid": "56484fab-865f-43fc-8715-d47f5a3d4aa5",
+                "name": "Shoeyeb Ansari",
+                "email": "shoyebff45@gmail.com",
+                "phoneNumber": "+91 9327156940",
+                "location": "Bangalore, Karnataka",
+                "linkedin": null,
+                "githubUrl": "GitHub",
+                "personalSite": null,
+                "linkedinLink": null,
+                "githubUrlLink": "https://github.com/shoyebansari45",
+                "personalSiteLink": null
+            },
+            "summary": {
+                "itemId": "6863624f194860255d40bbe1_summary",
+                "diagnoseResultList": [
+                    {
+                        "_id": "68636252194860255d40bbe2",
+                        "diagnoseId": "6863624f194860255d40bbe1",
+                        "itemId": "6863624f194860255d40bbe1_summary",
+                        "totalIssues": {
+                            "Urgent": 0,
+                            "Optional": 0,
+                            "Critical": 1
+                        }
+                    }
+                ],
+                "itemUid": "b38452c5-3576-4181-b4d4-5eac28e8b75e",
+                "summary": "Passionate Computer Science student with hands-on experience in full-stack web development and strong algorithmic problem-solving skills. Skilled in C++, Java, Python, React, and SQL. Leetcode (1758), Codeforces (Pupil), and CodeChef (2 star) rated competitive programmer."
+            },
+            "education": {
+                "itemId": "6863624f194860255d40bbe1_education",
+                "diagnoseResultList": [],
+                "itemUid": "d6f669c5-fea4-4f3c-bdaa-b4e9337195c1",
+                "educationDetails": [
+                    {
+                        "itemId": "6863624f194860255d40bbe1_education_0",
+                        "diagnoseResultList": [],
+                        "itemUid": "30b4545b-11c1-4629-93a3-74939de18c9c",
+                        "organization": "Indian Institute of Technology, Guwahati",
+                        "accreditation": "Bsc (Hons), DS and AI",
+                        "location": null,
+                        "dates": {
+                            "startDate": "2023-10",
+                            "completionDate": "2027",
+                            "isCurrent": false
+                        },
+                        "awards": null,
+                        "gpa": "9 CGPA",
+                        "courses": [
+                            "Data Structures and Algorithms",
+                            "Object-Oriented Programming",
+                            "Database Management Systems (SQL, RDBMS)",
+                            "Operating Systems"
+                        ],
+                        "achievements": []
+                    }
+                ]
+            },
+            "workExperience": {
+                "itemId": "6863624f194860255d40bbe1_workExperience",
+                "diagnoseResultList": [
+                    {
+                        "_id": "68636252194860255d40bbe3",
+                        "diagnoseId": "6863624f194860255d40bbe1",
+                        "itemId": "6863624f194860255d40bbe1_workExperience",
+                        "totalIssues": {
+                            "Urgent": 1,
+                            "Optional": 0,
+                            "Critical": 0
+                        }
+                    }
+                ],
+                "itemUid": "a23bcedd-2d7e-4980-8ef0-051be62ae323",
+                "workExperienceDetails": []
+            },
+            "skills": {
+                "itemId": "6863624f194860255d40bbe1_skills",
+                "diagnoseResultList": [],
+                "itemUid": "76349448-a85b-4567-b0bd-0aa7bb8735b9",
+                "skills": {
+                    "Languages": [
+                        "C++",
+                        "Java",
+                        "Python",
+                        "JavaScript",
+                        "HTML",
+                        "CSS",
+                        "TypeScript"
+                    ],
+                    "Web Technologies": [
+                        "React.js (with Recoil)",
+                        "Node.js",
+                        "Express.js"
+                    ],
+                    "Databases": [
+                        "MySQL",
+                        "PostgreSQL",
+                        "MongoDB",
+                        "SQL"
+                    ],
+                    "Core CS Concepts": [
+                        "Object-Oriented Programming (OOP)",
+                        "Data Structures and Algorithms",
+                        "Complexity Analysis"
+                    ],
+                    "Tools and Platforms": [
+                        "Git",
+                        "GitHub",
+                        "VS Code",
+                        "Postman",
+                        "Railway",
+                        "Linux",
+                        "Excel"
+                    ]
+                }
+            },
+            "projects": {
+                "itemId": "6863624f194860255d40bbe1_projects",
+                "diagnoseResultList": [],
+                "itemUid": "74edc666-0b08-4735-834d-b230c415904e",
+                "projectDetails": [
+                    {
+                        "itemId": "6863624f194860255d40bbe1_projects_0",
+                        "diagnoseResultList": [],
+                        "itemUid": "65d922c8-da9e-481a-95c0-cc05a58e82ab",
+                        "name": "AVL Tree Visualizer: JavaFX",
+                        "contents": [
+                            "Developed an interactive AVL tree visualization tool in JavaFX, showcasing insertion, deletion, searching, and various tree traversals with animations. Implemented self-balancing rotations (LL, LR, RR, RL)",
+                            "Tech Stack: Java 17, JavaFX 22, OOP, Data Structures & Algorithms."
+                        ],
+                        "dates": {
+                            "startDate": "",
+                            "completionDate": "",
+                            "isCurrent": false
+                        },
+                        "organization": null,
+                        "location": null,
+                        "projectLink": null,
+                        "projectLinkText": null
+                    },
+                    {
+                        "itemId": "6863624f194860255d40bbe1_projects_1",
+                        "diagnoseResultList": [],
+                        "itemUid": "492dc7ac-b283-475d-a29e-5af8b78c30e4",
+                        "name": "Solantix: Solana Indexing Platform",
+                        "contents": [
+                            "Developed a full-stack NFT and token indexing platform on the Solana blockchain, integrating real-time webhook listeners and PostgreSQL support, enabling 1000+ blockchain events per hour to be processed and queried via a responsive Next.js dashboard.",
+                            "Implemented modular backend architecture using Node.js and Express, optimizing API latency by 30% through caching and batch processing, while ensuring secure user-level data isolation with dynamic PostgreSQL connection pools."
+                        ],
+                        "dates": {
+                            "startDate": "",
+                            "completionDate": "",
+                            "isCurrent": false
+                        },
+                        "organization": "Solantix",
+                        "location": null,
+                        "projectLink": null,
+                        "projectLinkText": null
+                    },
+                    {
+                        "itemId": "6863624f194860255d40bbe1_projects_2",
+                        "diagnoseResultList": [],
+                        "itemUid": "fdc2302f-c657-4d8b-bb8d-8e35bbbde9bb",
+                        "name": "LAN Messanger: Real-Time Peer-to-Peer Chat Application",
+                        "contents": [
+                            "Developed a modular LAN messaging app in Java using Swing and JSON-based local storage, featuring SPA-like navigation, OOP structure, and real-time messaging over local networks.",
+                            "Tech Stack: Java 17+, Java Swing, Socket Programming (TCP/UDP), Multithreading, Gson Library, Maven"
+                        ],
+                        "dates": {
+                            "startDate": "",
+                            "completionDate": "",
+                            "isCurrent": false
+                        },
+                        "organization": null,
+                        "location": null,
+                        "projectLink": null,
+                        "projectLinkText": null
+                    }
+                ]
+            },
+            "certifications": {
+                "itemId": "6863624f194860255d40bbe1_certifications",
+                "diagnoseResultList": [],
+                "itemUid": "8b3de316-e45c-4ac7-94dc-56bb5c39dc3d",
+                "certificationDetails": []
+            },
+            "achievements": {
+                "itemId": "6863624f194860255d40bbe1_achievements",
+                "diagnoseResultList": [],
+                "itemUid": "7f7bd4c0-d564-4e27-a7e7-cccb37d7411a",
+                "achievementDetails": [
+                    {
+                        "itemId": "6863624f194860255d40bbe1_achievements_0",
+                        "diagnoseResultList": [],
+                        "itemUid": "f836a1a2-a304-42a6-8ca3-c27ed5b00ec1",
+                        "name": null,
+                        "description": "President of the college Tech Club, leading a thrival community of coders and developers to foster innovation and technical skill development."
+                    },
+                    {
+                        "itemId": "6863624f194860255d40bbe1_achievements_1",
+                        "diagnoseResultList": [],
+                        "itemUid": "ce3057cd-fd81-4ae6-90a1-aa696d51c925",
+                        "name": null,
+                        "description": "Second Runner-Up in the Rajasthan Police Hackathon, a prestigious national-level competition. Our team was victorious out of 1665 teams"
+                    },
+                    {
+                        "itemId": "6863624f194860255d40bbe1_achievements_2",
+                        "diagnoseResultList": [],
+                        "itemUid": "4d0d2f91-05cf-435c-90c6-5149faf25097",
+                        "name": null,
+                        "description": "Solved 950+ problems across LeetCode and Codeforces, achieving a peak rating of 1758 on LeetCode and Pupil rank (1255) on Codeforces, showcasing strong algorithmic-thinking skills."
+                    }
+                ]
+            },
+            "languages": {
+                "itemId": "6863624f194860255d40bbe1_languages",
+                "diagnoseResultList": [],
+                "itemUid": "20e71c0e-44b4-4999-ba14-e66308ea17a8",
+                "languageDetails": []
+            },
+            "publications": {
+                "itemId": "6863624f194860255d40bbe1_publications",
+                "diagnoseResultList": [],
+                "itemUid": "612530d5-c656-4e1c-9022-298f1b45b810",
+                "publicationDetails": []
+            },
+            "extracurricular": {
+                "itemId": "6863624f194860255d40bbe1_extracurricular",
+                "diagnoseResultList": [],
+                "itemUid": "3e7a89ac-395a-4030-9eb7-f77658d53a70",
+                "extracurricularDetails": []
+            },
+            "overallRanking": "B",
+            "lastOverallRanking": null,
+            "lastDiagnoseTimestamp": 1751343698685,
+            "totalIssues": {
+                "Urgent": 1,
+                "Optional": 0,
+                "Critical": 1
+            },
+            "sections": [
+                {
+                    "type": "personalInfo",
+                    "name": "Personal Info"
+                },
+                {
+                    "type": "summary",
+                    "name": "Summary"
+                },
+                {
+                    "type": "projects",
+                    "name": "Projects"
+                },
+                {
+                    "type": "education",
+                    "name": "Education"
+                },
+                {
+                    "type": "skills",
+                    "name": "Technologies and Skills"
+                },
+                {
+                    "type": "achievements",
+                    "name": "Achievements"
+                }
+            ],
+            "resumeId": "3669215724234258813"
+        },
+        "resumeName": "Shoyeb_Ansari__Resumesoftware_engineer",
+        "sectionLayout": [
+            {
+                "section": 2,
+                "name": "Personal Info"
+            },
+            {
+                "section": 1,
+                "name": "Summary"
+            },
+            {
+                "section": 7,
+                "name": "Projects"
+            },
+            {
+                "section": 3,
+                "name": "Education"
+            },
+            {
+                "section": 5,
+                "name": "Technologies and Skills"
+            },
+            {
+                "section": 9,
+                "name": "Achievements"
+            }
+        ],
+        "showGuidance": false,
+        "mocking": false,
+        "primary": true,
+        "resumeId": "3669215724234258813",
+        "targetJobTitle": null
+    }
+}

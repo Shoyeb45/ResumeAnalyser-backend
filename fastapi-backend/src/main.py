@@ -1,11 +1,12 @@
 from core.logging import setup_logging
-
+from dotenv import load_dotenv
 setup_logging(
     log_level = "INFO",
     log_file = "logs/app.log",
     max_file_size = 8 * 1024 * 1024,    # 8MB per file
     backup_count = 3                    # Keep 3 old log files
 )
+load_dotenv()
 
 from core.server import create_server
 
@@ -44,8 +45,7 @@ async def get_all():
 def main():
     
     
-    from dotenv import load_dotenv
-    load_dotenv()
+    
     logger.info(f"Environment variables loaded successfully, test env: {os.getenv('TEST')}")
     uvicorn.run("main:app")
     

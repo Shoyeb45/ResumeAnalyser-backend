@@ -1,0 +1,163 @@
+{
+    "success": true,
+    "message": "Successfully analysed resume and update the resume in database",
+    "resumeMetadata": {
+        "resumeName": "some name",
+        "isPrimary" : true,
+        "createdAt": "date",
+        "updatedAt": "date"
+    },
+    "result": {
+        "resumeDetails": {
+            "personalInfo": {
+                "name": "name",
+                "contactInfo": {
+                    "email": "email",
+                    "mobile": "mobile",
+                    "location": "location",
+                    "socialLinks": {
+                        "linkedin": "linkedin-url",
+                        "github": "github-url",
+                        "portfolio": "portfolio-url" 
+                    }
+                },
+                "professionalSummary": "summary from resume" 
+            },
+            "educations": [
+                {
+                    "instituteName": "inst name",
+                    "degree": "Btech",
+                    "specialisation": "sdaf",
+                    "dates": {
+                        "start": "start_date",
+                        "end": "end_date"
+                    },
+                    "location": "location of the institute",
+                    "gpa": "gpa in current sem",
+                    "relevantCoursework": ["DSA", "SQL", "...", "Power BI"]
+                },
+                {
+                    "instituteName": "inst name",
+                    "degree": "Btech",
+                    "specialisation": "sdaf",
+                    "dates": {
+                        "start": "start_date",
+                        "end": "end_date"
+                    },
+                    "location": "location of the institute",
+                    "gpa": "gpa in current sem",
+                    "relevantCoursework": ["DSA", "SQL", "...", "Power BI"]
+                }
+            ],
+            "projects": [
+                {
+                    "title": "title of the project",
+                    "description": "desc of the project",
+                    "projectLink": "url",
+                    "date": {
+                        "start": "start_date",
+                        "end": "end_date"
+                    },
+                    "location":"location of the project",
+                    "organization": "project organization",
+                    "bulletPoints": ["1. ..", "2. ..",  "..." , "n. .."],
+                    "technologiesUsed": ["java", "python", "....", "rust"]
+                }
+            ],
+            "skills": [
+                {
+                    "skillGroup": "Web technologies or database like that",
+                    "skills": ["React", "html", "...", "next"]
+                }
+            ],
+            "achievements": [
+                {
+                    "title": "title of the achievement",
+                    "description":"desc of the achievement",
+                    "dateAchieved": "date",
+                    "organisation": "sdfa"
+                },
+                {
+                    "title": "title of the achievement",
+                    "description":"desc of the achievement",
+                    "dateAchieved": "date",
+                    "organisation": "sdfa"
+                }
+            ],
+            "langauges": [
+                {
+                    "langauge": "lang",
+                    "proficiency": "prof"
+                }
+            ],
+            "certifications": [
+                {
+                    "certifcateName": "certificate name",
+                    "description" : "desc of the certificate"
+                }
+            ], 
+            "workExpriences": [
+                {
+                    "companyName": "name of the company",
+                    "date": {
+                        "start":"start_date",
+                        "end":"end_date"
+                    },
+                    "location":"location of the work",
+                    "jobTitle": "job title",
+                    "bulletPoints": ["points...."]
+                }
+            ],
+            "publications": [
+                {
+                    "pubilcationName": "name",
+                    "authors": ["authors"],
+                    "description":"desc of the publications"
+                }
+            ],
+            "extracurriculars": [
+                {
+                    "title": "title of the extra c",
+                    "organizationName": "name of the org",
+                    "date":{
+                        "start": "start_date",
+                        "end": "end_date"
+                    },
+                    "bulletPoints": ["Pointss....."]
+                }
+            ]
+        }, 
+        "resumeAnalysis": {
+            "atsScore": "ats score",
+            "jobMatchScore": "job match score",
+            "skillMatchPercent": "skill match",
+            "technicalSkills": ["tech skills"],
+            "softSkills": ["soft skills"],
+            "matchedSkills": ["matched skills"],
+            "missingSkills": ["missing skills"],
+            "nlpAnalysis": {
+                "word_count": 509,
+                "entities": [
+                    [
+                        "Shoyeb Ansari",
+                        "PERSON"
+                    ]
+                ],
+                "keywords": [
+                    "github repo link| live website\n\neasypay",
+                    "our team",
+                    "the college tech club",
+                    "..."
+                ],
+                "roleMatchScore": 67.93,
+                "roleMatched": "Web development, frontend, backend engineer"
+            },
+            "llmAnalysis": {
+                "overallSummary": {
+                    
+                }
+            } 
+ 
+        }
+    }
+}

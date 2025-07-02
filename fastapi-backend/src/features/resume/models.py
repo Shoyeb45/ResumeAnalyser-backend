@@ -30,7 +30,7 @@ class ProjectDetails(BaseModel):
 class Education(BaseModel):
     institute_name: str
     degree: str  # "B.Tech", "B.Sc", "M.Tech", etc.
-    major: Optional[str] = None  # Computer Science, Electronics, etc.
+    specialisation: Optional[str] = None  # Computer Science, Electronics, etc.
     start_date: Optional[date] = None
     end_date: Optional[date] = None
     location: Optional[str] = None
@@ -72,7 +72,7 @@ class Publication(BaseModel):
     
 class Extracurricular(BaseModel):
     '''Extracurricular Model for the resume'''
-    organisation_name: str = None
+    organization_name: str = None
     start_date: Optional[date] = None    
     end_date: Optional[date] = None
     title: str = None

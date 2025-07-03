@@ -23,4 +23,6 @@ dependencies = [
     "sentence-transformers>=4.1.0",
     "scikit-learn>=1.7.0",
     "groq>=0.29.0",
+    "pymupdf>=1.26.1",
+    "pypdf2>=3.0.1",
 ]

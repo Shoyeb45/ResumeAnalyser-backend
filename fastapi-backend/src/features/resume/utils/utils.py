@@ -6,3 +6,4 @@ from features.resume.utils.skills_analyzer import SkillsAnalyzer
 from features.resume.utils.job_match_calculator import JobMatchCalculator
 from features.resume.utils.ai_analyzer import AIAnalyzer
 from features.resume.utils.response_formatter import ResponseFormatter
+from features.resume.utils.resume_detail_extractor import ResumeDetailsExtractor

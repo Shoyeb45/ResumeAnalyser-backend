@@ -1,7 +1,7 @@
 import logging
 from features.resume.config import ResumeAnalyzerConfig
 from typing import Tuple, List
-
+from features.resume.schemas import SkillGroup
 logger = logging.getLogger(__name__)
 
 class SkillsAnalyzer:
@@ -9,9 +9,60 @@ class SkillsAnalyzer:
     
     def __init__(self, logger: logging.Logger):
         # self.logger = logger
-        self.technical_skills = ResumeAnalyzerConfig.TECHNICAL_SKILLS
-        self.soft_skills = ResumeAnalyzerConfig.SOFT_SKILLS
+        self.technical_skill_groups = ResumeAnalyzerConfig.TECHNICAL_SKILLS
+        self.soft_skill_groups = ResumeAnalyzerConfig.SOFT_SKILLS
     
+    def detect_skills_by_groups(self, text: str) -> Tuple[List[SkillGroup], List[SkillGroup]]:
+        """
+        Detect technical and soft skills from resume text, grouped by categories
+        
+        Args:
+            text (str): Resume text to analyze
+            
+        Returns:
+            Tuple[List[SkillGroup], List[SkillGroup]]: Technical skill groups and soft skill groups found
+        """
+        try:
+            text_lower = text.lower()
+            
+            # Find technical skills by groups
+            technical_groups = []
+            for group_name, skills_list in self.technical_skill_groups.items():
+                found_skills = [
+                    skill for skill in skills_list 
+                    if skill.lower() in text_lower
+                ]
+                if found_skills:  # Only add groups that have found skills
+                    technical_groups.append(SkillGroup(
+                        group_name=group_name,
+                        skills=found_skills
+                    ))
+            
+            # Find soft skills by groups
+            soft_groups = []
+            for group_name, skills_list in self.soft_skill_groups.items():
+                found_skills = [
+                    skill for skill in skills_list 
+                    if skill.lower() in text_lower
+                ]
+                if found_skills:  # Only add groups that have found skills
+                    soft_groups.append(SkillGroup(
+                        group_name=group_name,
+                        skills=found_skills
+                    ))
+            
+            total_technical = sum(len(group.skills) for group in technical_groups)
+            total_soft = sum(len(group.skills) for group in soft_groups)
+            
+            logger.info(f"Found {total_technical} technical skills in {len(technical_groups)} groups")
+            logger.info(f"Found {total_soft} soft skills in {len(soft_groups)} groups")
+            
+            return technical_groups, soft_groups
+            
+        except Exception as e:
+            logger.error(f"Error detecting grouped skills: {e}")
+            return [], []
+        
     def detect_skills(self, text: str) -> Tuple[List[str], List[str]]:
         """
         Detect technical and soft skills from resume text
@@ -27,13 +78,13 @@ class SkillsAnalyzer:
             
             # Find technical skills
             found_technical = [
-                skill for skill in self.technical_skills 
+                skill for skill in self.technical_skill_groups 
                 if skill.lower() in text_lower
             ]
             
             # Find soft skills
             found_soft = [
-                skill for skill in self.soft_skills 
+                skill for skill in self.soft_skill_group
                 if skill.lower() in text_lower
             ]
             

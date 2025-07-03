@@ -11,13 +11,14 @@ class SectionExtractor:
         
         # Section keywords mapping
         self.section_keywords = {
-            'summary': ['summary', 'objective', 'profile', 'about'],
+            'professional_summary': ['summary', 'objective', 'profile', 'about'],
             'education': ['education', 'qualification', 'academic', 'degree'],
-            'workExperience': ['experience', 'employment', 'work history', 'career'],
-            'skills': ['skill', 'competenc', 'technical', 'abilities'],
-            'projects': ['project', 'portfolio', 'work'],
-            'certifications': ['certification', 'certificate', 'credential'],
-            'achievements': ['achievement', 'award', 'honor', 'accomplishment']
+            'experience': ['experience', 'employment', 'work', 'internship', 'job'],
+            'skills': ['skills', 'technical skills', 'tools', 'competencies', 'technologies'],
+            'projects': ['project', 'portfolio'],
+            'certifications': ['certification', 'certificate'],
+            'achievements': ['achievement', 'award', 'honor', 'accomplishment'],
+            'languages': ['languages', 'language']
         }
     
     def extract_sections(self, text: str) -> Dict[str, List[str]]:
@@ -34,27 +35,27 @@ class SectionExtractor:
             # Initialize sections dictionary
             sections = {section: [] for section in self.section_keywords.keys()}
             
+            
+            current_section = None
             # Split text into lines and process
             lines = text.split('\n')
-            current_section = None
-            
+
             for line in lines:
-                line = line.strip()
-                if not line:
+                line_strip = line.strip()
+                if not line_strip:
                     continue
-                
-                line_lower = line.lower()
-                
+
+                line_lower = line_strip.lower()
+
                 # Check if line is a section header
-                detected_section = self._detect_section(line_lower)
-                if detected_section:
-                    current_section = detected_section
-                    logger.debug(f"Detected section: {current_section}")
-                    continue
-                
-                # Add content to current section
-                if current_section and line:
-                    sections[current_section].append(line)
+                for section, keywords in self.section_keywords.items():
+                    if any(keyword in line_lower for keyword in keywords) and len(line_strip) < 100:
+                        current_section = section
+                        break
+                else:
+                    # Add content to current section
+                    if current_section and line_strip:
+                        sections[current_section].append(line_strip)
             
             # Log section extraction results
             for section, content in sections.items():

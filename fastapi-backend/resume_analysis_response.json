@@ -152,11 +152,7 @@
                 "roleMatchScore": 67.93,
                 "roleMatched": "Web development, frontend, backend engineer"
             },
-            "llmAnalysis": {
-                "overallSummary": {
-                    
-                }
-            } 
+            "llmAnalysis": "json string"
  
         }
     }

@@ -4,7 +4,7 @@ from typing import Dict, Any, Optional
 from transformers import pipeline
 import re
 from features.resume.utils.utils import NLPAnalyzer
-
+from features.resume.schemas import ContactInfo
 logger = logging.getLogger(__name__)
 
 
@@ -36,10 +36,9 @@ class PersonalInfoExtractor:
             personal_info = {
                 "name": "Not Found",
                 "email": "Not Found", 
-                "phoneNumber": "Not Found",
+                "mobile": "Not Found",
                 "location": "Not Found",
-                "githubUrl": None,
-                "linkedinLink": None
+                "social_links": []
             }
             
             # Extract using NLP if available
@@ -55,11 +54,10 @@ class PersonalInfoExtractor:
             logger.error(f"Error extracting personal info: {e}")
             return {
                 "name": "Not Found",
-                "email": "Not Found",
-                "phoneNumber": "Not Found", 
+                "email": "Not Found", 
+                "mobile": "Not Found",
                 "location": "Not Found",
-                "githubUrl": None,
-                "linkedinLink": None
+                "social_links": []
             }
     
     def _extract_with_nlp(self, text: str) -> Dict[str, str]:
@@ -113,16 +111,17 @@ class PersonalInfoExtractor:
         # Extract phone numbers
         phones = re.findall(self.phone_pattern, text)
         if phones:
-            info["phoneNumber"] = phones[0]
+            info["mobile"] = phones[0]
         
-        # Extract GitHub URLs
         github_urls = re.findall(self.github_pattern, text)
-        if github_urls:
-            info["githubUrl"] = github_urls[0]
-        
-        # Extract LinkedIn URLs
         linkedin_urls = re.findall(self.linkedin_pattern, text)
+
+        social_links = {}
+        if github_urls:
+            social_links['github'] = f"https://{github_urls[0]}"
         if linkedin_urls:
-            info["linkedinLink"] = linkedin_urls[0]
+            social_links['linkedin'] = f"https://{linkedin_urls[0]}"
+
+        info["social_links"] = social_links
             
         return info

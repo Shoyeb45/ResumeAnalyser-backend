@@ -4,8 +4,10 @@ from docx import Document
 from pdf2image import convert_from_path
 from features.resume.config import ResumeAnalyzerConfig
 from transformers import pipeline
-
-
+import fitz
+from PIL import Image
+import PyPDF2, io, cv2
+import numpy as np
 logger = logging.getLogger(__name__)
 
 class TextExtractor:
@@ -50,6 +52,16 @@ class TextExtractor:
             logger.error(f"Error extracting text from {file_type} file: {e}")
             raise
     
+    def preprocess_image(self, pil_img: Image.Image) -> Image.Image:
+        """Improve OCR quality with thresholding"""
+        cv_img = np.array(pil_img)
+        if len(cv_img.shape) == 3:
+            gray = cv2.cvtColor(cv_img, cv2.COLOR_RGB2GRAY)
+        else:
+            gray = cv_img
+        _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+        return Image.fromarray(thresh)
+    
     def _extract_from_pdf(self, pdf_path: str) -> str:
         """
         Extract text from PDF using OCR
@@ -61,20 +73,79 @@ class TextExtractor:
             str: Extracted text from all pages
         """
         try:
-            images = convert_from_path(pdf_path)
-            extracted_text = ""
             
-            for page_num, img in enumerate(images, 1):
-                logger.info(f"Processing PDF page {page_num}")
-                page_text = pytesseract.image_to_string(img)
-                extracted_text += page_text + "\n"
+            with open(pdf_path, "rb") as file:
+                file_content = file.read()
                 
-            return extracted_text.strip()
-            
+            # Method 1: Try PyMuPDF
+            try:
+                logger.info("Trying PyMuPDF text extraction...")
+                doc = fitz.open(stream=file_content, filetype="pdf")
+                text = ""
+                for page in doc:
+                    page_text = page.get_text("text")
+                    text += page_text + "\\"
+                doc.close()
+                if len(text.strip()) > 50:
+                    with open("out.txt", "w") as file:
+                        file.write(text.strip())
+                    logger.info("PyMuPDF extraction successful")
+                    return text.strip()
+            except Exception as e:
+                logger.warning(f"PyMuPDF failed: {e}")
+
+            # Method 2: Try PyPDF2
+            try:
+                logger.info("Trying PyPDF2 text extraction...")
+                pdf_reader = PyPDF2.PdfReader(io.BytesIO(file_content))
+                text = ""
+                for page in pdf_reader.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text += page_text + "\n"
+                if len(text.strip()) > 50:
+                    logger.info("PyPDF2 extraction successful")
+                    with open("out.txt", "w") as file:
+                        file.write(text.strip())
+                    return text.strip()
+            except Exception as e:
+                logger.warning(f"PyPDF2 failed: {e}")
+
+            # Method 3: OCR fallback
+            try:
+                logger.info("Trying OCR extraction...")
+                doc = fitz.open(stream=file_content, filetype="pdf")
+                text = ""
+                for page in doc:
+                    # Render page to image at higher resolution
+                    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # 2x scale for better OCR
+                    img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+                    # Preprocess image for better OCR
+                    clean_img = self.preprocess_image(img)
+
+                    # Extract text using OCR
+                    ocr_text = pytesseract.image_to_string(clean_img, lang="eng")
+                    text += ocr_text + "\n"
+                doc.close()
+
+                if len(text.strip()) > 50:
+                    logger.info("OCR extraction successful")
+                    with open("out.txt", "w") as file:
+                        file.write(text.strip())
+                        
+                    return text.strip()
+            except Exception as e:
+                logger.warning(f"OCR failed: {e}")
+
+            logger.error("All PDF extraction methods failed")
+            return "Could not extract sufficient text from the PDF file."
+
         except Exception as e:
-            logger.error(f"Error extracting text from PDF: {e}")
-            raise
+            logger.error(f"Fatal error in PDF extraction: {e}")
+            return f"Error extracting text: {str(e)}"
     
+   
     def _extract_from_docx(self, docx_path: str) -> str:
         """
         Extract text from DOCX file

@@ -11,6 +11,7 @@ from pymongo import IndexModel
 # Embedded Models (for nested data within documents)
 
 class ContactInfo(BaseModel):
+    name: Optional[str] = None
     email: Optional[str] = None
     mobile: Optional[str] = None
     location: Optional[str] = None

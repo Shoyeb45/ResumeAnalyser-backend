@@ -1,9 +1,14 @@
 import logging
 from fastapi import HTTPException
-from features.resume.utils.utils import AIAnalyzer, TextExtractor, NLPAnalyzer, PersonalInfoExtractor, SectionExtractor, SkillsAnalyzer, JobMatchCalculator, ResponseFormatter
+from features.resume.utils.utils import (
+    AIAnalyzer, TextExtractor, NLPAnalyzer, PersonalInfoExtractor,
+    SectionExtractor, SkillsAnalyzer, JobMatchCalculator, ResponseFormatter, ResumeDetailsExtractor
+)
 from typing import Any, Dict
 from datetime import datetime
-
+from features.resume.schemas import (
+    ResumeAnalysis, NLPAnalysis, ResumeDetails, PersonalInfo
+)
 ''' Module which handles core business logic of the application
 '''
 
@@ -30,6 +35,7 @@ class ResumeAnalyzer:
         self.skills_analyzer = SkillsAnalyzer(logger)
         self.job_match_calculator = JobMatchCalculator(logger)
         self.ai_analyzer = AIAnalyzer(logger)
+        self.resume_details_extractor = ResumeDetailsExtractor(logger)
         self.response_formatter = ResponseFormatter(logger)
         
         logger.info("Resume Analyzer initialized successfully")
@@ -64,20 +70,20 @@ class ResumeAnalyzer:
             resume_text = self.text_extractor.extract_text_from_file(file_path, file_type)
             
             # Step 2: Extract personal information
-            logger.info("Step 2: Extracting personal information")
-            personal_info = self.personal_info_extractor.extract_personal_info(resume_text)
+            # logger.info("Step 2: Extracting personal information")
+            # personal_info = self.personal_info_extractor.extract_personal_info(resume_text)
             
             # Step 3: Perform NLP analysis
             logger.info("Step 3: Performing NLP analysis")
             nlp_analysis = self.nlp_analyzer.analyze_text_with_nlp(resume_text, target_role)
             
             # Step 4: Extract structured sections
-            logger.info("Step 4: Extracting structured sections")
-            sections = self.section_extractor.extract_sections(resume_text)
+            # logger.info("Step 4: Extracting structured sections")
+            # sections = self.section_extractor.extract_sections(resume_text)
             
             # Step 5: Analyze skills
             logger.info("Step 5: Analyzing skills")
-            tech_skills, soft_skills = self.skills_analyzer.detect_skills(resume_text)
+            tech_skills, soft_skills = self.skills_analyzer.detect_skills_by_groups(resume_text)
             
             # Step 6: Match skills with job description
             logger.info("Step 6: Matching skills with job description")
@@ -95,28 +101,75 @@ class ResumeAnalyzer:
             llm_summary = self.ai_analyzer.get_llm_analysis(
                 resume_text, target_role, job_description, matched_skills, missing_skills
             )
-            resume_score = self.ai_analyzer.compute_resume_score(
+            ats_score = self.ai_analyzer.compute_resume_score(
                 resume_text, target_role, job_description
             )
             
+            
+            # nlp_analysis_resposne = NLPAnalysis(**nlp_analysis)
+            
+            resume_analysis = {
+                "ats_score": ats_score,
+                "job_match_score": job_match_score,
+                "skill_match_percent": skill_match_percent,
+                "technical_skills": tech_skills,
+                "soft_skills": soft_skills,
+                "matched_skills": matched_skills,
+                "missing_skills": missing_skills,
+                "nlp_analysis": nlp_analysis,
+                "llm_analysis": llm_summary
+            }
+            
+            # personal_info_response = PersonalInfo(
+            #     contact_info=contact_info,
+            #     professional_summary=sections["professional_summary"]
+            # )
+            
+            # resume_details_response = ResumeDetails(
+            #     personal_info=personal_info_response,
+            #     projects=sections["projects"],
+            #     education=sections["education"],
+            #     skills=tech_skills + soft_skills,
+            #     achievements=sections["sections"],
+            # )
+            
+            # resume_details = {
+            #     "personal_info": {
+            #         "name": personal_info["name"],
+            #         "contact_info": {
+            #             "email": personal_info["email"],
+            #             "mobile": personal_info["mobile"],
+            #             "location": personal_info["location"],
+            #             "social_links": personal_info["social_links"]
+            #         },
+            #         "professional_summary": sections["professional_summary"]
+            #     },
+            #     "educations": sections["education"],
+            #     "projects": sections["projects"],
+            #     "skills": tech_skills + soft_skills,
+            #     "achievements": sections["achievements"],
+            #     "languages": sections["languages"],
+            #     "certifications": sections["certifications"],
+            # }
+            resume_details = self.resume_details_extractor.get_resume_details(text=resume_text)
+            
+            result = {
+                "resume_details": resume_details,
+                "resume_analyzer": resume_analysis
+            }
+            response = {
+                "success": True,
+                "message": "Successfully analysed resume and update the resume in database",
+                "resume_metadata": {
+                    "resume_name": file_path,
+                    "is_primary": True,
+                },
+                "result": result
+            }
             # Step 9: Format structured response
             logger.info("Step 9: Formatting structured response")
-            response = self.response_formatter.format_structured_response(
-                text=resume_text,
-                target_role=target_role,
-                job_description=job_description,
-                personal_info=personal_info,
-                nlp_analysis=nlp_analysis,
-                sections=sections,
-                tech_skills=tech_skills,
-                soft_skills=soft_skills,
-                matched_skills=matched_skills,
-                missing_skills=missing_skills,
-                resume_score=resume_score,
-                job_match_score=job_match_score,
-                skill_match_percent=skill_match_percent,
-                llm_summary=llm_summary
-            )
+            
+                     
             
             logger.info("Resume analysis completed successfully")
             return response
@@ -213,30 +266,7 @@ class ResumeAnalyzer:
         }
 
 
-# class ResumeService:
-#     @staticmethod
-#     def analyse_resume(resume_file_content: bytes, filename: str):
-#         try:
-            
-#             # Save the file temporarily
-#             # Extract text from resume
-#             resume_text = ExtractText.extract_resume_text(resume_file_content, filename)
-            
-#             if not resume_text or not resume_text.strip():
-#                 raise HTTPException(
-#                     status_code = 400,
-#                     detail = "Failed to parse resume"
-#                 )
-            
-#             # Perform comprehensive analysis of resume
-#             return {
-#                 "text": resume_text
-#             }
-#         except Exception as e:
-#             logger.error(f"Failed to analyse resume, error: {str(e)}")
-#             raise HTTPException(status_code = 500, detail = "Failed to analyse resume")
         
     
-    
-    
+# Create a single instance and use it 
 resume_analyzer = ResumeAnalyzer()

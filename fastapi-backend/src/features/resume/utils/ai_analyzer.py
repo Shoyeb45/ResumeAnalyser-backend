@@ -65,7 +65,7 @@ class AIAnalyzer:
             response = self.groq_client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=800,
+                max_tokens=4000,
                 temperature=0.7
             )
             
@@ -106,7 +106,7 @@ class AIAnalyzer:
             )
             
             analysis = response.choices[0].message.content.strip()
-            print("Successfully generated LLM analysis")
+            logger.info("Successfully generated LLM analysis")
             
             return ResumeDetailsExtractor.parse_resume_with_json_extraction(analysis)
             
@@ -130,6 +130,7 @@ class AIAnalyzer:
         """
         try:
             if not self.groq_client:
+                logger.info("Groq client is not initialised")
                 return 75  # Default fallback score
             
             # Create scoring prompt
@@ -139,7 +140,7 @@ class AIAnalyzer:
             response = self.groq_client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=10,
+                max_tokens=4000,
                 temperature=0.3
             )
             
@@ -147,10 +148,10 @@ class AIAnalyzer:
             
             # Parse and validate score
             try:
-                score = int(score_text)
-                score = max(0, min(100, score))  # Ensure score is between 0-100
-                logger.info(f"AI-computed resume score: {score}")
-                return score
+                # score = int(score_text)
+                # score = max(0, min(100, score))  # Ensure score is between 0-100
+                # logger.info(f"AI-computed resume score: {score}")
+                return ResumeDetailsExtractor.parse_resume_with_json_extraction(score_text)
             except ValueError:
                 logger.warning(f"Could not parse AI score: {score_text}")
                 return 75
@@ -353,10 +354,16 @@ class AIAnalyzer:
 Rate this resume out of 100 for the role: {target_role}
 Consider: relevance, clarity, ATS-friendliness, impact, completeness.
 
-Job Description: {job_description[:500] if job_description else "General evaluation"}
-Resume: {text[:2000]}
+Job Description: {job_description if job_description else "General evaluation"}
+Resume: {text}
 
-Respond with only a number between 0-100.
+Respond only json object with following keys:
+{{
+    'ats_score': 'ats score of the resume',
+    'format_compliance': 'Formatting score of the resume',
+    'keyword_optimization': 'Scoring of the resume based on keywords',
+    'readability': 'Readability score of the resume' 
+}}
 """.strip()
     
     def _create_improvement_prompt(
@@ -476,7 +483,7 @@ Format with clear sections and bullet points.
     - Every section must be present, even if empty arrays are needed.
     - If a section is not found in the resume, set good, bad, improvements to [] and overall_review to "needs_improvement".
 
-    RETURN ONLY THE JSON OBJECT AND NOTHING ELSE.
+    NOTE: RETURN ONLY THE JSON OBJECT AND NOTHING ELSE, NO EXTRA EXPLANATION.
     """.strip()
 
     def _prepare_sections_summary(self, sections: Dict[str, List[str]]) -> str:

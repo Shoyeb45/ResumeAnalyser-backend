@@ -81,6 +81,16 @@ class AIAnalyzer:
             logger.error(f"Error getting LLM analysis: {e}")
             return f"Error generating analysis: {str(e)}"
     
+    def get_mcq_for_skill_assessment(self, soft_skills: str, technical_skills: str):
+        try:
+            prompt = self._create_skill_assessment_prompt(technical_skills=technical_skills, soft_skills=soft_skills)
+            response = self.chat_with_groq(prompt)
+            
+            return ResumeDetailsExtractor.parse_resume_with_json_extraction(response)
+        except Exception as e:
+            logger.error(f"Failed to generate mcq's from llm, error: {str(e)}")
+            raise e
+  
     def get_section_wise_analysis(
         self,
         text: str,
@@ -114,6 +124,18 @@ class AIAnalyzer:
             print(f"Error getting LLM analysis: {e}")
             return f"Error generating analysis: {str(e)}"
     
+    def get_career_suggestions_based_on_score(self, skill_scores: List, overall_score: float):
+        try:
+            prompt = self._create_career_suggestion_prompt(skill_scores=skill_scores, overall_score=overall_score)
+            
+            response = self.chat_with_groq(prompt)
+            with open("f.txt", "w") as file:
+                file.write(response)
+                
+            return ResumeDetailsExtractor.parse_resume_with_json_extraction(response)
+        except Exception as e:
+            logger.error(f"Failed to generate career suggestions, {str(e)}")
+            raise e            
 
 
     def compute_resume_score(self, text: str, target_role: str, job_description: str = "") -> int:
@@ -413,6 +435,41 @@ Format with clear sections and bullet points.
  
 """.strip()
     
+    def _create_career_suggestion_prompt(self, skill_scores: List, overall_score: float) -> str:
+        return f"""
+You are an expert career mentor. You have scores of the candidate based on the skill and also overall score. Now based on the skill and the overall score, you need to suggest career suggestion that which role will fit the candidate based on the scores. 
+
+Skill Scores: {str(skill_scores)}
+Overll Score: {overall_score}
+
+Based on the above I need two things:
+
+1. Role Name (like Frontend Engineer or Backend Engineer)
+2. Match Percent (based on the scores, give match percent that how much user is match with the given role)
+
+I want ouput format like this:
+{{
+    "suggestions": [
+        {{
+            "role_name": "Name of the skill.",
+            "match_percent": "Match percent with the provided role." 
+        }},
+        {{
+            "role_name": "Name of the skill.",
+            "match_percent": "Match percent with the provided role." 
+        }},
+        ...
+        ...,
+        {{
+            "role_name": "Name of the skill.",
+            "match_percent": "Match percent with the provided role." 
+        }}
+    ]
+    
+    NOTE: Only return JSON object and nothing else.
+}}
+""".strip()
+    
     def _create_section_prompt(
         self, 
         text: str, 
@@ -436,46 +493,51 @@ Format with clear sections and bullet points.
 
     EXPECTED JSON FORMAT:
     {{
-    "education": [
+    "education": 
         {{
+        "description": "small description of that section in one or two lines",
         "good": ["point 1", "point 2"],
         "bad": ["point 1", "point 2"],
         "improvements": ["point 1", "point 2"],
         "overall_review": "excellent"  // or "good" or "needs_improvement"
         }}
-    ],
-    "projects": [
+    ,
+    "projects": 
         {{
-        "good": [...],
-        "bad": [...],
-        "improvements": [...],
-        "overall_review": "good"
+            "description": "small description of that section in one or two lines",
+            "good": [...],
+            "bad": [...],
+            "improvements": [...],
+            "overall_review": "good"
         }}
-    ],
-    "experience": [
+    ,
+    "experience": 
         {{
-        "good": [...],
-        "bad": [...],
-        "improvements": [...],
-        "overall_review": "needs_improvement"
+            "description": "small description of that section in one or two lines",
+            "good": [...],
+            "bad": [...],
+            "improvements": [...],
+            "overall_review": "needs_improvement"
         }}
-    ],
-    "skills": [
+    ,
+    "skills": 
         {{
-        "good": [...],
-        "bad": [...],
-        "improvements": [...],
-        "overall_review": "good"
+            "description": "small description of that section in one or two lines",
+            "good": [...],
+            "bad": [...],
+            "improvements": [...],
+            "overall_review": "good"
         }}
-    ],
-    "extracurricular": [
+    ,
+    "extracurricular": 
         {{
-        "good": [...],
-        "bad": [...],
-        "improvements": [...],
-        "overall_review": "good"
+            "description": "small description of that section in one or two lines",
+            "good": [...],
+            "bad": [...],
+            "improvements": [...],
+            "overall_review": "good"
         }}
-    ]
+    
     }}
 
     IMPORTANT:
@@ -494,6 +556,61 @@ Format with clear sections and bullet points.
                 sections_text += f"{section.title()}: {'; '.join(content[:3])}\n"
         return sections_text
 
+
+
+    def _create_skill_assessment_prompt(self, technical_skills: str, soft_skills: str):
+        return f"""
+You are an expert assessment generator.
+
+Based on the following technical and soft skills, generate 10 multiple choice questions that test understanding and practical knowledge of the skills.
+
+Each question should have:
+- 1 clear correct answer
+- 3 plausible but incorrect distractors
+- A good mix of conceptual and scenario-based questions
+- Coverage across both technical and soft skills
+
+### Technical Skills: 
+-> {technical_skills}
+
+### Soft Skills:
+-> {soft_skills}
+
+
+Return the output in **valid JSON** format as:
+
+{{
+  "questions": [
+    {{
+      "question": "Question text here?",
+      "options": [
+        "A. Option one",
+        "B. Option two",
+        "C. Option three",
+        "D. Option four"
+      ],
+      "answer": "A",
+      "topic": "Topic of the question, like javascript, react, or soft skills. Give only one skill"
+    }},
+    ...
+    ...
+    ...,
+    {{
+      "question": "Question text here?",
+      "options": [
+        "A. Option one",
+        "B. Option two",
+        "C. Option three",
+        "D. Option four"
+      ],
+      "answer": "A",
+      "topic": "Topic of the question, like javascript, react, or soft skills. Give only one skill"
+    }},
+  ]
+}}
+
+Do not include any explanations, comments, or markdown. Output **only the pure JSON object**.
+""".strip()
 
     def _create_experience_section_prompt(
         self,

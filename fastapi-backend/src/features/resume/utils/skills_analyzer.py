@@ -34,7 +34,7 @@ class SkillsAnalyzer:
                 ]
                 if found_skills:  # Only add groups that have found skills
                     technical_groups.append(SkillGroup(
-                        group_name=group_name,
+                        skill_group=group_name,
                         skills=found_skills
                     ))
             
@@ -47,7 +47,7 @@ class SkillsAnalyzer:
                 ]
                 if found_skills:  # Only add groups that have found skills
                     soft_groups.append(SkillGroup(
-                        group_name=group_name,
+                        skill_group=group_name,
                         skills=found_skills
                     ))
             

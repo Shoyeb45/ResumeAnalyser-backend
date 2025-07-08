@@ -26,9 +26,14 @@ class NLPAnalyzer:
         """Initialize NLP models and classifiers"""
         try:
             # Load spaCy model for NLP processing
-            self.nlp_model = spacy.load("en_core_web_sm")
+            try:
+                self.nlp_model = spacy.load("en_core_web_sm")
+            except OSError:
+                from spacy.cli import download
+                download("en_core_web_sm")
+                self.nlp_model = spacy.load("en_core_web_sm")
+                
             logger.info("spaCy model loaded successfully")
-            
             # Load zero-shot classification model
             self.classifier = pipeline(
                 "zero-shot-classification", 

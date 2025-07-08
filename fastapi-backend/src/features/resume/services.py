@@ -6,7 +6,7 @@ from features.resume.utils.utils import (
 )
 from features.resume.repository import resume_repository
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List, Tuple
 from datetime import datetime
 # from features.resume.schemas import (
 #      NLPAnalysis, ResumeDetails, PersonalInfo
@@ -41,6 +41,7 @@ class ResumeAnalyzer:
         self.response_formatter = ResponseFormatter(logger)
         
         logger.info("Resume Analyzer initialized successfully")
+    
     
     def analyze_resume(
         self, 
@@ -190,7 +191,8 @@ class ResumeAnalyzer:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detils=f"Error while generating project description, error message: {str(e)}"
             )
-    
+
+        
     def get_experience_enhanced_description(
         self,
         organisation_name: str, 
@@ -316,6 +318,88 @@ class ResumeAnalyzer:
             "version": "1.0.0",
             "timestamp": datetime.now().isoformat()
         }
+        
+    def generate_skill_assessment_questions(self, soft_skills: str, technical_skills: str):
+        try:
+            questions = self.ai_analyzer.get_mcq_for_skill_assessment(soft_skills=soft_skills, technical_skills=technical_skills)
+            
+            if questions is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Failed to generate MCQ question"
+                )
+            
+            result = {
+                "success": True,
+                "message": "Succesfully generated 10 questions",
+                "questions": questions["questions"]
+            }
+            return result
+        except Exception as e:
+            logger.error(f"Failed to generate MCQ question based on skills provided, error : {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to generate MCQ question based on skills provided, error : {str(e)}"
+            )
+
+
+    def analyse_assessment_score(self, skills: List):
+        try:
+            logger.info("Finding socres based on the input")
+            overall_score, skill_scores = self.calculate_scores(skills=skills)
+            
+            suggestions = self.ai_analyzer.get_career_suggestions_based_on_score(skill_scores=skill_scores, overall_score=overall_score)
+            return {
+                "status": True,
+                "message": "Succesfully analyzed the result and provided career suggestion",
+                "overall_score": overall_score,
+                "skill_wise_scores": skill_scores,
+                "career_suggestions": suggestions
+            }
+        except Exception as e:
+            logger.error(f"Failed to analyse assessment result, error: {str(e)}")
+            raise e
+        
+        
+    def calculate_scores(self, skills: List) -> Tuple[float, List]:
+        """Method to calculate overall scores and skill wise scores
+        <br>
+        The score is calculated as : 
+        
+        (total_correct_question / total_questions) * 100
+        
+        Args:
+        
+            skills: List of an object which contains skill, total_question and number of correct question answered.
+            
+        Returns:
+            
+            Tuple where first member is overall score and second one is list of an object which contains name of the skill and score of the skill
+        """
+        skill_scores = []
+        total_score = 0
+        scored_skills_count = 0
+
+        for item in skills:
+            skill = item["skill"]
+            total = item["total_questions"]
+            correct = item["correct_questions"]
+
+            if total == 0:
+                score = None  # No questions answered for this skill
+            else:
+                score = round((correct / total) * 100, 2)
+                total_score += score
+                scored_skills_count += 1
+
+            skill_scores.append({
+                "skill": skill,
+                "score": score
+            })
+
+        overall_score = round(total_score / scored_skills_count, 2) if scored_skills_count else 0.0
+
+        return overall_score, skill_scores
 
     async def get_resume_details(self, background_tasks: BackgroundTasks, user_id: str, file_path: str) -> Dict[str, any]:
         try:

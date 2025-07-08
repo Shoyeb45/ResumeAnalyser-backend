@@ -3,9 +3,9 @@ from features.resume.schemas import ResumeAnalysisResponse, ResumeDetailsRespons
 from features.resume.services import resume_analyzer
 from typing import Optional, Annotated
 from features.resume.repository import resume_repository
-import os
+import os, json
 from dependency import get_current_user
-
+from typing import List
 import logging
 
 logger = logging.getLogger(__name__)
@@ -97,6 +97,62 @@ async def resume_extraction(
     
 
 
+# API Endpoint to get questions related to skills
+@router.post(
+    "/skill-assessment", 
+    description="This will give 10 mcq questions based on soft and technical skills provided."
+)
+def get_mcq_questions(
+    technical_skills: str = Form(...),
+    soft_skills: str = Form(...),
+    user: dict = Depends(get_current_user)
+):
+    try:
+        logger.info("Skill-assessment API called")
+        return resume_analyzer.generate_skill_assessment_questions(technical_skills=technical_skills, soft_skills=soft_skills)
+    except Exception as e:
+        logger.error(f"Failed to generate MCQ question based on skills provided, error : {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate MCQ question based on skills provided, error : {str(e)}"
+        )
+
+# API Endpoint to get the score of the assessment 
+@router.post(
+    "/skill-assessment-score", 
+    description="This will give comprehensive analysis of the assessment and also it will suggest some job roles."
+)
+def get_assessment_score(
+    skills: str = Form(...),
+    user: dict = Depends(get_current_user)
+):
+    try:
+        '''It will calculate skill assessment score and it will also suggest some job roles depending upon the score
+        '''
+        
+        logger.info("Skill-assessment-score API called")
+        skills_list: List = json.loads(skills)
+
+        if skills_list is None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Some error occurred while converting the skills json string into python object"
+            )
+            
+        return resume_analyzer.analyse_assessment_score(skills_list)
+    except json.JSONDecodeError as e:
+        logger.error(f"Invalid JSON string provided, error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Invalid JSON string provided, error: {str(e)}"
+        )
+    except Exception as e:
+        logger.error(f"Failed to analyse MCQ question based on provided skill wise scores, error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to analyse MCQ question based on provided skill wise scores, error: {str(e)}"
+        )
+        
 # API Endpoint to get all the resumes for particular user
 @router.get("/")
 async def get_all_resume(

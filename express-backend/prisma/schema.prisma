@@ -3,16 +3,16 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  email      String  @unique
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  email      String   @unique
   password   String
   name       String
-  isVerified Boolean @default(false)
+  isVerified Boolean  @default(false)
 
   verificationTokens  VerificationToken[]
   passwordResetTokens PasswordResetToken[]
@@ -22,10 +22,10 @@ model User {
 }
 
 model VerificationToken {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   token     String   @unique
   expiresAt DateTime
-  userId    Int
+  userId    String   @db.ObjectId
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -35,10 +35,10 @@ model VerificationToken {
 }
 
 model PasswordResetToken {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   token     String   @unique
   expiresAt DateTime
-  userId    Int
+  userId    String   @db.ObjectId
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

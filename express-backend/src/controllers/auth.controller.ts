@@ -399,7 +399,7 @@ export const checkAuth = asyncHandler(
     (req as any).email = decoded.email;
 
      const user = await prisma.user.findUnique({
-    where: { id: Number(decoded.userId) },
+    where: { id: decoded.userId },
   });
 
   if (!user) {

@@ -10,7 +10,7 @@ if (!JWT_SECRET) {
 
 export const generateTokenAndSetCookie = async (
   res: Response,
-  userId: number,
+  userId: string,
   email: string
 ): Promise<string> => {
   const token = jwt.sign(

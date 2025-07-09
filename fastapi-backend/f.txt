@@ -1,0 +1,14 @@
+Here is the output based on the provided skill scores and overall score:
+
+{
+"suggestions": [
+    {
+        "role_name": "Frontend Engineer",
+        "match_percent": "75.0"
+    },
+    {
+        "role_name": "Full Stack Developer",
+        "match_percent": "56.25"
+    }
+]
+}

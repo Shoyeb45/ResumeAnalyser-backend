@@ -124,6 +124,18 @@ class AIAnalyzer:
             print(f"Error getting LLM analysis: {e}")
             return f"Error generating analysis: {str(e)}"
     
+    def get_career_suggestions_based_on_score(self, skill_scores: List, overall_score: float):
+        try:
+            prompt = self._create_career_suggestion_prompt(skill_scores=skill_scores, overall_score=overall_score)
+            
+            response = self.chat_with_groq(prompt)
+            with open("f.txt", "w") as file:
+                file.write(response)
+                
+            return ResumeDetailsExtractor.parse_resume_with_json_extraction(response)
+        except Exception as e:
+            logger.error(f"Failed to generate career suggestions, {str(e)}")
+            raise e  
 
 
     def compute_resume_score(self, text: str, target_role: str, job_description: str = "") -> int:
@@ -140,6 +152,7 @@ class AIAnalyzer:
         """
         try:
             if not self.groq_client:
+                logger.info("Groq client is not initialised")
                 return 75  # Default fallback score
             
             # Create scoring prompt
@@ -149,7 +162,7 @@ class AIAnalyzer:
             response = self.groq_client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=10,
+                max_tokens=4000,
                 temperature=0.3
             )
             
@@ -157,18 +170,28 @@ class AIAnalyzer:
             
             # Parse and validate score
             try:
-                score = int(score_text)
-                score = max(0, min(100, score))  # Ensure score is between 0-100
-                logger.info(f"AI-computed resume score: {score}")
-                return score
+                # score = int(score_text)
+                # score = max(0, min(100, score))  # Ensure score is between 0-100
+                # logger.info(f"AI-computed resume score: {score}")
+                return ResumeDetailsExtractor.parse_resume_with_json_extraction(score_text)
             except ValueError:
                 logger.warning(f"Could not parse AI score: {score_text}")
-                return 75
+                return {
+                    'ats_score': 0,
+                    'format_compliance': 0,
+                    'keyword_optimization': 0,
+                    'readability': 0    
+                }
                 
         except Exception as e:
             logger.error(f"Error computing resume score: {e}")
-            return 75
-    
+            return {
+                'ats_score': 0,
+                'format_compliance': 0,
+                'keyword_optimization': 0,
+                'readability': 0    
+            }
+        
     def improve_section_with_ai(
         self, 
         section_text: str, 
@@ -363,10 +386,16 @@ class AIAnalyzer:
 Rate this resume out of 100 for the role: {target_role}
 Consider: relevance, clarity, ATS-friendliness, impact, completeness.
 
-Job Description: {job_description[:500] if job_description else "General evaluation"}
-Resume: {text[:2000]}
+Job Description: {job_description if job_description else "General evaluation"}
+Resume: {text}
 
-Respond with only a number between 0-100.
+Respond only json object with following keys:
+{{
+    'ats_score': 'ats score of the resume',
+    'format_compliance': 'Formatting score of the resume',
+    'keyword_optimization': 'Scoring of the resume based on keywords',
+    'readability': 'Readability score of the resume' 
+}}
 """.strip()
     
     def _create_improvement_prompt(
@@ -661,4 +690,39 @@ INSTRUCTIONS:
 - Write in third person and keep it resume-appropriate.
 - Do not include any markdown, labels, or prefixes.
 Return ONLY the final description sentence and nothing else.
+""".strip()
+
+    def _create_career_suggestion_prompt(self, skill_scores: List, overall_score: float) -> str:
+        return f"""
+You are an expert career mentor. You have scores of the candidate based on the skill and also overall score. Now based on the skill and the overall score, you need to suggest career suggestion that which role will fit the candidate based on the scores. 
+
+Skill Scores: {str(skill_scores)}
+Overll Score: {overall_score}
+
+Based on the above I need two things:
+
+1. Role Name (like Frontend Engineer or Backend Engineer)
+2. Match Percent (based on the scores, give match percent that how much user is match with the given role)
+
+I want ouput format like this:
+{{
+    "suggestions": [
+        {{
+            "role_name": "Name of the skill.",
+            "match_percent": "Match percent with the provided role." 
+        }},
+        {{
+            "role_name": "Name of the skill.",
+            "match_percent": "Match percent with the provided role." 
+        }},
+        ...
+        ...,
+        {{
+            "role_name": "Name of the skill.",
+            "match_percent": "Match percent with the provided role." 
+        }}
+    ]
+    
+    NOTE: Only return JSON object and nothing else.
+}}
 """.strip()

@@ -26,7 +26,7 @@ class Date(BaseModel):
     
 class ProjectDetails(BaseModel):
     title: str
-    description: Optional[str] = None
+    # description: Optional[str] = None
     project_link: Optional[str] = None
     date: Optional[Date] = None
     location: Optional[str] = None
@@ -84,6 +84,9 @@ class Extracurricular(BaseModel):
     date: Optional[Date] = None  # Fixed: removed trailing comma
     role: Optional[str] = None  # Fixed: removed trailing comma
     title: Optional[str] = None  # Fixed: was str = None, removed trailing comma
+    certificate: Optional[str] = None
+    location: Optional[str] = None
+
     bullet_points: List[str] = Field(default_factory=list)
     
 class PersonalInfo(BaseModel):

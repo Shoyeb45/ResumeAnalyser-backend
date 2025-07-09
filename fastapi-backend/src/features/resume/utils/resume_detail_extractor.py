@@ -145,145 +145,142 @@ class ResumeDetailsExtractor:
 
     def create_resume_parser_prompt(self, text: str):
         prompt = f"""EXTRACT RESUME DATA TO JSON ONLY.
-    CRITICAL: Please return ONLY the JSON object. No explanations, no markdown, no additional text. Start with {{ and end with }}.
-
-    JSON SCHEMA:
-    {{
-    "resume_details": {{
-        "personal_info": {{
-        "name": "candidate full name",
-        "contact_info": {{
-            "email": "email address",
-            "mobile": "phone number",
-            "location": "city, state/country",
-            "social_links": {{
+CRITICAL: Please return ONLY the JSON object. No explanations, no markdown, no additional text. Start with {{ and end with }}.
+JSON SCHEMA:
+{{
+"resume_details": {{
+    "personal_info": {{
+    "name": "candidate full name",
+    "contact_info": {{
+        "email": "email address as a string",
+        "mobile": "phone number",
+        "location": "city, state/country",
+        "social_links": {{
             "linkedin": "linkedin profile url",
             "github": "github profile url",
             "portfolio": "portfolio website url"
-            }}
-        }},
-        "professional_summary": "professional summary or objective statement"
-        }},
-        "educations": [
-        {{
-            "institute_name": "university/college name",
-            "degree": "degree type (B.Tech, B.Sc, M.Sc, etc.)",
-            "specialisation": "field of study",
-            "dates": {{
+        }}
+    }},
+    "professional_summary": "professional summary or objective statement"
+    }},
+    "educations": [
+    {{
+        "institute_name": "university/college name",
+        "degree": "degree type (B.Tech, B.Sc, M.Sc, etc.)",
+        "specialisation": "field of study",
+        "dates": {{
             "start": "start date",
             "end": "end date or 'Present'"
-            }},
-            "location": "institute location",
-            "gpa": "GPA/percentage if mentioned",
-            "relevant_coursework": ["course1", "course2", "course3"]
-        }}
-        ],
-        "work_experiences": [
-        {{
-            "company_name": "company name",
-            "job_title": "position title",
-            "date": {{
-            "start": "start date",
-            "end": "end date or 'Present'"
-            }},
-            "location": "work location",
-            "bullet_points": ["responsibility/achievement 1", "responsibility/achievement 2"]
-        }}
-        ],
-        "projects": [
-        {{
-            "title": "project name",
-            "description": "brief project description",
-            "project_link": "project url if available: str",
-            "date": {{
-            "start": "start date",
-            "end": "end date"
-            }},
-            "location": "project location if applicable",
-            "organization": "associated organization if any",
-            "bullet_points": ["key point 1", "key point 2"],
-            "technologies_used": ["tech1", "tech2", "tech3"]
-        }}
-        ],
-        "skills": [
-        {{
-            "skill_group": "Programming Languages",
-            "skills": ["Python", "Java", "JavaScript"]
         }},
-        {{
-            "skill_group": "Web Technologies", 
-            "skills": ["React", "HTML", "CSS"]
-        }},
-        {{
-            "skill_group": "Databases",
-            "skills": ["MySQL", "PostgreSQL", "MongoDB"]
-        }},
-        {{
-            "skill_group": "Cloud Platforms",
-            "skills": ["AWS", "Azure", "GCP"]
-        }},
-        {{
-            "skill_group": "Tools & Frameworks",
-            "skills": ["Git", "Docker", "Kubernetes"]
-        }}
-        ],
-        "achievements": [
-        {{
-            "title": "achievement title",
-            "description": "achievement description",
-            "date_achieved": "date of achievement, if not present then none",
-            "organization": "awarding organization, if not present then none"
-        }}
-        ],
-        "certifications": [
-        {{
-            "certificate_name": "certification name",
-            "issuing_organization": "issuing body",
-            "date_issued": "issue date, if not present then None",
-            "expiry_date": "expiry date if applicable, if not present then None",
-            "description": "certification description"
-        }}
-        ],
-        "languages": [
-        {{
-            "language": "language name",
-            "proficiency": "proficiency level (Native, Fluent, Intermediate, Basic)"
-        }}
-        ],
-        "publications": [
-        {{
-            "publication_name": "publication title",
-            "authors": ["author1", "author2"],
-            "publication_date": "publication date",
-            "journal_conference": "journal or conference name",
-            "description": "brief description"
-        }}
-        ],
-        "extracurriculars": [
-        {{
-            "title": "activity title",
-            "organization_name": "organization name",
-            "role": "role/position held",
-            "date": {{  "start": "start date",  "end": "end date"  }},
-            "bullet_points": ["activity detail 1", "activity detail 2"]
-        }}
-        ]
+        "location": "institute location",
+        "gpa": "GPA/percentage if mentioned",
+        "relevant_coursework": ["course1", "course2", "course3"]
     }}
+    ],
+    "work_experiences": [
+    {{
+        "company_name": "company name",
+        "job_title": "position title",
+        "date": {{
+        "start": "start date",
+        "end": "end date or 'Present'"
+        }},
+        "location": "work location",
+        "bullet_points": ["responsibility/achievement 1", "responsibility/achievement 2"]
     }}
-
-    PARSING RULES:
-    1. Extract information only if explicitly mentioned in the resume
-    2. Use empty arrays [] for missing list fields
-    3. Use empty strings "" for missing string fields
-    4. Use null for missing object fields
-    5. Preserve original date formats when possible
-    6. Group skills logically by category
-    7. Include all bullet points as separate array elements
-    8. Extract URLs exactly as written
-
-    RESUME TEXT:
-    {text}
-
+    ],
+    "projects": [
+    {{
+        "title": "project name",
+        "project_link": "project url if available: str",
+        "date": {{
+        "start": "start date",
+        "end": "end date"
+        }},
+        "location": "project location if applicable",
+        "organization": "associated organization if any",
+        "bullet_points": ["key point 1", "key point 2"],
+        "technologies_used": ["tech1", "tech2", "tech3"]
+    }}
+    ],
+    "skills": [
+    {{
+        "skill_group": "Programming Languages",
+        "skills": ["Python", "Java", "JavaScript"]
+    }},
+    {{
+        "skill_group": "Web Technologies", 
+        "skills": ["React", "HTML", "CSS"]
+    }},
+    {{
+        "skill_group": "Databases",
+        "skills": ["MySQL", "PostgreSQL", "MongoDB"]
+    }},
+    {{
+        "skill_group": "Cloud Platforms",
+        "skills": ["AWS", "Azure", "GCP"]
+    }},
+    {{
+        "skill_group": "Tools & Frameworks",
+        "skills": ["Git", "Docker", "Kubernetes"]
+    }}
+    ],
+    "achievements": [
+    {{
+        "title": "achievement title",
+        "description": "achievement description",
+        "date_achieved": "date of achievement, if not present then none",
+        "organization": "awarding organization, if not present then none"
+    }}
+    ],
+    "certifications": [
+    {{
+        "certificate_name": "certification name",
+        "issuing_organization": "issuing body",
+        "date_issued": "issue date, if not present then None",
+        "expiry_date": "expiry date if applicable, if not present then None",
+        "description": "certification description"
+    }}
+    ],
+    "languages": [
+    {{
+        "language": "language name",
+        "proficiency": "proficiency level (Native, Fluent, Intermediate, Basic)"
+    }}
+    ],
+    "publications": [
+    {{
+        "publication_name": "publication title",
+        "authors": ["author1", "author2"],
+        "publication_date": "publication date",
+        "journal_conference": "journal or conference name",
+        "description": "brief description"
+    }}
+    ],
+    "extracurriculars": [
+    {{
+        "title": "activity title",
+        "organization_name": "organization name",
+        "role": "role/position held",
+        "date": {{  "start": "start date",  "end": "end date"  }},
+        "bullet_points": ["activity detail 1", "activity detail 2"],
+        "certificate": "Any proof of work or certificate link",
+        "location": "Where candidate was part of the acitivity."
+    }}
+    ]
+}}
+}}
+PARSING RULES:
+1. Extract information only if explicitly mentioned in the resume
+2. Use empty arrays [] for missing list fields
+3. Use empty strings "" for missing string fields
+4. Use null for missing object fields
+5. Preserve original date formats when possible
+6. Group skills logically by category
+7. Include all bullet points as separate array elements
+8. Extract URLs exactly as written
+RESUME TEXT:
+{text}
     """.strip()
 
         return prompt

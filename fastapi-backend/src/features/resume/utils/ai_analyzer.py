@@ -116,7 +116,7 @@ class AIAnalyzer:
             )
             
             analysis = response.choices[0].message.content.strip()
-            logger.info("Successfully generated LLM analysis")
+            print("Successfully generated LLM analysis")
             
             return ResumeDetailsExtractor.parse_resume_with_json_extraction(analysis)
             
@@ -124,18 +124,6 @@ class AIAnalyzer:
             print(f"Error getting LLM analysis: {e}")
             return f"Error generating analysis: {str(e)}"
     
-    def get_career_suggestions_based_on_score(self, skill_scores: List, overall_score: float):
-        try:
-            prompt = self._create_career_suggestion_prompt(skill_scores=skill_scores, overall_score=overall_score)
-            
-            response = self.chat_with_groq(prompt)
-            with open("f.txt", "w") as file:
-                file.write(response)
-                
-            return ResumeDetailsExtractor.parse_resume_with_json_extraction(response)
-        except Exception as e:
-            logger.error(f"Failed to generate career suggestions, {str(e)}")
-            raise e            
 
 
     def compute_resume_score(self, text: str, target_role: str, job_description: str = "") -> int:
@@ -152,7 +140,6 @@ class AIAnalyzer:
         """
         try:
             if not self.groq_client:
-                logger.info("Groq client is not initialised")
                 return 75  # Default fallback score
             
             # Create scoring prompt
@@ -162,7 +149,7 @@ class AIAnalyzer:
             response = self.groq_client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=4000,
+                max_tokens=10,
                 temperature=0.3
             )
             
@@ -170,10 +157,10 @@ class AIAnalyzer:
             
             # Parse and validate score
             try:
-                # score = int(score_text)
-                # score = max(0, min(100, score))  # Ensure score is between 0-100
-                # logger.info(f"AI-computed resume score: {score}")
-                return ResumeDetailsExtractor.parse_resume_with_json_extraction(score_text)
+                score = int(score_text)
+                score = max(0, min(100, score))  # Ensure score is between 0-100
+                logger.info(f"AI-computed resume score: {score}")
+                return score
             except ValueError:
                 logger.warning(f"Could not parse AI score: {score_text}")
                 return 75
@@ -376,16 +363,10 @@ class AIAnalyzer:
 Rate this resume out of 100 for the role: {target_role}
 Consider: relevance, clarity, ATS-friendliness, impact, completeness.
 
-Job Description: {job_description if job_description else "General evaluation"}
-Resume: {text}
+Job Description: {job_description[:500] if job_description else "General evaluation"}
+Resume: {text[:2000]}
 
-Respond only json object with following keys:
-{{
-    'ats_score': 'ats score of the resume',
-    'format_compliance': 'Formatting score of the resume',
-    'keyword_optimization': 'Scoring of the resume based on keywords',
-    'readability': 'Readability score of the resume' 
-}}
+Respond with only a number between 0-100.
 """.strip()
     
     def _create_improvement_prompt(

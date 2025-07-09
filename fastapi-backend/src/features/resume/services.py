@@ -434,9 +434,7 @@ class ResumeAnalyzer:
                 resume_metadata,
                 resume_details
             )
-            # await resume_repository.create_resume(
-            # )
-            # logger.info("Saved successfully")
+          
             
             result = {
                 "success": True,

@@ -112,7 +112,7 @@ class AIAnalyzer:
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=4000,
-                temperature=0.7
+                temperature=0.2
             )
             
             analysis = response.choices[0].message.content.strip()
@@ -225,7 +225,7 @@ class AIAnalyzer:
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=400,
-                temperature=0.7
+                temperature=0.2
             )
             
             improved_content = response.choices[0].message.content.strip()
@@ -396,6 +396,8 @@ Respond only json object with following keys:
     'keyword_optimization': 'Scoring of the resume based on keywords',
     'readability': 'Readability score of the resume' 
 }}
+
+NOTE: Only ouptut in JSON format, don't give anything apart from **JSON object**. 
 """.strip()
     
     def _create_improvement_prompt(
@@ -509,34 +511,34 @@ I want ouput format like this:
         "good": ["point 1", "point 2"],
         "bad": ["point 1", "point 2"],
         "improvements": ["point 1", "point 2"],
-        "overall_review": "excellent"  // or "good" or "needs_improvement"
+        "overall_review": "Excellent"  or "Good" or "Needs Improvement"
         }}
     ,
     "projects": 
         {{
             "description": "small description of that section in one or two lines",
-            "good": [...],
-            "bad": [...],
-            "improvements": [...],
-            "overall_review": "good"
+            "good": ["point 1", "point 2"],
+            "bad": ["point 1", "point 2"],
+            "improvements": ["point 1", "point 2"],
+            "overall_review": "Excellent"  or "Good" or "Needs Improvement"
         }}
     ,
     "experience": 
         {{
             "description": "small description of that section in one or two lines",
-            "good": [...],
-            "bad": [...],
-            "improvements": [...],
-            "overall_review": "needs_improvement"
+            "good": ["point 1", "point 2"],
+            "bad": ["point 1", "point 2"],
+            "improvements": ["point 1", "point 2"],
+            "overall_review": "Excellent"  or "Good" or "Needs Improvement"
         }}
     ,
     "skills": 
         {{
             "description": "small description of that section in one or two lines",
-            "good": [...],
-            "bad": [...],
-            "improvements": [...],
-            "overall_review": "good"
+            "good": ["point 1", "point 2"],
+            "bad": ["point 1", "point 2"],
+            "improvements": ["point 1", "point 2"],
+            "overall_review": "Excellent"  or "Good" or "Needs Improvement"
         }}
     ,
     "extracurricular": 
@@ -545,7 +547,7 @@ I want ouput format like this:
             "good": [...],
             "bad": [...],
             "improvements": [...],
-            "overall_review": "good"
+            "overall_review": "Excellent"  or "Good" or "Needs Improvement"
         }}
     
     }}

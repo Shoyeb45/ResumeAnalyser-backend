@@ -155,7 +155,8 @@ class ResumeAnalyzer:
                 "success": True,
                 "message": "Successfully analysed resume and update the resume in database",
                 "resume_metadata": resume_metadata, 
-                "resume_analysis": resume_analysis
+                "resume_analysis": resume_analysis,
+                "job_title": target_role
             }
 
             logger.info("Resume analysis completed successfully")

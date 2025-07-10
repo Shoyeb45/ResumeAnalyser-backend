@@ -188,21 +188,24 @@ class ResumeAnalyzer:
         self,
         project_name: str,
         tech_stack: str,
-        bullet_points: Optional[str] = None
+        bullet_points: Optional[str] = "@"
     ):
         try:
             
             logger.info("Sent all project details to llm for generating description")
             # convert bullet points into python list
-            print(bullet_points)
-            bullet_points = self.__convert_json_to_python_object(bullet_points)
-            print(bullet_points)
+            bullet_points = bullet_points.split("@")
             
             response = self.ai_analyzer.generate_project_section_description(project_name, tech_stack, bullet_points)
+            if response is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=""
+                )
             return {
                 "success": True,
                 "message": "Succesfully generated description for project section",
-                "description": response,
+                "bullet_points": response.split("@"),
             }
         except Exception as e:
             logger.error(f"Error while generating project description, error message: {str(e)}")
@@ -217,15 +220,23 @@ class ResumeAnalyzer:
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        bullet_points: Optional[str] = "@"
     ):
         try:
             logger.info("Sent all experience details to llm for generating description")
-            response = self.ai_analyzer.generate_experience_section_description(organisation_name, position, location, description)
+            bullet_points = bullet_points.split("@")
+            
+            response = self.ai_analyzer.generate_experience_section_description(organisation_name, position, location, bullet_points)
+            if response is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to produce output from LLM"
+                )
+                
             return {
                 "success": True,
                 "message": "Succesfully generated description for experience",
-                "description": response,
+                "bullet_points": response.split("@"),
             }
         except Exception as e:
             logger.error(f"Error while generating experience description, error message: {str(e)}")
@@ -239,15 +250,24 @@ class ResumeAnalyzer:
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        bullet_points: Optional[str] = "@"
     ):
         try:
             logger.info("Sent all extracurricular details to llm for generating description")
-            response = self.ai_analyzer.generate_extracurricular_section_description(organisation_name, position, location, description)
+            bullet_points = bullet_points.split("@")
+            
+            response = self.ai_analyzer.generate_extracurricular_section_description(organisation_name, position, location, bullet_points)
+            
+            if response is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to produce output from LLM"
+                )
+                
             return {
                 "success": True,
                 "message": "Succesfully generated description for extracurricular",
-                "description": response,
+                "bullet_points": response.split("@"),
             }
         except Exception as e:
             logger.error(f"Error while generating extracurricular description, error message: {str(e)}")

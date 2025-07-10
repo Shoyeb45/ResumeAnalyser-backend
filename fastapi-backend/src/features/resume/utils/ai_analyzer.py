@@ -319,10 +319,10 @@ class AIAnalyzer:
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        bullet_points: Optional[List[str]] = None
     ) -> str:
         try:
-            prompt = self._create_experience_section_prompt(organisation_name, position, location, description)
+            prompt = self._create_experience_section_prompt(organisation_name, position, location, bullet_points)
             response = self.chat_with_groq(prompt)
             return response
         except Exception as e:
@@ -344,10 +344,10 @@ class AIAnalyzer:
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        bullet_points: Optional[List[str]] = None
     ) -> str:
         try:
-            prompt = self._create_extracurricular_section_prompt(organisation_name, position, location, description)
+            prompt = self._create_extracurricular_section_prompt(organisation_name, position, location, bullet_points)
             response = self.chat_with_groq(prompt)
             return response
         except Exception as e:
@@ -641,23 +641,23 @@ Do not include any explanations, comments, or markdown. Output **only the pure J
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        description: Optional[List[str]] = None
     ) -> str:
         if not description:
-            description = "Description not provided. You must create it from scratch."
+            description = ["Description not provided. You must create it from scratch."]
         
         return f"""
-You are a resume writing assistant. Your task is to generate a strong, professional description for a experience in the experience section.
+You are a resume writing assistant. Your task is to generate a strong, professional description for a experience in the experience section. You need to generate {len(description)} points.
 Organisation Name: {organisation_name}  
 Position or Role: {position}
 Location: {location}  
-Current Description: {description}
+Bullet Points: {description}
 INSTRUCTIONS:
 - Return only the final improved description text.
 - Do not include any extra phrases like "Here is the description:" or quotation marks.
 - Write in third person and keep it resume-appropriate.
 - Do not include any markdown, labels, or prefixes.
-Return ONLY the final description sentence and nothing else.
+Return ONLY the final points and separate them with the "@" and nothing else, no extra space or anything and don't include '@' at last.
 """.strip()
 
     def _create_extracurricular_section_prompt(
@@ -665,25 +665,27 @@ Return ONLY the final description sentence and nothing else.
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        description: Optional[List[str]] = None
     ) -> str:
         if not description:
-            description = "Description not provided. You must create it from scratch."
-        
+            description = ["Bullet points not provided. You must create it from scratch."]
+
         return f"""
-You are a resume writing assistant. Your task is to generate a strong, professional description for a extracurricular in the extracurricular section.
+You are a resume writing assistant. Your task is to generate a strong, professional description for an extracurricular activity in the resume. You need to generate exactly {len(description)} bullet point(s).
 Organisation Name: {organisation_name}  
 Position or Role: {position}
 Location: {location}  
-Current Description: {description}
-INSTRUCTIONS:
-- Return only the final improved description text.
-- Do not include any extra phrases like "Here is the description:" or quotation marks.
-- Write in third person and keep it resume-appropriate.
-- Do not include any markdown, labels, or prefixes.
-Return ONLY the final description sentence and nothing else.
-""".strip()
+Existing Bullet Points (for inspiration, if any): {description}
 
+INSTRUCTIONS:
+- Return only the final improved bullet points.
+- Do NOT include any introductory or closing text.
+- Format: Separate each bullet point using exactly one "@" symbol.
+- Do NOT add spaces before or after the "@" symbol.
+- DO NOT end the output with an "@".
+- Write in third person, past tense, and make it resume-appropriate.
+- Keep each point concise and impactful.
+""".strip()
     def _create_project_section_prompt(
         self,
         project_name: str,
@@ -705,7 +707,7 @@ INSTRUCTIONS:
 - Do not include any extra phrases like "Here is the description:" or quotation marks.
 - Write in third person and keep it resume-appropriate.
 - Do not include any markdown, labels, or prefixes.
-Return ONLY the final description as a list of bullet points and nothing else.
+Return ONLY the final description as a list of string separated by '@' and nothing else.
 """.strip()
 
     def _create_career_suggestion_prompt(self, skill_scores: List, overall_score: float) -> str:

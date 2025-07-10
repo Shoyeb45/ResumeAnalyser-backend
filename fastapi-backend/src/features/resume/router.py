@@ -213,7 +213,7 @@ async def delete_resume(
 def get_project_description_suggestion(
     project_name: str = Form(...),
     tech_stack: str = Form(...),
-    bullet_points: Optional[str] = Form(None),
+    bullet_points: Optional[str] = Form("@"),
     user: dict = Depends(get_current_user)
 ):
     try:
@@ -233,12 +233,12 @@ async def get_experience_description_suggestion(
     organisation_name: str = Form(...),
     position: str = Form(...),
     location: str = Form(...),
-    description: Optional[str] = Form(None),
+    bullet_points: Optional[str] = Form("@"),
     user: dict = Depends(get_current_user)
 ):
     try:
         logger.info(f"Experience endpoint called to get AI generated description point, called by user-{user['user_id']}")
-        return resume_analyzer.get_experience_enhanced_description(organisation_name, position, location, description)
+        return resume_analyzer.get_experience_enhanced_description(organisation_name, position, location, bullet_points)
     except Exception as e:
         logger.error(f"Failed to generate AI Suggestion for experience section, error message: {str(e)}")
         raise HTTPException(
@@ -255,13 +255,13 @@ async def get_extracurricular_description_suggestion(
     organisation_name: str = Form(...),
     position: str = Form(...),
     location: str = Form(...),
-    description: Optional[str] = Form(None),
+    bullet_points: Optional[str] = Form("@"),
     user: dict = Depends(get_current_user)
 ):
     try:
         logger.info(f"Extracurricular endpoint called to get AI generated description point, called by user-{user['user_id']}")
         
-        return resume_analyzer.get_extracurricular_enhanced_description(organisation_name, position, location, description)
+        return resume_analyzer.get_extracurricular_enhanced_description(organisation_name, position, location, bullet_points)
     except Exception as e:
         logger.error(f"Failed to generate AI Suggestion for extracurricular section, error message: {str(e)}")
         raise HTTPException(

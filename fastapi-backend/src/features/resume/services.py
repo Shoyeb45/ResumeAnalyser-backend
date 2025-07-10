@@ -1,4 +1,4 @@
-import logging
+import logging, json
 from fastapi import HTTPException, BackgroundTasks, status
 from features.resume.utils.utils import (
     AIAnalyzer, TextExtractor, NLPAnalyzer, PersonalInfoExtractor,
@@ -112,7 +112,6 @@ class ResumeAnalyzer:
             
             # Step 8: Format response in proper format
             logger.info("Step 9: Formatting results for better response")
-            print(file_path)
             
             # Step 9: Update database in background
             logger.info("Step 10: Updating database in background")
@@ -122,6 +121,8 @@ class ResumeAnalyzer:
             }
             
             resume_details_for_db = resume_details.get("resume_details", resume_details) if resume_details else {}
+            # Add ats score in resume details dictionary
+            resume_details_for_db["ats_score"] = float(ats_score["ats_score"])
             
             background_tasks.add_task(
                 resume_repository.create_resume,
@@ -417,11 +418,20 @@ class ResumeAnalyzer:
             )
                     
             logger.info("Step 2: Extracting resume information")
-            resume_details = self.resume_details_extractor.get_resume_details(text) 
+            resume_details: Dict[str, Any] = self.resume_details_extractor.get_resume_details(text) 
             
             if resume_details:
                 resume_details = resume_details["resume_details"]
             
+            
+            logger.info("Step 3: Calculating ats score")
+            ats_score = self.ai_analyzer.compute_resume_score(text=text, target_role="No specific target role", job_description="No specific job description")
+
+            if ats_score:
+                ats_score = ats_score["ats_score"]
+            
+            # Add ats score in resume details 
+            resume_details["ats_score"] = float(ats_score)
             
             resume_metadata =  {
                 "resume_name": file_path.split(".")[0].split("\\")[1],
@@ -429,8 +439,7 @@ class ResumeAnalyzer:
             }
             
             logger.info(f"Adding background task for saving resume data for user with id {user_id} in database")
-            background_tasks.add_task(
-                resume_repository.create_resume,
+            resume = await resume_repository.create_resume(
                 user_id,
                 resume_metadata,
                 resume_details
@@ -441,7 +450,7 @@ class ResumeAnalyzer:
                 "success": True,
                 "message": "Successfully extracted details from resume and updated the resume in database",
                 "resume_metadata": resume_metadata,
-                "resume_details": resume_details
+                "resume_details": resume
             }
             
             return result
@@ -451,6 +460,44 @@ class ResumeAnalyzer:
                 status_code=500,
                 detail=f"Failed to extract details from resume, {str(e)}"
             )
+            
+    def get_ats_score(self, resume_json: str):
+        try:
+            
+            # Convert resume json string to python dictionary
+            
+            try:
+                resume_data = json.loads(resume_json)
+            except json.JSONDecoder as js:
+                logger.error(f"Invalid json format of the provided resume data, error: {str(js)}")
+                raise HTTPException(
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail=f"Invalid json format of the provided resume data, error: {str(js)}"
+                )
+            except Exception as e:
+                logger.error(f"Failed to convert resume json text to correct json format, error: {str(e)}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Failed to convert resume json text to correct json format, error: {str(e)}"
+                )
+                
+            ats_score = self.ai_analyzer.get_ats_score(resume_data=resume_data)    
+            
+            
+            if ats_score is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to analyze resume and get ATS score"
+                )
+            
+            return {
+                "success": True,
+                "message": "Succesfully computed resume score",
+                "ats_score": ats_score
+            }       
+        except Exception as e:
+            logger.error(f"Failed to get ats score in resume service, error: {str(e)}")
+            raise e
             
 
         

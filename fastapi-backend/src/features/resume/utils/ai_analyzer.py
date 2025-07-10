@@ -153,7 +153,12 @@ class AIAnalyzer:
         try:
             if not self.groq_client:
                 logger.info("Groq client is not initialised")
-                return 75  # Default fallback score
+                return {
+                    'ats_score': None,
+                    'format_compliance': 0,
+                    'keyword_optimization': 0,
+                    'readability': 0    
+                }  # Default fallback score
             
             # Create scoring prompt
             prompt = self._create_scoring_prompt(text, target_role, job_description)
@@ -170,14 +175,11 @@ class AIAnalyzer:
             
             # Parse and validate score
             try:
-                # score = int(score_text)
-                # score = max(0, min(100, score))  # Ensure score is between 0-100
-                # logger.info(f"AI-computed resume score: {score}")
                 return ResumeDetailsExtractor.parse_resume_with_json_extraction(score_text)
             except ValueError:
                 logger.warning(f"Could not parse AI score: {score_text}")
                 return {
-                    'ats_score': 0,
+                    'ats_score': None,
                     'format_compliance': 0,
                     'keyword_optimization': 0,
                     'readability': 0    
@@ -186,7 +188,7 @@ class AIAnalyzer:
         except Exception as e:
             logger.error(f"Error computing resume score: {e}")
             return {
-                'ats_score': 0,
+                'ats_score': None,
                 'format_compliance': 0,
                 'keyword_optimization': 0,
                 'readability': 0    
@@ -327,6 +329,16 @@ class AIAnalyzer:
             logger.error(f"Failed to generate experience section description, error: {str(e)}")
             raise e
    
+    def get_ats_score(self, resume_data: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            prompt = self._create_ats_prompt(resume_data)
+            response = self.chat_with_groq(prompt)
+            response_data = ResumeDetailsExtractor.parse_resume_with_json_extraction(response)
+            return response_data
+        except Exception as e:
+            logger.error(f"Failed to get ATS score in ai_analyzer module, error: {str(e)}")
+            raise e
+            
     def generate_extracurricular_section_description(
         self,
         organisation_name: str, 
@@ -728,3 +740,99 @@ I want ouput format like this:
     NOTE: Only return JSON object and nothing else.
 }}
 """.strip()
+
+    def _create_ats_prompt(self, resume_data: dict) -> str:
+        name = resume_data["personal_info"].get("name", "N/A")
+        summary = resume_data["personal_info"].get("professional_summary", "N/A")
+        
+        # Skills
+        skills_flat = []
+        for group in resume_data.get("skills", []):
+            skills_flat.extend(group.get("skills", []))
+        
+        # Projects
+        project_details = []
+        for proj in resume_data.get("projects", []):
+            title = proj.get("title", "")
+            bullets = proj.get("bullet_points", [])
+            tech = proj.get("technologies_used", [])
+            project_details.append(f"Title: {title}\nTech: {', '.join(tech)}\nHighlights:\n" +
+                                "\n".join([f"  - {b}" for b in bullets]))
+        
+        # Education
+        education_details = []
+        for edu in resume_data.get("education", []):
+            edu_line = f"{edu.get('institute_name')} - {edu.get('degree')} ({edu.get('gpa', 'N/A')})"
+            education_details.append(edu_line)
+
+        # Achievements
+        achievement_details = []
+        for ach in resume_data.get("achievements", []):
+            achievement_details.append(f"{ach.get('title', '')}: {ach.get('description', '')}")
+
+        # Extracurriculars
+        extracurricular_details = []
+        for extra in resume_data.get("extracurriculars", []):
+            bullet_str = "\n".join([f"  - {bp}" for bp in extra.get("bullet_points", [])])
+            extracurricular_details.append(f"{extra.get('title', '')} ({extra.get('role', '')}):\n{bullet_str}")
+
+        # Languages
+        languages = [lang.get("language", "") + f" ({lang.get('proficiency', '')})"
+                    for lang in resume_data.get("languages", []) if lang.get("language")]
+
+        # Contact Links
+        contact_info = resume_data["personal_info"].get("contact_info", {})
+        social_links = contact_info.get("social_links", {})
+        links = [f"{key}: {val}" for key, val in social_links.items() if val]
+
+        # Prompt Assembly
+        prompt = f"""
+    You are an advanced Applicant Tracking System (ATS) evaluator.
+    Please analyze the resume provided below and evaluate it based on the following 3 criteria:
+
+    1. **Format Compliance** (30%): Is the resume machine-readable and cleanly structured (e.g., ATS-friendly LaTeX, text-based layout, not image-based)?
+    2. **Keyword Optimization** (40%): Does the resume include relevant technical keywords for web development or software engineering roles (e.g., Node.js, REST API, Git, SQL, etc.)?
+    3. **Readability & Clarity** (30%): Are the experiences clearly written, achievements measurable, and sections logically structured?
+
+    For each category, give a score out of 100, followed by an overall **ATS Score** (weighted), and suggestions for improvement.
+
+    ---
+    ### Resume Details
+
+    **Name**: {name}
+
+    **Professional Summary**:
+    {summary}
+
+    **Skills**:
+    {', '.join(skills_flat) or 'None listed'}
+
+    **Programming Languages Spoken**:
+    {', '.join(languages) or 'Not specified'}
+
+    **Social Links**:
+    {', '.join(links) or 'None'}
+
+    **Projects**:
+    {chr(10).join(project_details) or 'No projects provided'}
+
+    **Education**:
+    {chr(10).join(education_details) or 'No education history provided'}
+
+    **Achievements**:
+    {chr(10).join(achievement_details) or 'No achievements listed'}
+
+    **Extracurriculars**:
+    {chr(10).join(extracurricular_details) or 'None'}
+
+    **Assume the resume is written in clean and ATS-compatible LaTeX format.**
+    Please respond in only valid json format like:
+    {{
+        "ats_score": "Overall ats score in float",
+        "format_compliance": "Overall format compliance score in float",
+        "keyword_optimization": "Overall keyword optimization score in float,
+        "readability": "Overall readability score of the resume in float"
+    }}
+
+    """
+        return prompt.strip()

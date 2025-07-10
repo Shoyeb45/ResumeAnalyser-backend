@@ -120,7 +120,7 @@ class Resume(Document):
     # Additional useful fields
     keywords: List[str] = Field(default_factory=list)  # For search optimization
     last_analyzed: Optional[datetime] = None
-    analysis_score: Optional[float] = None  # Overall resume score
+    ats_score: Optional[float] = None  # Overall resume score
     
     class Settings:
         name = "resumes"
@@ -311,7 +311,8 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
             certifications=certification_models,
             work_experiences=work_experience_models,
             publications=publication_models,
-            extracurriculars=extracurricular_models
+            extracurriculars=extracurricular_models,
+            ats_score=resume_details["ats_score"]
         )
         
         logger.info(f"Resume model created successfully for user: {user_id}")

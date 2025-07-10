@@ -1,171 +1,165 @@
 {
-<<<<<<< HEAD
-    "success": true,
-    "message": "Successfully analysed resume and update the resume in database",
-    "resume_metadata": {
-        "resume_name": "Shoyeb_Ansari___Resume__dummy_",
-        "is_primary": true
+  "resume_name": "resume-webDev",
+  "is_primary": true,
+  "personal_info": {
+    "name": "Shoyeb Ansari",
+    "contact_info": {
+      "email": "shoyebff45@gmail.com",
+      "mobile": "+91 9327156940",
+      "location": "Bangalore, Karnataka",
+      "social_links": {
+        "linkedin": "shoyeb.vercel.app",
+        "github": "in shoyebansari45",
+        "portfolio": "shoyebansari45"
+      }
     },
-    "resume_analysis": {
-        "ats_score": {
-            "ats_score": 60,
-            "format_compliance": 80,
-            "keyword_optimization": 70,
-            "readability": 85
-        },
-        "job_match_score": 11.28,
-        "skill_match_percent": 33.33,
-        "technical_skills": [],
-        "soft_skills": [],
-        "matched_skills": [
-            "Databases"
-        ],
-        "missing_skills": [
-            "Testing",
-            "Cloud Platforms"
-        ],
-        "nlp_analysis": {
-            "word_count": 407,
-            "entities": [],
-            "keywords": [],
-            "role_match_score": 75.0,
-            "role_matched": null
-        },
-        "llm_analysis": {
-            "overall_analysis": {
-                "overall_strengths": [
-                    {
-                        "description": "Strong understanding of databases and data structures",
-                        "weightage": 30
-                    },
-                    {
-                        "description": "Hands-on experience in full-stack web development",
-                        "weightage": 20
-                    },
-                    {
-                        "description": "Good problem-solving skills and competitive programming experience",
-                        "weightage": 15
-                    },
-                    {
-                        "description": "Basic knowledge of web technologies (HTML, CSS, JavaScript, React)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Relevant education and coursework in computer science",
-                        "weightage": 25
-                    }
-                ],
-                "areas_for_improvement": [
-                    {
-                        "description": "Lack of experience with testing and debugging",
-                        "weightage": 20
-                    },
-                    {
-                        "description": "No experience with cloud platforms (AWS/Azure)",
-                        "weightage": 15
-                    },
-                    {
-                        "description": "Limited experience with TypeScript and modern frontend frameworks (React/Vue/Angular)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "No mention of experience with Agile methodologies and version control (Git)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Lack of specific examples of collaboration and teamwork experience",
-                        "weightage": 15
-                    }
-                ],
-                "ats_optimization_suggestions": [
-                    {
-                        "description": "Highlight specific achievements and impact in previous projects",
-                        "weightage": 20
-                    },
-                    {
-                        "description": "Emphasize relevant skills and technologies (e.g., Node.js, Express.js, MongoDB)",
-                        "weightage": 15
-                    },
-                    {
-                        "description": "Include specific examples of problem-solving and debugging experience",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Clearly mention any experience with Agile methodologies and version control (Git)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Quantify achievements and impact in previous projects (e.g., 30% API latency reduction)",
-                        "weightage": 15
-                    }
-                ],
-                "job_fit_assessment": {
-                    "score": 70,
-                    "notes": "The candidate has a strong foundation in computer science, but lacks experience in testing, cloud platforms, and specific modern frontend frameworks. Additionally, they could improve their problem-solving skills and provide more specific examples of collaboration and teamwork experience."
-                },
-                "recommendation_score": 60,
-                "resume_summary": "The candidate has a strong understanding of databases, data structures, and full-stack web development. They have hands-on experience in Java, Python, and JavaScript and have developed multiple projects. However, they lack experience in testing, cloud platforms, and specific modern frontend frameworks, making them a 60% match for the Full Stack Web Developer role."
-            },
-            "section_wise_analysis": {
-
-            } {"education\": [{"good\": [\"Online Bsc(Hons) in DS and Al from Indian Institute of Technology, Guwahati with 9 CGPA, relevant coursework in Data Structures and Algorithms, Object-Oriented Programming, Database Management Systems, and Operating Systems\"],"bad\": [\"No work experience directly related to the role\"],"improvements\": [\"Consider adding relevant projects or certifications to demonstrate hands-on experience\"],"overall_review\": \"good\"}],"projects\": [{"good\": [\"AVL Tree Visualizer: JavaFX - showcases problem-solving skills, Solantix: Solana Indexing Platform - demonstrates full-stack development skills, LAN Messanger: Real-Time Peer-to-Peer Chat Application - shows modular design skills\"],"bad\": [\"Projects lack context and description of technical challenges and solutions\"],"improvements\": [\"Add more details on the technical aspects of each project, such as design decisions and challenges overcome\"],"overall_review\": \"good\"}],"experience\": [{"good\": [],"bad\": [\"No relevant work experience mentioned\"],"improvements\": [\"Add relevant work experience or internships to demonstrate practical skills\"],"overall_review\": \"needs_improvement\"}],"skills\": [{"good\": [\"Familiarity with Java, Python, React, and SQL, strong problem-solving skills\"],"bad\": [\"No direct experience with Node.js, Express, and MongoDB mentioned\"],"improvements\": [\"Highlight relevant skills and technologies from the job description, consider adding a skills section with specific examples\"],"overall_review\": \"good\"}],"extracurricular\": [{"good\": [\"President of the college Tech Club, Second Runner-Up in the Rajasthan Police Hackathon\"],"bad\": [\"No direct relevance to the role or industry\"],"improvements\": [\"Highlight skills or experiences that demonstrate teamwork, leadership, or innovation\"],"overall_review\": \"good\"}]"
-        }
+    "professional_summary": "Learning new things and applying them in real life is completely different things. Just eager to apply my skills in some handful projects and use them in real life to get better understanding of my skills and learn something new."
+  },
+  "projects": [
+    {
+      "title": "Jewelix",
+      "project_link": "https://github.com/in shoyebansari45",
+      "date": { "start": "", "end": "" },
+      "location": "",
+      "organization": "",
+      "bullet_points": [
+        "Developed a full-stack e-commerce analytics tool that tracks user purchases, order history, and product demand.",
+        "Used MongoDB queries to fetch and analyze user behavior.",
+        "Built the frontend using HTML, CSS, JavaScript, ensuring a responsive and user-friendly interface.",
+        "Developed the backend with Node.js and Express, enabling seamless product listing, user authentication, and order management."
+      ],
+      "technologies_used": [
+        "MongoDB",
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Node.js",
+        "Express"
+      ]
+    },
+    {
+      "title": "Space Invader Game",
+      "project_link": "https://github.com/in shoyebansari45",
+      "date": { "start": "", "end": "" },
+      "location": "",
+      "organization": "",
+      "bullet_points": [
+        "Built completely with JavaScript without using any external library.",
+        "Used canvas API of HTML to render the graphics."
+      ],
+      "technologies_used": ["JavaScript", "HTML"]
+    },
+    {
+      "title": "Solanti",
+      "project_link": "https://github.com/in shoyebansari45",
+      "date": { "start": "", "end": "" },
+      "location": "",
+      "organization": "",
+      "bullet_points": [
+        "Developed a full-stack NFT and token indexing platform on the Solana blockchain, integrating real-time webhook listeners and PostgreSQL support.",
+        "Enabled 1000+ blockchain events per hour to be processed and queried via a responsive Next.js dashboard.",
+        "Implemented modular backend architecture using Node.js and Express, optimizing API latency by 30% through caching and batch processing, while ensuring secure user-level data isolation with dynamic PostgreSQL connection pools."
+      ],
+      "technologies_used": [
+        "Node.js",
+        "Express",
+        "Next.js",
+        "PostgreSQL",
+        "Solana blockchain"
+      ]
     }
+  ],
+  "education": [
+    {
+      "institute_name": "Indian Institute of Technology, Guwahati",
+      "degree": "Bsc(Hons) in DS and Al",
+      "specialisation": "DS and Al",
+      "date": { "start": "Oct. 2023", "end": "2027" },
+      "location": "",
+      "gpa": "9 CGPA",
+      "relevant_coursework": []
+    },
+    {
+      "institute_name": "Physics Wallah Institute of Innovation, Bangalore",
+      "degree": "Certification in DS and Al",
+      "specialisation": "DS and Al",
+      "date": { "start": "Sept. 2023", "end": "2027" },
+      "location": "",
+      "gpa": "",
+      "relevant_coursework": []
+    },
+    {
+      "institute_name": "Jawahar Navodaya Vidyalaya, Dumra",
+      "degree": "HSC CBSE Board",
+      "specialisation": "",
+      "date": { "start": "Apr. 2021", "end": "2022" },
+      "location": "",
+      "gpa": "94%",
+      "relevant_coursework": []
+    },
+    {
+      "institute_name": "Jawahar Navodaya Vidyalaya, Dumra",
+      "degree": "SSC CBSE Board",
+      "specialisation": "",
+      "date": { "start": "Apr. 2019", "end": "2020" },
+      "location": "",
+      "gpa": "94%",
+      "relevant_coursework": []
+    }
+  ],
+  "skills": [
+    {
+      "skill_group": "Languages",
+      "skills": ["HTML", "CSS", "JavaScript", "Java", "Python", "SQL"]
+    },
+    {
+      "skill_group": "Software and tools",
+      "skills": [
+        "Visual Studio",
+        "Git-Version Control",
+        "Excel",
+        "Windows",
+        "Linux",
+        "Power-Bl"
+      ]
+    }
+  ],
+  "achievements": [
+    {
+      "title": "President of the college Tech Club",
+      "description": "Leading a thrival community of coders and developers to foster innovation and technical skill development.",
+      "date_achieved": null,
+      "organization": null
+    },
+    {
+      "title": "Second Runner-Up in the Rajasthan Police Hackathon",
+      "description": "A prestigious national-level competition. Our team was victorious out of 1665 teams.",
+      "date_achieved": null,
+      "organization": null
+    },
+    {
+      "title": "Solved 950+ problems across LeetCode and Codeforces",
+      "description": "Achieving a peak rating of 1758 on LeetCode and Pupil rank (1255) on Codeforces, showcasing strong algorithmic-thinking skills.",
+      "date_achieved": null,
+      "organization": null
+    }
+  ],
+  "languages": [{ "language": "", "proficiency": "Native" }],
+  "certifications": [],
+  "work_experiences": [],
+  "publications": [],
+  "extracurriculars": [
+    {
+      "organization_name": "",
+      "date": { "start": "", "end": "" },
+      "role": "President",
+      "title": "President of the college Tech Club",
+      "certificate": "",
+      "location": "",
+      "bullet_points": [
+        "Leading a thrival community of coders and developers to foster innovation and technical skill development."
+      ]
+    }
+  ],
+  "keywords": []
 }
-=======
-  "evaluation": {
-    "Overall Strengths": [
-      {
-        "category": "Technical Skills",
-        "strengths": [
-          "Hands-on experience in full-stack web development",
-          "Strong understanding of JavaScript and modern frameworks like React",
-          "Experience with backend frameworks like Express",
-          "Strong knowledge of databases and writing efficient queries",
-          "Familiarity with version control (Git)"
-        ],
-        "weightage": 80
-      },
-      {
-        "category": "Achievements",
-        "strengths": [
-          "Second Runner-Up in the Rajasthan Police Hackathon",
-          "Solved 950+ problems across LeetCode and Codeforces",
-          "President of the college Tech Club"
-        ],
-        "weightage": 15
-      },
-      {
-        "category": "Education",
-        "strengths": [
-          "Online Bsc(Hons) in DS and Al from Indian Institute of Technology, Guwahati",
-          "Relevant Coursework: Data Structures and Algorithms, Object-Oriented Programming, Database Management Systems (SQL, RDBMS), Operating Systems"
-        ],
-        "weightage": 5
-      }
-    ],
-    "Areas for Improvement": [
-      {
-        "category": "Missing Skills",
-        "improvement": "AWS, Docker, TypeScript, Agile methodologies, TypeScript"
-      },
-      {
-        "category": "Lack of Industry Experience",
-        "improvement": "1-3 years of hands-on experience in full-stack web development"
-      }
-    ],
-    "ATS Optimization Suggestions": [
-      {
-        "category": "Keywords",
-        "suggestion": "Highlight keywords like 'full-stack web development', 'React', 'Express', 'JavaScript', 'Node.js' in the resume"
-      },
-      {
-        "category": "Format",
-        "suggestion": "Use a clean and concise format, with clear headings and bullet points to make it easy to scan"
-      }
-    ],
-    "Job Fit Assessment": 85,
-    "Recommendation Score": 75
-  }
-}
->>>>>>> 357710e (Clean commit: removed Groq key and history)

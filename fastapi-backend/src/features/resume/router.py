@@ -269,3 +269,23 @@ async def get_extracurricular_description_suggestion(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate AI suggestion for extracurricular experience, error message: {str(e)}"
         )
+        
+# API Endpoint to get resume score bases on provided resume detail in json format
+@router.post(
+    "/ats-score",
+    description="Get ATS score of resume by sending the json object of the resume"
+)
+def get_ats_score_of_resume(
+    user: dict = Depends(get_current_user),
+    resume_json: str = Form(...)
+):
+    try:
+        logger.info(f"ATS score endpoint called with, resume object as:  {resume_json}")
+        
+        return resume_analyzer.get_ats_score(resume_json)        
+    except Exception as e:
+        logger.error(f"Failed to provide ats score, error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to provide ats score, error: {str(e)}"
+        )

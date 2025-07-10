@@ -194,7 +194,9 @@ class ResumeAnalyzer:
             
             logger.info("Sent all project details to llm for generating description")
             # convert bullet points into python list
+            print(bullet_points)
             bullet_points = self.__convert_json_to_python_object(bullet_points)
+            print(bullet_points)
             
             response = self.ai_analyzer.generate_project_section_description(project_name, tech_stack, bullet_points)
             return {

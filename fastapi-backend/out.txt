@@ -1,81 +1,51 @@
-Shoyeb Ansari
+ARYAN CHAUHAN
 
-&, +91 9327156940 & shoyebff45@gmail.com 9 Bangalore, Karnataka @ shoyeb.vercel.app in shoyebansari45
-© Shoyeb45 — </> Codeforces: Shoyeb45 </> Leetcode : Shoyeb45
+Bengaluru, Karnataka
 
-Passionate Computer Science student with hands-on experience in full-stack web development and strong aigorithmic problem-solving
-skills. Skilled in C++, Java, Python, React, and SQL. Leetcode (1758), Codeforces (Pupil), and CodeChef (2 star) rated competitive pro-
-grammer.
+& +91 7800700083 s arynch24@gmail.com a aryneh 9 arynch24 ® aryanchauhan.com
+EDUCATION
+Indian Institute of Technology Guwahati 10 2023 - Current
 
-Projects
+B.Se.(Honors) in Data Science and Artificial Technology - Guwahati, Assam
 
-AVL Tree Visualizer: JavaFX
+Physies Wallah Institute of Innovation 10 2023 - Current
 
-+ Developed an interactive AVL tree visualization tool in JavaFX, showcasing insertion, deletion, searching, and various tree traver-
-sals with animations. Implemented self-balancing rotations (LL, LR, RR, RL)
+Certification in Computer Science and Artificial Intelligence - Bengaluru, Karnataka
 
-« Tech Stack: Java 17, JavaFX 22, OOP, Data Structures & Algorithms.
-Github Repo Link
+CBSE Board 04 2021 - 0g 2022
 
-Solantix: Solana Indexing Platform
+Senior Secondary Examination - Ghazipur, Uuar Pradesh
 
-+ Developed a full-stack NFT and token indexing platform on the Solana blockchain, integrating real-time webhook listeners and
-PostgreSQL support, enabling 1000+ blockchain events per hour to be processed and queried via a responsive Next.js dashboard.
+CBSE Board 04 2019 - 04 2020
 
-+ Implemented modular backend architecture using Node.js and Express, optimizing API latency by 30% through caching and
-batch processing, while ensuring secure user-level data isolation with dynamic PostgreSQL connection pools.
+Higher Secondary Examination - Ghasipur, Uttar Pradesh
 
-Github Repo Link| Live Website
+PROJECTS
+Cuttly | Next.is, TypeScript, Tailwind CSS, Postgres, Prisma ORM, Nextauth Dec 2024
 
-LAN Messanger: Real-Time Peer-to-Peer Chat Application
-+ Developed a modular LAN messaging app in Java using Swing and JSON-based local storage, featuring SPA-like navigation, OOP
-structure, and real-time messaging over local networks.
-+ Tech Stack: Java 17+, Java Swing, Socket Programming (TCP/UDP), Multithreading, Gson Library, Maven
-Github Repo Link
+* Developed a custom link shortener using Cuttly API to generate and manage short URLs. Integrated analytics to
+track click performance and improve link sharing efficiency.
 
-Education
+* https: //cuttely.vercel.app/
+UploadThing | N js, Tailwind CSS, Github oAuth, MongoDB, ShadCN, Cloudinary API Mar 2025
 
-Indian Institute of Technology, Guwahati Oct. 2023 to 2027
-* Online Bsc(Hons) in DS and Al - 9 CGPA
-+ Relevant Coursework: Data Structures and Algorithms, Object-Oriented Programming, Database Man-
-agement Systems (SQL, RDBMS), Operating Systems
+* Built a file-uploading platform, enabling users to upload media to cloud storage Cloudinary and generate
+sharable links. Implemented GitHub authentication, a user dashboard, and a backend API, deploying the project
+on Railway for scalability.
 
-Technologies and Skills
+-thine-alpha.v
+EXPERIENCE
 
-Languages: C++, Java, Python, JavaScript, HTML, CSS, TypeScript
+Physics Wallah Jun 2025 - Nov 2025
+Frontend Developer Intern Bengaluru, Karnataka
 
-Web Technologies: React.js (with Recoil), Node.js, Express.js
+Developed and maintained web applications using React and Node.js
+Collaborated with cross-functional teams to deliver high-quality software solutions
+Participated in code reviews and followed agile development practices
 
-Databases: MySQL, PostgreSQL, MongoDB, SQL
+TECHNICAL SKILLS
 
-Core CS Concepts: Object-Oriented Programming (OOP), Data Structures and Algorithms, Complexity Analysis
-Tools and Platforms: Git, GitHub, VS Code, Postman, Railway, Linux, Excel
+Languages: Python, JavaScript, Java, C++, SQL
+Developer Tools: VS Code, Git, Docker, AWS, Postman
 
-Achievements
-
-+ President of the college Tech Club, leading a thrival community of coders and developers to foster innovation and technical skill de-
-velopment.
-
-« Second Runner-Up in the Rajasthan Police Hackathon, a prestigious national-level competition. Our team was victorious out of 1665
-teams
-
-+ Solved 950+ problems across LeetCode and Codeforces, achieving a peak rating of 1758 on LeetCode and Pupil rank (1255) on Code-
-forces, showcasing strong algorithmic-thinking skills.
-
-Langauges
-
-- English
-- Hindi
-- Gujarati
-
-Publications
-
-- English
-- Hindi
-- Gujarati
-
-Extracurricular
-
-- English
-- Hindi
-- Gujarati
+Technologies/Frameworks: React, Node.js, Express, MongoDB, PostgreSQL

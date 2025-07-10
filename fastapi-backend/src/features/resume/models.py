@@ -304,7 +304,7 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
             is_primary=is_primary,
             personal_info=personal_info,
             projects=project_models,
-            education=education_models,
+            educations=education_models,
             skills=skill_models,
             achievements=achievement_models,
             languages=language_models,

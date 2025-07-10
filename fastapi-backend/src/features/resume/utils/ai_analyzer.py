@@ -304,10 +304,10 @@ class AIAnalyzer:
         self,
         project_name: str,
         tech_stack: str,
-        description: Optional[str] = None
+        bullet_points: Optional[List[str]] = None
     ):
         try:
-            prompt = self._create_project_section_prompt(project_name, tech_stack, description)
+            prompt = self._create_project_section_prompt(project_name, tech_stack, bullet_points)
             response = self.chat_with_groq(prompt)
             return response
         except Exception as e:
@@ -688,22 +688,24 @@ Return ONLY the final description sentence and nothing else.
         self,
         project_name: str,
         tech_stack: str,
-        description: Optional[str] = None
+        bullet_points: Optional[List[str]] = None
     ):
-        if not description:
-            description = "Description not provided. You must create it from scratch."
+        
+        if not bullet_points:
+            description = f"No bullet points provided. You must create it {len(bullet_points)} from scratch."
 
+        description = f"Create {len(bullet_points)} based on provided bullet points"
         return f"""
-You are a resume writing assistant. Your task is to generate a strong, professional description for a project in the project section.
+You are a resume writing assistant. Your task is to generate a strong, professional bullet points for a project in the project section. {description}
 Project Name: {project_name}  
 Technologies Used: {tech_stack}  
-Current Description: {description}
+Bullet Points: {str(bullet_points)}
 INSTRUCTIONS:
 - Return only the final improved description text.
 - Do not include any extra phrases like "Here is the description:" or quotation marks.
 - Write in third person and keep it resume-appropriate.
 - Do not include any markdown, labels, or prefixes.
-Return ONLY the final description sentence and nothing else.
+Return ONLY the final description as a list of bullet points and nothing else.
 """.strip()
 
     def _create_career_suggestion_prompt(self, skill_scores: List, overall_score: float) -> str:

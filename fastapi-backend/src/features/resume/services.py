@@ -173,15 +173,30 @@ class ResumeAnalyzer:
             }
     
     
+    def __convert_json_to_python_object(self, json_string):
+        try:
+            python_object = json.loads(json_string)
+            return python_object
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON string provided, error: {str(e)}")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to convert json string into python object, error: {str(e)}")
+            return None
+        
     def get_project_enhanced_description(
         self,
         project_name: str,
         tech_stack: str,
-        description: Optional[str] = None
+        bullet_points: Optional[str] = None
     ):
         try:
+            
             logger.info("Sent all project details to llm for generating description")
-            response = self.ai_analyzer.generate_project_section_description(project_name, tech_stack, description)
+            # convert bullet points into python list
+            bullet_points = self.__convert_json_to_python_object(bullet_points)
+            
+            response = self.ai_analyzer.generate_project_section_description(project_name, tech_stack, bullet_points)
             return {
                 "success": True,
                 "message": "Succesfully generated description for project section",
@@ -191,7 +206,7 @@ class ResumeAnalyzer:
             logger.error(f"Error while generating project description, error message: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detils=f"Error while generating project description, error message: {str(e)}"
+                detail=f"Error while generating project description, error message: {str(e)}"
             )
 
         

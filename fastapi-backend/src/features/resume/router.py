@@ -213,14 +213,13 @@ async def delete_resume(
 def get_project_description_suggestion(
     project_name: str = Form(...),
     tech_stack: str = Form(...),
-    description: Optional[str] = Form(None),
+    bullet_points: Optional[str] = Form(None),
     user: dict = Depends(get_current_user)
 ):
     try:
-        logger.info(project_name)
         user_id = user["user_id"]
         logger.info(f"Project endpoint called to get AI generated description point, called by user - {user_id}")
-        return resume_analyzer.get_project_enhanced_description(project_name, tech_stack, description)
+        return resume_analyzer.get_project_enhanced_description(project_name, tech_stack, bullet_points)
     except Exception as e:
         logger.error(f"Failed to generate AI Suggestion for project section, error message: {str(e)}")
         raise HTTPException(

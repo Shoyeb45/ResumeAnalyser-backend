@@ -108,7 +108,7 @@ class Resume(Document):
     # Resume sections
     personal_info: Optional[PersonalInfo] = None
     projects: List[ProjectDetails] = Field(default_factory=list)
-    education: List[Education] = Field(default_factory=list)
+    educations: List[Education] = Field(default_factory=list)
     skills: List[SkillGroup] = Field(default_factory=list)
     achievements: List[Achievement] = Field(default_factory=list)
     languages: List[Language] = Field(default_factory=list)  # Fixed typo: was 'langauges'

@@ -76,7 +76,7 @@ class ResumeAnalyzer:
             
             # Step 2: Extract personal information
             logger.info("Step 2: Extracting resume information")
-            resume_details = self.resume_details_extractor.get_resume_details(text=resume_text)
+            resume_details = self.ai_analyzer.get_resume_details(text=resume_text)
             # personal_info = self.personal_info_extractor.extract_personal_info(resume_text)
             
             # Step 3: Perform NLP analysis
@@ -382,10 +382,26 @@ class ResumeAnalyzer:
             )
 
 
-    def analyse_assessment_score(self, skills: List):
+    def analyse_assessment_score(self, skills: str):
         try:
-            logger.info("Finding socres based on the input")
-            overall_score, skill_scores = self.calculate_scores(skills=skills)
+            logger.info("Converting given skills json string into python object")
+            
+            try:
+                skill_list = json.loads(skills)
+            except json.JSONDecoder as e:
+                logger.error(f"Invalid json format of given string, error: {str(e)}")
+                raise HTTPException(
+                    detail=f"Invalid JSON format of given string, error: {str(e)}",
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE
+                )
+            except Exception as e:
+                logger.error(f"Failed to convert skills json string into python object, error: {str(e)}")
+                raise HTTPException(
+                    detail=f"Failed to convert skills json string into python object, error: {str(e)}",
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE
+                )
+                
+            overall_score, skill_scores = self.calculate_scores(skills=skill_list)
             
             suggestions = self.ai_analyzer.get_career_suggestions_based_on_score(skill_scores=skill_scores, overall_score=overall_score)
             return {
@@ -455,11 +471,10 @@ class ResumeAnalyzer:
             )
                     
             logger.info("Step 2: Extracting resume information")
-            resume_details: Dict[str, Any] = self.resume_details_extractor.get_resume_details(text) 
+            resume_details: Dict[str, Any] = self.ai_analyzer.get_resume_details(text) 
             
             if resume_details:
                 resume_details = resume_details["resume_details"]
-            
             
             logger.info("Step 3: Calculating ats score")
             ats_score = self.ai_analyzer.compute_resume_score(text=text, target_role="No specific target role", job_description="No specific job description")

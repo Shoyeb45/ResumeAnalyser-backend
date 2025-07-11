@@ -1,81 +1,84 @@
-Shoyeb Ansari
+ARYAN CHAUHAN
 
-&, +91 9327156940 & shoyebff45@gmail.com 9 Bangalore, Karnataka @ shoyeb.vercel.app in shoyebansari45
-© Shoyeb45 — </> Codeforces: Shoyeb45 </> Leetcode : Shoyeb45
+Bengaluru, Karnataka
 
-Passionate Computer Science student with hands-on experience in full-stack web development and strong aigorithmic problem-solving
-skills. Skilled in C++, Java, Python, React, and SQL. Leetcode (1758), Codeforces (Pupil), and CodeChef (2 star) rated competitive pro-
-grammer.
+& +91 7800700083 S arynch24@gmail.com Marynch O arynch2q4 @ aryanchauhan.com
 
-Projects
+EDUCATION
 
-AVL Tree Visualizer: JavaFX
+Indian Institute of Technology Guwahati
+B.Sc.(Honors) in Data Science and Artificial Technology -
+Physics Wallah Institute of Innovation
 
-+ Developed an interactive AVL tree visualization tool in JavaFX, showcasing insertion, deletion, searching, and various tree traver-
-sals with animations. Implemented self-balancing rotations (LL, LR, RR, RL)
+Certification in Computer Science and Artificial Intelligence -
+CBSE Board
 
-« Tech Stack: Java 17, JavaFX 22, OOP, Data Structures & Algorithms.
-Github Repo Link
+Senior Secondary Examination -
 
-Solantix: Solana Indexing Platform
+CBSE Board
 
-+ Developed a full-stack NFT and token indexing platform on the Solana blockchain, integrating real-time webhook listeners and
-PostgreSQL support, enabling 1000+ blockchain events per hour to be processed and queried via a responsive Next.js dashboard.
+Higher Secondary Examination -
 
-+ Implemented modular backend architecture using Node.js and Express, optimizing API latency by 30% through caching and
-batch processing, while ensuring secure user-level data isolation with dynamic PostgreSQL connection pools.
+PROJECTS
 
-Github Repo Link| Live Website
+10 2023 - Current
+Guwahati, Assam
 
-LAN Messanger: Real-Time Peer-to-Peer Chat Application
-+ Developed a modular LAN messaging app in Java using Swing and JSON-based local storage, featuring SPA-like navigation, OOP
-structure, and real-time messaging over local networks.
-+ Tech Stack: Java 17+, Java Swing, Socket Programming (TCP/UDP), Multithreading, Gson Library, Maven
-Github Repo Link
+10 2023 - Current
+Bengaluru, Karnataka
 
-Education
+04 2021 - 04 2022
+Ghazipur, Uttar Pradesh
 
-Indian Institute of Technology, Guwahati Oct. 2023 to 2027
-* Online Bsc(Hons) in DS and Al - 9 CGPA
-+ Relevant Coursework: Data Structures and Algorithms, Object-Oriented Programming, Database Man-
-agement Systems (SQL, RDBMS), Operating Systems
+04 201g - 04 2020
+Ghazipur, Uttar Pradesh
 
-Technologies and Skills
+Cuttly | Next.js, TypeScript, Tailwind CSS, Postgres, Prisma ORM, NextAuth
 
-Languages: C++, Java, Python, JavaScript, HTML, CSS, TypeScript
+Dec 2024
 
-Web Technologies: React.js (with Recoil), Node.js, Express.js
+* Developed a custom link shortener using Cuttly API to generate and manage short URLs. Integrated analytics to
 
-Databases: MySQL, PostgreSQL, MongoDB, SQL
+track click performance and improve link sharing efficiency.
+¢ https://cuttely.vercel.app/
 
-Core CS Concepts: Object-Oriented Programming (OOP), Data Structures and Algorithms, Complexity Analysis
-Tools and Platforms: Git, GitHub, VS Code, Postman, Railway, Linux, Excel
+UploadThing | Next.js, Tailwind CSS, Github oAuth, MongoDB, ShadCN, Cloudinary API Mar 2025
 
-Achievements
+Built a file-uploading platform, enabling users to upload media to cloud storage Cloudinary and generate
+sharable links. Implemented GitHub authentication, a user dashboard, and a backend API, deploying the project
 
-+ President of the college Tech Club, leading a thrival community of coders and developers to foster innovation and technical skill de-
-velopment.
+on Raihvay for sealability.
+ https://upload-thing-alpha.vereel.app/
 
-« Second Runner-Up in the Rajasthan Police Hackathon, a prestigious national-level competition. Our team was victorious out of 1665
-teams
+EXPERIENCE
+Physics Wallah Jun 2025 - Nov 2025
+Frontend Developer Intern Bengaluru, Karnataka
 
-+ Solved 950+ problems across LeetCode and Codeforces, achieving a peak rating of 1758 on LeetCode and Pupil rank (1255) on Code-
-forces, showcasing strong algorithmic-thinking skills.
++ Developed and maintained web applications using React and Node.js
++ Collaborated with cross-functional teams to deliver high-quality software solutions
++ Participated in code reviews and followed agile development practices
 
-Langauges
+TECHNICAL SKILLS
 
-- English
-- Hindi
-- Gujarati
+Languages: Python, JavaScript, Java, C++, SQL
+Developer Tools: VS Code, Git, Docker, AWS, Postman
+Technologies/Frameworks: React, Node.js, Express, MongoDB, PostgreSQL
 
-Publications
+EXTRACURRICULAR
 
-- English
-- Hindi
-- Gujarati
+Computer Science Club
+President
 
-Extracurricular
+Sep 2022 - May 2024
 
-- English
-- Hindi
-- Gujarati
+University Campus
+
+« Leda team of 50+ members in organizing technical workshops and coding competitions
+
+« Coordinated with industry professionals for guest lectures and mentorship programs
+* Participation Certificate.
+
+CERTIFICATIONS
+
++ AWS Cloud Practitioner « React Developer Certification + Google Analytics Certified
++ MongoDB Developer « Scrum Master Certified + Docker Fundamentals

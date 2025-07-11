@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix = "/resume", tags = ["resume"])
 
+# API endpoint to analyse and extract the resume details 
 @router.post(
     "/analyse", 
     description = "API endpoint which will analyse the resume and extract necessary details and keep it in database and give scores"
@@ -96,7 +97,6 @@ async def resume_extraction(
         raise HTTPException(status_code = 500, detail = f"Failed to analyse resume, error : {str(e)}")
     
 
-
 # API Endpoint to get questions related to skills
 @router.post(
     "/skill-assessment", 
@@ -128,24 +128,9 @@ def get_assessment_score(
 ):
     try:
         '''It will calculate skill assessment score and it will also suggest some job roles depending upon the score
-        '''
-        
-        logger.info("Skill-assessment-score API called")
-        skills_list: List = json.loads(skills)
-
-        if skills_list is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Some error occurred while converting the skills json string into python object"
-            )
-            
-        return resume_analyzer.analyse_assessment_score(skills_list)
-    except json.JSONDecodeError as e:
-        logger.error(f"Invalid JSON string provided, error: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Invalid JSON string provided, error: {str(e)}"
-        )
+        ''' 
+        logger.info("Skill-assessment-score API called") 
+        return resume_analyzer.analyse_assessment_score(skills)
     except Exception as e:
         logger.error(f"Failed to analyse MCQ question based on provided skill wise scores, error: {str(e)}")
         raise HTTPException(

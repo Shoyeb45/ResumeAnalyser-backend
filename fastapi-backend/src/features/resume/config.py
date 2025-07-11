@@ -7,6 +7,11 @@ class ResumeAnalyzerConfig:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
     MODEL = "llama3-8b-8192"
     
+    # OpenAI API configurations
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    OPENAI_MODEL = "gpt-4.1"
+    OPENAI_ENDPOINT = os.getenv("OPENAI_ENDPOINT")
+    
     # OCR Configuration
     TESSERACT_PATH = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
     

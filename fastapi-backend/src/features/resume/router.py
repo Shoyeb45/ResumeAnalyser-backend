@@ -288,3 +288,27 @@ def get_ats_score_of_resume(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to provide ats score, error: {str(e)}"
         )
+
+
+# API Endpoint to get the resume by resume id
+@router.get(
+    "/resume/{resume_id}",
+    description="Give resume id and get the resume"
+)
+async def get_resume_by_id(
+    resume_id: str,
+    user: dict = Depends(get_current_user)
+):
+    try:
+        logger.info("Resume get function called for getting the resume")
+        response = await resume_repository.get_resume_by_id(resume_id)
+        return {
+            "success": True,
+            "resume": response
+        }
+    except Exception as e:
+        logger.error(f"Failed to get the resume, error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get the resume, error: {str(e)}"
+        )

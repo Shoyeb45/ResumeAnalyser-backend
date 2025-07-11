@@ -717,10 +717,11 @@ You are an expert career mentor. You have scores of the candidate based on the s
 Skill Scores: {str(skill_scores)}
 Overll Score: {overall_score}
 
-Based on the above I need two things:
+## Based on the above I need three things:
 
-1. Role Name (like Frontend Engineer or Backend Engineer)
-2. Match Percent (based on the scores, give match percent that how much user is match with the given role)
+1. suggestions : Role Name (like Frontend Engineer or Backend Engineer) and Match Percent (based on the scores, give match percent that how much user is match with the given role)
+2. strengths : The strength of the candidate, skill in which he is strong and why the candidate is strong.  
+3. Improvement Areas: The skill at which he needs improvement and what improvement he should do
 
 I want ouput format like this:
 {{
@@ -739,7 +740,40 @@ I want ouput format like this:
             "role_name": "Name of the skill.",
             "match_percent": "Match percent with the provided role." 
         }}
+    ],
+    "strengths": [
+        {{
+            "skill" : "Name of the skill, where the candidate is good",
+            "strenght_point" : "Reason why candidate is strong"
+        }},
+        {{
+            "skill" : "Name of the skill, where the candidate is good",
+            "strenght_point" : "Reason why candidate is strong"
+        }},
+        ...
+        ...,
+        {{
+            "skill" : "Name of the skill, where the candidate is good",
+            "strenght_point" : "Reason why candidate is strong"
+        }}
+    ],
+    "improvement_areas": [
+        {{
+            "skill" : "Name of the skill, where the candidate needs improvement",
+            "improvement_point": "What improvement does the candidate needs in this skill" 
+        }},
+        {{
+            "skill" : "Name of the skill, where the candidate needs improvement",
+            "improvement_point": "What improvement does the candidate needs in this skill" 
+        }},
+        ...
+        ...,
+        {{
+            "skill" : "Name of the skill, where the candidate needs improvement",
+            "improvement_point": "What improvement does the candidate needs in this skill" 
+        }}
     ]
+    
     
     NOTE: Only return JSON object and nothing else.
 }}

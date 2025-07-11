@@ -133,6 +133,11 @@ class Resume(Document):
         ]
 
 
+# class ResumeAnalysis(Document):
+#     # 
+#     resume_id: PydanticObjectId,
+    
+
 def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_details: Dict[str, Any]) -> Optional[Resume]:
     """
     Create a Resume model from provided metadata and details.

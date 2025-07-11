@@ -93,9 +93,9 @@ class ResumeRepository:
     # ============= READ OPERATIONS =============
     
     @staticmethod
-    async def get_resume_by_id(resume_id: PydanticObjectId) -> Optional[Resume]:
+    async def get_resume_by_id(resume_id: str) -> Optional[Resume]:
         """Get resume by ID with optimized query"""
-        return await Resume.get(resume_id)
+        return await Resume.get(PydanticObjectId(resume_id))
     
     @staticmethod
     async def get_user_resumes(

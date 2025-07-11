@@ -1,165 +1,178 @@
 {
-  "resume_name": "resume-webDev",
-  "is_primary": true,
-  "personal_info": {
-    "name": "Shoyeb Ansari",
-    "contact_info": {
-      "email": "shoyebff45@gmail.com",
-      "mobile": "+91 9327156940",
-      "location": "Bangalore, Karnataka",
-      "social_links": {
-        "linkedin": "shoyeb.vercel.app",
-        "github": "in shoyebansari45",
-        "portfolio": "shoyebansari45"
-      }
-    },
-    "professional_summary": "Learning new things and applying them in real life is completely different things. Just eager to apply my skills in some handful projects and use them in real life to get better understanding of my skills and learn something new."
+  "ats_score": {
+    "ats_score": 80,
+    "format_compliance": 85,
+    "keyword_optimization": 70,
+    "readability": 75
   },
-  "projects": [
+  "job_match_score": 11.28,
+  "skill_match_percent": 33.33,
+  "technical_skills": [
     {
-      "title": "Jewelix",
-      "project_link": "https://github.com/in shoyebansari45",
-      "date": { "start": "", "end": "" },
-      "location": "",
-      "organization": "",
-      "bullet_points": [
-        "Developed a full-stack e-commerce analytics tool that tracks user purchases, order history, and product demand.",
-        "Used MongoDB queries to fetch and analyze user behavior.",
-        "Built the frontend using HTML, CSS, JavaScript, ensuring a responsive and user-friendly interface.",
-        "Developed the backend with Node.js and Express, enabling seamless product listing, user authentication, and order management."
+      "skill_group": "Programming Languages",
+      "skills": ["python", "java", "javascript", "typescript", "c++", "go", "r"]
+    },
+    {
+      "skill_group": "Web Technologies",
+      "skills": ["html", "css", "react", "node.js", "express.js"]
+    },
+    {
+      "skill_group": "Databases",
+      "skills": ["mysql", "postgresql", "mongodb"]
+    },
+    {
+      "skill_group": "Development Tools",
+      "skills": ["git", "github", "postman"]
+    }
+  ],
+  "soft_skills": [
+    {
+      "skill_group": "Problem Solving",
+      "skills": ["innovation"]
+    }
+  ],
+  "matched_skills": ["Databases"],
+  "missing_skills": ["Testing", "Cloud Platforms"],
+  "nlp_analysis": {
+    "word_count": 605,
+    "entities": [
+      ["Shoyeb Ansari\n\n&", "ORG"],
+      ["Bangalore", "PERSON"],
+      ["Karnataka @ shoyeb.vercel.app", "PERSON"],
+      ["shoyebansari45", "CARDINAL"],
+      ["C++", "GPE"],
+      ["Java", "PERSON"],
+      ["React", "GPE"],
+      ["SQL", "ORG"],
+      ["1758", "DATE"],
+      ["CodeChef", "PRODUCT"]
+    ],
+    "keywords": [
+      "api latency",
+      "al - 9",
+      "dynamic postgresql connection pools",
+      "hour",
+      "various tree traver-\nsals",
+      "leetcode",
+      "react",
+      "shoyebff45@gmail.com",
+      "(tcp/udp",
+      "oop\nstructure",
+      "strong aigorithmic problem-solving\nskills",
+      "codechef",
+      "extracurricular\n\n- english",
+      "2 star",
+      "- hindi"
+    ],
+    "role_match_score": 92.46,
+    "role_matched": "Full stack web developer"
+  },
+  "llm_analysis": {
+    "overall_analysis": {
+      "overall_strengths": [
+        {
+          "description": "Strong understanding of CS fundamentals and data structures",
+          "weightage": 20
+        },
+        {
+          "description": "Experience with multiple programming languages and web technologies",
+          "weightage": 20
+        },
+        {
+          "description": "Good problem-solving skills and competitive programming background",
+          "weightage": 15
+        },
+        {
+          "description": "Ability to work on full-stack projects and collaborate with others",
+          "weightage": 15
+        },
+        {
+          "description": "Knowledge of databases and SQL",
+          "weightage": 10
+        }
       ],
-      "technologies_used": [
-        "MongoDB",
-        "HTML",
-        "CSS",
-        "JavaScript",
-        "Node.js",
-        "Express"
-      ]
-    },
-    {
-      "title": "Space Invader Game",
-      "project_link": "https://github.com/in shoyebansari45",
-      "date": { "start": "", "end": "" },
-      "location": "",
-      "organization": "",
-      "bullet_points": [
-        "Built completely with JavaScript without using any external library.",
-        "Used canvas API of HTML to render the graphics."
+      "areas_for_improvement": [
+        {
+          "description": "No direct experience with testing frameworks or methodologies",
+          "weightage": 10
+        },
+        {
+          "description": "Limited exposure to cloud platforms and containerization tools",
+          "weightage": 10
+        }
       ],
-      "technologies_used": ["JavaScript", "HTML"]
-    },
-    {
-      "title": "Solanti",
-      "project_link": "https://github.com/in shoyebansari45",
-      "date": { "start": "", "end": "" },
-      "location": "",
-      "organization": "",
-      "bullet_points": [
-        "Developed a full-stack NFT and token indexing platform on the Solana blockchain, integrating real-time webhook listeners and PostgreSQL support.",
-        "Enabled 1000+ blockchain events per hour to be processed and queried via a responsive Next.js dashboard.",
-        "Implemented modular backend architecture using Node.js and Express, optimizing API latency by 30% through caching and batch processing, while ensuring secure user-level data isolation with dynamic PostgreSQL connection pools."
+      "ats_optimization_suggestions": [
+        {
+          "description": "Highlight specific projects and achievements in the resume summary",
+          "weightage": 5
+        },
+        {
+          "description": "Quantify skills and experience in the resume",
+          "weightage": 5
+        }
       ],
-      "technologies_used": [
-        "Node.js",
-        "Express",
-        "Next.js",
-        "PostgreSQL",
-        "Solana blockchain"
-      ]
+      "job_fit_assessment": {
+        "score": 70,
+        "notes": "Shoyeb has a strong foundation in CS and programming, and has demonstrated experience with full-stack development. However, the lack of direct experience with testing and cloud platforms may impact job fit."
+      },
+      "recommendation_score": 60,
+      "resume_summary": "Shoyeb is a passionate computer science student with hands-on experience in full-stack web development, strong problem-solving skills, and a competitive programming background. He has worked on several projects, including AVL Tree Visualizer, Solantix, and LAN Messanger, and has experience with multiple programming languages, web technologies, and databases."
+    },
+    "section_wise_analysis": {
+      "education": {
+        "description": "The candidate has a strong educational background with a Bachelor's degree in Computer Science from Indian Institute of Technology, Guwahati.",
+        "good": [
+          "Relevant coursework in Data Structures and Algorithms, Object-Oriented Programming, Database Management Systems, and Operating Systems"
+        ],
+        "bad": [],
+        "improvements": [],
+        "overall_review": "Excellent"
+      },
+      "projects": {
+        "description": "The candidate has showcased a variety of projects, including AVL Tree Visualizer, Solantix, and LAN Messanger, demonstrating hands-on experience in full-stack web development.",
+        "good": [
+          "Hands-on experience in full-stack web development",
+          "Use of relevant technologies such as Java, React, and Node.js",
+          "Implementation of modular backend architecture and caching"
+        ],
+        "bad": [
+          "Some projects lack clear descriptions of technologies used and contributions made"
+        ],
+        "improvements": [
+          "Provide more detailed descriptions of technologies used and contributions made in each project"
+        ],
+        "overall_review": "Good"
+      },
+      "experience": {
+        "description": "The candidate has no direct experience in full-stack web development, but has showcased projects that demonstrate relevant skills.",
+        "good": [
+          "Relevant projects that demonstrate skills in full-stack web development"
+        ],
+        "bad": ["Lack of direct experience in full-stack web development"],
+        "improvements": [
+          "Gain more direct experience in full-stack web development"
+        ],
+        "overall_review": "Needs Improvement"
+      },
+      "skills": {
+        "description": "The candidate has listed a variety of skills, including programming languages, web technologies, and databases.",
+        "good": [
+          "Relevant skills in programming languages, web technologies, and databases"
+        ],
+        "bad": ["Some skills may not be directly relevant to the role"],
+        "improvements": ["Highlight the most relevant skills for the role"],
+        "overall_review": "Good"
+      },
+      "extracurricular": {
+        "description": "The candidate has listed some extracurricular activities, including being the President of the college Tech Club and participating in hackathons.",
+        "good": [
+          "Leadership experience as President of the college Tech Club",
+          "Participation in hackathons"
+        ],
+        "bad": [],
+        "improvements": [],
+        "overall_review": "Excellent"
+      }
     }
-  ],
-  "education": [
-    {
-      "institute_name": "Indian Institute of Technology, Guwahati",
-      "degree": "Bsc(Hons) in DS and Al",
-      "specialisation": "DS and Al",
-      "date": { "start": "Oct. 2023", "end": "2027" },
-      "location": "",
-      "gpa": "9 CGPA",
-      "relevant_coursework": []
-    },
-    {
-      "institute_name": "Physics Wallah Institute of Innovation, Bangalore",
-      "degree": "Certification in DS and Al",
-      "specialisation": "DS and Al",
-      "date": { "start": "Sept. 2023", "end": "2027" },
-      "location": "",
-      "gpa": "",
-      "relevant_coursework": []
-    },
-    {
-      "institute_name": "Jawahar Navodaya Vidyalaya, Dumra",
-      "degree": "HSC CBSE Board",
-      "specialisation": "",
-      "date": { "start": "Apr. 2021", "end": "2022" },
-      "location": "",
-      "gpa": "94%",
-      "relevant_coursework": []
-    },
-    {
-      "institute_name": "Jawahar Navodaya Vidyalaya, Dumra",
-      "degree": "SSC CBSE Board",
-      "specialisation": "",
-      "date": { "start": "Apr. 2019", "end": "2020" },
-      "location": "",
-      "gpa": "94%",
-      "relevant_coursework": []
-    }
-  ],
-  "skills": [
-    {
-      "skill_group": "Languages",
-      "skills": ["HTML", "CSS", "JavaScript", "Java", "Python", "SQL"]
-    },
-    {
-      "skill_group": "Software and tools",
-      "skills": [
-        "Visual Studio",
-        "Git-Version Control",
-        "Excel",
-        "Windows",
-        "Linux",
-        "Power-Bl"
-      ]
-    }
-  ],
-  "achievements": [
-    {
-      "title": "President of the college Tech Club",
-      "description": "Leading a thrival community of coders and developers to foster innovation and technical skill development.",
-      "date_achieved": null,
-      "organization": null
-    },
-    {
-      "title": "Second Runner-Up in the Rajasthan Police Hackathon",
-      "description": "A prestigious national-level competition. Our team was victorious out of 1665 teams.",
-      "date_achieved": null,
-      "organization": null
-    },
-    {
-      "title": "Solved 950+ problems across LeetCode and Codeforces",
-      "description": "Achieving a peak rating of 1758 on LeetCode and Pupil rank (1255) on Codeforces, showcasing strong algorithmic-thinking skills.",
-      "date_achieved": null,
-      "organization": null
-    }
-  ],
-  "languages": [{ "language": "", "proficiency": "Native" }],
-  "certifications": [],
-  "work_experiences": [],
-  "publications": [],
-  "extracurriculars": [
-    {
-      "organization_name": "",
-      "date": { "start": "", "end": "" },
-      "role": "President",
-      "title": "President of the college Tech Club",
-      "certificate": "",
-      "location": "",
-      "bullet_points": [
-        "Leading a thrival community of coders and developers to foster innovation and technical skill development."
-      ]
-    }
-  ],
-  "keywords": []
+  }
 }

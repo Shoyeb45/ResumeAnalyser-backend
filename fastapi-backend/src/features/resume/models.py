@@ -194,6 +194,7 @@ class ResumeAnalysis(Document):
     matched_skills: Optional[List[str]] = None
     missing_skills: Optional[List[str]] = None
     llm_analysis: Optional[LLMAnalysis] = None
+    job_title: Optional[str] = None
     
     class Settings:
         name = "resume_analysis"

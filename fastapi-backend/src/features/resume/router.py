@@ -317,7 +317,7 @@ async def update_resume_detail(user: dict = Depends(get_current_user), resume_up
     description="Get latest resume analysis object for user"
 )
 async def get_latest_resume_analysis(user: dict = Depends(get_current_user)):
-    return await resume_repository.get_latest_resume_analysis(user["user_id"])
+    return await resume_repository.get_latest_resume_analysis(user)
 
 # API Endpoint to get all the resume analysis of the user    
 @router.get(

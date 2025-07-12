@@ -144,7 +144,8 @@ class ResumeAnalyzer:
                 "matched_skills": matched_skills,
                 "missing_skills": missing_skills,
                 # "nlp_analysis": nlp_analysis,
-                "llm_analysis": llm_analysis
+                "llm_analysis": llm_analysis,
+                "job_title": target_role
             }
             
             background_tasks.add_task(

@@ -80,7 +80,8 @@ async def get_current_user(
         logger.info(f"Token verified, got user id: {user_id}")
             
         return {
-            "user_id": user_id
+            "user_id": user_id,
+            "user": user
         }
     except JWTError:
         raise HTTPException(

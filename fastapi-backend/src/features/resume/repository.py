@@ -169,7 +169,8 @@ class ResumeRepository:
                 soft_skills=resume_analysis.get("soft_skills", []),
                 matched_skills=resume_analysis.get("matched_skills", []),
                 missing_skills=resume_analysis.get("missing_skills", []),
-                llm_analysis=llm_analysis
+                job_title=resume_analysis.get("job_title", ""),
+                llm_analysis=llm_analysis,
             )
 
             # Insert the document
@@ -285,20 +286,20 @@ class ResumeRepository:
         ]).skip(offset).limit(limit).to_list()
     
     
-    async def get_latest_resume_analysis(self, user_id: str) -> Dict[str, Any] | None:
+    async def get_latest_resume_analysis(self, user: Dict[str, Any]) -> Dict[str, Any] | None:
         try:
-            query_filter = {"user_id": PydanticObjectId(user_id)}
+            query_filter = {"user_id": PydanticObjectId(user["user_id"])}
             # Define projection to only include required fields
-            projection = {
-                "_id": 1,
-                "resume_id": 1,
-                "created_at": 1,
-                "updated_at": 1,
-                "ats_score": 1,
-                "job_match_score": 1,
-                "skill_match_percent": 1,
-                "llm_analysis.overall_analysis": 1  # Only get overall_analysis from llm_analysis
-            }
+            # projection = {
+            #     "_id": 1,
+            #     "resume_id": 1,
+            #     "created_at": 1,
+            #     "updated_at": 1,
+            #     "ats_score": 1,
+            #     "job_match_score": 1,
+            #     "skill_match_percent": 1,
+            #     "llm_analysis.overall_analysis": 1  # Only get overall_analysis from llm_analysis
+            # }
             
             def flatten_skills(skills_data):
                 skills = []
@@ -313,12 +314,16 @@ class ResumeRepository:
                 sort=[("updated_at", DESCENDING)]
             )
             
+            resume_id = latest_analysis.resume_id
+            
+            # find resume and give resume metadata
+            resume = await Resume.get(document_id=resume_id) 
             
             if not latest_analysis:
-                logger.error(f"No resume analysis found for user: {user_id}")
+                logger.error(f"No resume analysis found for user: {user['user_id']}")
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"No resume analysis found for user: {user_id}"
+                    detail=f"No resume analysis found for user: {user['user_id']}"
                 )
             
             technical_skills = flatten_skills(latest_analysis.technical_skills)
@@ -334,6 +339,7 @@ class ResumeRepository:
                     "updated_at": latest_analysis.updated_at.isoformat(),
                     "ats_score": latest_analysis.ats_score.model_dump() if latest_analysis.ats_score else None,
                     "techinal_skills": technical_skills,
+                    "job_title": latest_analysis.job_title,
                     "soft_skills": soft_skills,
                     "job_match_score": latest_analysis.job_match_score,
                     "skill_match_percent": latest_analysis.skill_match_percent,
@@ -342,7 +348,12 @@ class ResumeRepository:
                         if latest_analysis.llm_analysis and latest_analysis.llm_analysis.overall_analysis
                         else None
                     )}
-                }
+                }, 
+                "resume_metadata": {
+                    "resume_name": resume.resume_name,
+                    "is_primary" : resume.is_primary 
+                },
+                "user_name": user["user"].name
             }
         except Exception as e:
             logger.error(f"Failed to get latest resume analysis object, error: {str(e)}")

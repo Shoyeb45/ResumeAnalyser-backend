@@ -14,15 +14,7 @@ router = APIRouter(prefix = "/user", tags = ["user"])
     description="API endpoint to get user detail"
 )
 async def get_user_detail(user: dict = Depends(get_current_user)):
-    return {
-        "success": True,
-        "user": {
-            "_id": str(user["user"].id),
-            **user["user"].model_dump(exclude={"password", "id"}, by_alias=True),
-            
-        } 
-            
-    }
+    return await user_repositroy.get_user_detail(user)
 
 # API Endpoint to change user detail
 @router.patch(

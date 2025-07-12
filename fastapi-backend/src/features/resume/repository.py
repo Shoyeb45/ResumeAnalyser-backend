@@ -190,7 +190,10 @@ class ResumeRepository:
 
             result = await ResumeAnalysis.find(ResumeAnalysis.user_id == user_id).to_list()
             if not result:
-                return {"success": True, "resume_analysis": []}
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="No resume analysis found for user"
+                )
 
             resume_ids = [ra.resume_id for ra in result]
 
@@ -212,7 +215,7 @@ class ResumeRepository:
                     },
                     "_id": str(analysis.id),  # <-- Convert ObjectId to string manually
                     **analysis.model_dump(
-                        exclude={"id", "user_id", "resume_id", "llm_analysis"}
+                        exclude={"id", "user_id", "resume_id"}
                     )
                 })
 
@@ -225,7 +228,7 @@ class ResumeRepository:
             logger.error(f"Failed to get all resume analysis objects from db, error: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to get all resume analysis objects from db, error: {str(e)}"
+                detail=str(e)
             )
 
 
@@ -321,18 +324,7 @@ class ResumeRepository:
     async def get_latest_resume_analysis(self, user: Dict[str, Any]) -> Dict[str, Any] | None:
         try:
             query_filter = {"user_id": PydanticObjectId(user["user_id"])}
-            # Define projection to only include required fields
-            # projection = {
-            #     "_id": 1,
-            #     "resume_id": 1,
-            #     "created_at": 1,
-            #     "updated_at": 1,
-            #     "ats_score": 1,
-            #     "job_match_score": 1,
-            #     "skill_match_percent": 1,
-            #     "llm_analysis.overall_analysis": 1  # Only get overall_analysis from llm_analysis
-            # }
-            
+       
             def flatten_skills(skills_data):
                 skills = []
                 for skill_data in skills_data:
@@ -345,6 +337,12 @@ class ResumeRepository:
                 query_filter,   
                 sort=[("updated_at", DESCENDING)]
             )
+            
+            if not latest_analysis:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="No latest resume analysis found for user"
+                )
             
             resume_id = latest_analysis.resume_id
             
@@ -391,7 +389,7 @@ class ResumeRepository:
             logger.error(f"Failed to get latest resume analysis object, error: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to get latest resume analysis object, error: {str(e)}"
+                detail=str(e)
             ) 
     @staticmethod
     async def get_resume_analytics(user_id: PydanticObjectId) -> Dict[str, Any]:

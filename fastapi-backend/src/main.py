@@ -15,6 +15,7 @@ import logging
 
 import os
 from features.resume.router import router as resumes_router
+from features.users.router import router as users_router
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +25,7 @@ app = create_server()
 
 # Include routers
 app.include_router(resumes_router, prefix="/api/v1")
+app.include_router(users_router, prefix="/api/v1")
 
 @app.get("/")
 async def root():

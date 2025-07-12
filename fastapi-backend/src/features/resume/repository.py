@@ -299,7 +299,14 @@ class ResumeRepository:
                 "skill_match_percent": 1,
                 "llm_analysis.overall_analysis": 1  # Only get overall_analysis from llm_analysis
             }
-    
+            
+            def flatten_skills(skills_data):
+                skills = []
+                for skill_data in skills_data:
+                    for skill in skill_data["skills"]:
+                        skills.append(skill)
+                return skills
+        
             # Find the latest analysis based on updated_at (descending order)
             latest_analysis = await ResumeAnalysis.find_one(
                 query_filter,   
@@ -314,6 +321,9 @@ class ResumeRepository:
                     detail=f"No resume analysis found for user: {user_id}"
                 )
             
+            technical_skills = flatten_skills(latest_analysis.technical_skills)
+            soft_skills = flatten_skills(latest_analysis.soft_skills)
+            
             return {
                 "success": True,
                 "message": "Successfully got latest resume analysis",
@@ -323,6 +333,8 @@ class ResumeRepository:
                     "created_at": latest_analysis.created_at.isoformat(),
                     "updated_at": latest_analysis.updated_at.isoformat(),
                     "ats_score": latest_analysis.ats_score.model_dump() if latest_analysis.ats_score else None,
+                    "techinal_skills": technical_skills,
+                    "soft_skills": soft_skills,
                     "job_match_score": latest_analysis.job_match_score,
                     "skill_match_percent": latest_analysis.skill_match_percent,
                     "llm_analysis": {"overall_analysis": (

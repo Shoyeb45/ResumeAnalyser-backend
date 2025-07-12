@@ -92,7 +92,6 @@ async def resume_extraction(
         logger.error(f"Failed to analyse resume, error : {str(e)}")
         raise HTTPException(status_code = 500, detail = f"Failed to analyse resume, error : {str(e)}")
     
-
 # API Endpoint to get questions related to skills
 @router.post(
     "/skill-assessment", 
@@ -152,8 +151,6 @@ async def get_all_resume(
             detail=f"Error occured while providing all the resume of the user, error: {str(e)}"
         )
 
-
-
 # API endpoint to delete resume
 @router.delete(
     "/{resume_id}",
@@ -185,7 +182,6 @@ async def delete_resume(
             details=f"Failed to delete resume, with resume id - {resume_id}"
         )
         
-
 # API Endpoint to get project description point suggestion
 @router.post(
     "/project",
@@ -302,8 +298,14 @@ async def get_resume_by_id(
 async def delete_resume_analysis(resume_analysis_id: str, user: dict = Depends(get_current_user)):
     return await resume_repository.delete_resume_analysis(resume_analysis_id)
         
-    
-    
+# API endpoint to get resume analysis object by id
+@router.get(
+    "/resume-analysis/{resume_analysis_id}",
+    description="Get resume analysis object of the resume by resume analysis id"
+)
+async def get_resume_analysis_using_id(resume_analysis_id: str, user: dict = Depends(get_current_user)):
+    return await resume_repository.get_resume_analysis_by_id(resume_analysis_id)
+
 # API Endpoint to update the resume details
 @router.patch(
     "/",

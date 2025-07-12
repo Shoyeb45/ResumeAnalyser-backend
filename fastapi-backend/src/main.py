@@ -12,7 +12,7 @@ from core.server import create_server
 
 import uvicorn
 import logging
-
+from fastapi import HTTPException, Request, responses
 import os
 from features.resume.router import router as resumes_router
 from features.users.router import router as users_router
@@ -23,6 +23,19 @@ logger = logging.getLogger(__name__)
 
 app = create_server()
 
+
+# Register global error
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return responses.JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "message": exc.detail,
+            "code": exc.status_code 
+        }
+    )
+    
 # Include routers
 app.include_router(resumes_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")

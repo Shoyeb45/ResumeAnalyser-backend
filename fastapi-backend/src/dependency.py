@@ -69,12 +69,12 @@ async def get_current_user(
             )
          
         # find the user in database
-        user = await User.get(document_id=user_id)   
+        user: User = await User.get(document_id=user_id)   
         if user is None:
             logger.error("User not found in database, failed to authenticate.")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User authentication failed, user not found in database"
+                detail="User not found "
             )
             
         logger.info(f"Token verified, got user id: {user_id}")

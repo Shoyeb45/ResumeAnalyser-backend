@@ -11,10 +11,12 @@ class User(Document):
     isVerified: bool = False
 
     # extra detauls
-    currentProfession: Optional[str] = None
-    mobileNumber: Optional[str] = None
+    current_profession: Optional[str] = None
+    mobile_number: Optional[str] = None
     location: Optional[str] = None
-    socialLinks: Optional[List[Dict[str, Any]]] = None
+    github: Optional[str] = None
+    linkedin: Optional[str] = None
+    portfolio: Optional[str] = None
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     updatedAt: datetime = Field(default_factory=datetime.utcnow)
 

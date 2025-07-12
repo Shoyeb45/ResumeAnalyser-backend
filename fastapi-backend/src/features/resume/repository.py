@@ -419,6 +419,22 @@ class ResumeRepository:
         result = await Resume.aggregate(pipeline).to_list()
         return result[0] if result else {}
     
+    async def get_resume_analysis_by_id(self, resume_analysis_id: str):
+        try:
+            logger.info("API endpoint called for getting resume analysis")
+            result = await ResumeAnalysis.get(PydanticObjectId(resume_analysis_id))
+            
+            return {
+                "success": True,
+                "resume_analysis": result
+            }
+        except Exception as e:
+            logger.error(f"Failed to get resume analysis with id: {resume_analysis_id}, error: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Internal server error occured while getting resume analysis by id"
+            )
+    
     # ============= UPDATE OPERATIONS =============
     
     @staticmethod

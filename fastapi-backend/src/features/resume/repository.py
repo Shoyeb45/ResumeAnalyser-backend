@@ -206,8 +206,10 @@ class ResumeRepository:
                     continue
 
                 final_result.append({
-                    "resume_name": resume_doc.resume_name,
-                    "is_primary": resume_doc.is_primary,
+                    "resume_metadata": {
+                        "resume_name": resume_doc.resume_name,
+                        "is_primary": resume_doc.is_primary,
+                    },
                     **analysis.model_dump(exclude={"id", "user_id", "resume_id", "llm_analysis"})
                 })
 

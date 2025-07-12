@@ -219,6 +219,29 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         ValueError: If required fields are missing or invalid
         ValidationError: If data validation fails
     """
+    
+    def is_empty_object(obj: dict, required_fields: list = None) -> bool:
+        """Check if an object has all empty/None values"""
+        if required_fields:
+            # Check if all required fields are empty/None
+            return all(not obj.get(field) for field in required_fields)
+        else:
+            # Check if all values are empty/None
+            return all(not value for value in obj.values())
+    
+    def has_meaningful_content(obj: dict) -> bool:
+        """Check if object has any meaningful content (non-empty strings, non-empty lists, etc.)"""
+        for value in obj.values():
+            if isinstance(value, str) and value.strip():
+                return True
+            elif isinstance(value, list) and value:
+                return True
+            elif isinstance(value, dict) and value:
+                return True
+            elif value is not None and value != "":
+                return True
+        return False
+    
     try:
         logger.info(f"Creating resume model for user: {user_id}")
         
@@ -249,17 +272,20 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "personal_info" in resume_details:
             try:
                 personal_info_data = resume_details["personal_info"]
-                contact_info = None
-                
-                if "contact_info" in personal_info_data:
-                    contact_info = ContactInfo(**personal_info_data["contact_info"])
-                
-                personal_info = PersonalInfo(
-                    name=personal_info_data.get("name"),
-                    contact_info=contact_info,
-                    professional_summary=personal_info_data.get("professional_summary")
-                )
-                logger.info("Personal info processed successfully")
+                if has_meaningful_content(personal_info_data):
+                    contact_info = None
+                    
+                    if "contact_info" in personal_info_data:
+                        contact_data = personal_info_data["contact_info"]
+                        if has_meaningful_content(contact_data):
+                            contact_info = ContactInfo(**contact_data)
+                    
+                    personal_info = PersonalInfo(
+                        name=personal_info_data.get("name") if personal_info_data.get("name") else None,
+                        contact_info=contact_info,
+                        professional_summary=personal_info_data.get("professional_summary") if personal_info_data.get("professional_summary") else None
+                    )
+                    logger.info("Personal info processed successfully")
             except Exception as e:
                 logger.error(f"Error processing personal info: {str(e)}")
                 raise ValidationError(f"Error processing personal info: {str(e)}")
@@ -269,9 +295,14 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "educations" in resume_details:
             try:
                 for idx, education_data in enumerate(resume_details["educations"]):
+                    # Skip empty education records
+                    if not has_meaningful_content(education_data):
+                        continue
+                        
                     # Handle date field mismatch (dates vs date)
                     if "dates" in education_data and "date" not in education_data:
                         education_data["date"] = education_data.pop("dates")
+                    
                     
                     education_models.append(Education(**education_data))
                 logger.info(f"Processed {len(education_models)} education records")
@@ -284,6 +315,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "work_experiences" in resume_details:
             try:
                 for work_exp_data in resume_details["work_experiences"]:
+                    # Skip empty work experience records
+                    if not has_meaningful_content(work_exp_data):
+                        continue
+                        
                     work_experience_models.append(WorkExperience(**work_exp_data))
                 logger.info(f"Processed {len(work_experience_models)} work experience records")
             except Exception as e:
@@ -295,6 +330,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "projects" in resume_details:
             try:
                 for project_data in resume_details["projects"]:
+                    # Skip empty project records
+                    if not has_meaningful_content(project_data):
+                        continue
+                        
                     project_models.append(ProjectDetails(**project_data))
                 logger.info(f"Processed {len(project_models)} project records")
             except Exception as e:
@@ -306,6 +345,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "skills" in resume_details:
             try:
                 for skill_data in resume_details["skills"]:
+                    # Skip empty skill groups
+                    if not has_meaningful_content(skill_data):
+                        continue
+                        
                     skill_models.append(SkillGroup(**skill_data))
                 logger.info(f"Processed {len(skill_models)} skill groups")
             except Exception as e:
@@ -317,6 +360,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "achievements" in resume_details:
             try:
                 for achievement_data in resume_details["achievements"]:
+                    # Skip empty achievement records
+                    if not has_meaningful_content(achievement_data):
+                        continue
+                        
                     achievement_models.append(Achievement(**achievement_data))
                 logger.info(f"Processed {len(achievement_models)} achievement records")
             except Exception as e:
@@ -328,6 +375,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "certifications" in resume_details:
             try:
                 for cert_data in resume_details["certifications"]:
+                    # Skip empty certification records
+                    if not has_meaningful_content(cert_data):
+                        continue
+                        
                     certification_models.append(Certification(**cert_data))
                 logger.info(f"Processed {len(certification_models)} certification records")
             except Exception as e:
@@ -339,6 +390,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "languages" in resume_details:
             try:
                 for lang_data in resume_details["languages"]:
+                    # Skip empty language records
+                    if not has_meaningful_content(lang_data):
+                        continue
+                        
                     language_models.append(Language(**lang_data))
                 logger.info(f"Processed {len(language_models)} language records")
             except Exception as e:
@@ -350,6 +405,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "publications" in resume_details:
             try:
                 for pub_data in resume_details["publications"]:
+                    # Skip empty publication records
+                    if not has_meaningful_content(pub_data):
+                        continue
+                        
                     publication_models.append(Publication(**pub_data))
                 logger.info(f"Processed {len(publication_models)} publication records")
             except Exception as e:
@@ -361,6 +420,10 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
         if "extracurriculars" in resume_details:
             try:
                 for extra_data in resume_details["extracurriculars"]:
+                    # Skip empty extracurricular records
+                    if not has_meaningful_content(extra_data):
+                        continue
+                        
                     extracurricular_models.append(Extracurricular(**extra_data))
                 logger.info(f"Processed {len(extracurricular_models)} extracurricular records")
             except Exception as e:
@@ -397,21 +460,3 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
     except Exception as e:
         logger.error(f"Unexpected error while creating resume: {str(e)}")
         raise Exception(f"Failed to create resume model: {str(e)}")
-
-
-# Example usage function with error handling
-def safe_create_resume(resume_metadata: Dict[str, Any], user_id: str, resume_details: Dict[str, Any]) -> Optional[Resume]:
-    """
-    Safe wrapper for creating resume model with comprehensive error handling.
-    
-    Returns:
-        Resume object if successful, None if failed
-    """
-    try:
-        return create_resume_model(resume_metadata, user_id, resume_details)
-    except (ValueError, ValidationError) as e:
-        logger.error(f"Failed to create resume: {str(e)}")
-        return None
-    except Exception as e:
-        logger.error(f"Unexpected error creating resume: {str(e)}")
-        return None

@@ -458,140 +458,148 @@ Generate exactly {len(bullet_points)} enhanced technical bullet points that show
         
         system_prompt = """You are an expert resume parser specializing in extracting structured data from resumes.
 
-Your task is to extract resume information and format it as a JSON object with the following structure:
+    Your task is to extract resume information and format it as a JSON object with the following structure:
 
-{
-  "resume_details": {
-    "personal_info": {
-      "name": "candidate full name",
-      "contact_info": {
-        "email": "email address",
-        "mobile": "phone number",
-        "location": "city, state/country",
-        "social_links": {
-          "linkedin": "linkedin profile url",
-          "github": "github profile url",
-          "portfolio": "portfolio website url"
-        }
-      },
-      "professional_summary": "professional summary or objective"
-    },
-    "educations": [
-      {
-        "institute_name": "university/college name",
-        "degree": "degree type",
-        "specialisation": "field of study",
-        "dates": {
-          "start": "start date",
-          "end": "end date or 'Present'"
+    {
+      "resume_details": {
+        "personal_info": {
+          "name": "candidate full name",
+          "contact_info": {
+            "email": "email address",
+            "mobile": "phone number",
+            "location": "city, state/country",
+            "social_links": {
+              "linkedin": "linkedin profile url",
+              "github": "github profile url",
+              "portfolio": "portfolio website url"
+            }
+          },
+          "professional_summary": "professional summary or objective"
         },
-        "location": "institute location",
-        "gpa": "GPA/percentage if mentioned",
-        "relevant_coursework": ["course1", "course2"]
+        "educations": [
+          {
+            "institute_name": "university/college name",
+            "degree": "degree type",
+            "specialisation": "field of study",
+            "dates": {
+              "start": "start date",
+              "end": "end date or 'Present'"
+            },
+            "location": "institute location",
+            "gpa": "GPA/percentage if mentioned",
+            "relevant_coursework": ["course1", "course2"]
+          }
+        ],
+        "work_experiences": [
+          {
+            "company_name": "company name",
+            "job_title": "position title",
+            "date": {
+              "start": "start date",
+              "end": "end date or 'Present'"
+            },
+            "location": "work location",
+            "bullet_points": ["responsibility 1", "responsibility 2"]
+          }
+        ],
+        "projects": [
+          {
+            "title": "project name",
+            "project_link": "project url if available",
+            "date": {
+              "start": "start date",
+              "end": "end date"
+            },
+            "location": "project location if applicable",
+            "organization": "associated organization if any",
+            "bullet_points": ["key point 1", "key point 2"],
+            "technologies_used": ["tech1", "tech2"]
+          }
+        ],
+        "skills": [
+          {
+            "skill_group": "Programming Languages",
+            "skills": ["Python", "Java", "JavaScript"]
+          }
+        ],
+        "achievements": [
+          {
+            "title": "achievement title",
+            "description": "achievement description",
+            "date_achieved": "date of achievement or null",
+            "organization": "awarding organization or null"
+          }
+        ],
+        "certifications": [
+          {
+            "certificate_name": "certification name",
+            "issuing_organization": "issuing body",
+            "date_issued": "issue date or null",
+            "expiry_date": "expiry date or null",
+            "description": "certification description"
+          }
+        ],
+        "languages": [
+          {
+            "language": "language name",
+            "proficiency": "proficiency level"
+          }
+        ],
+        "publications": [
+          {
+            "publication_name": "publication title",
+            "authors": ["author1", "author2"],
+            "publication_date": "publication date",
+            "journal_conference": "journal or conference name",
+            "description": "brief description"
+          }
+        ],
+        "extracurriculars": [
+          {
+            "title": "activity title",
+            "organization_name": "organization name",
+            "role": "role/position held",
+            "date": {
+              "start": "start date",
+              "end": "end date"
+            },
+            "bullet_points": ["activity detail 1", "activity detail 2"],
+            "certificate": "certificate link or null",
+            "location": "activity location"
+          }
+        ]
       }
-    ],
-    "work_experiences": [
-      {
-        "company_name": "company name",
-        "job_title": "position title",
-        "date": {
-          "start": "start date",
-          "end": "end date or 'Present'"
-        },
-        "location": "work location",
-        "bullet_points": ["responsibility 1", "responsibility 2"]
-      }
-    ],
-    "projects": [
-      {
-        "title": "project name",
-        "project_link": "project url if available",
-        "date": {
-          "start": "start date",
-          "end": "end date"
-        },
-        "location": "project location if applicable",
-        "organization": "associated organization if any",
-        "bullet_points": ["key point 1", "key point 2"],
-        "technologies_used": ["tech1", "tech2"]
-      }
-    ],
-    "skills": [
-      {
-        "skill_group": "Programming Languages",
-        "skills": ["Python", "Java", "JavaScript"]
-      }
-    ],
-    "achievements": [
-      {
-        "title": "achievement title",
-        "description": "achievement description",
-        "date_achieved": "date of achievement or null",
-        "organization": "awarding organization or null"
-      }
-    ],
-    "certifications": [
-      {
-        "certificate_name": "certification name",
-        "issuing_organization": "issuing body",
-        "date_issued": "issue date or null",
-        "expiry_date": "expiry date or null",
-        "description": "certification description"
-      }
-    ],
-    "languages": [
-      {
-        "language": "language name",
-        "proficiency": "proficiency level"
-      }
-    ],
-    "publications": [
-      {
-        "publication_name": "publication title",
-        "authors": ["author1", "author2"],
-        "publication_date": "publication date",
-        "journal_conference": "journal or conference name",
-        "description": "brief description"
-      }
-    ],
-    "extracurriculars": [
-      {
-        "title": "activity title",
-        "organization_name": "organization name",
-        "role": "role/position held",
-        "date": {
-          "start": "start date",
-          "end": "end date"
-        },
-        "bullet_points": ["activity detail 1", "activity detail 2"],
-        "certificate": "certificate link or null",
-        "location": "activity location"
-      }
-    ]
-  }
-}
+    }
 
-PARSING RULES:
-1. Extract information only if explicitly mentioned
-2. Use empty arrays [] for missing list fields
-3. Use empty strings "" for missing string fields
-4. Use null for missing object fields
-5. Preserve original date formats when possible
-6. Group skills logically by category
-7. Include all bullet points as separate array elements
-8. Extract URLs exactly as written
+    PARSING RULES:
+    1. Extract information ONLY if explicitly mentioned in the resume
+    2. For missing array/list fields (like certifications, achievements, languages, etc.), use EMPTY ARRAYS [] - do NOT create objects with null values
+    3. Use empty strings "" for missing string fields
+    4. Use null for missing object fields
+    5. Preserve original date formats when possible
+    6. Group skills logically by category
+    7. Include all bullet points as separate array elements
+    8. Extract URLs exactly as written
 
-CRITICAL: Return ONLY the JSON object. No explanations, no markdown, no additional text."""
+    CRITICAL INSTRUCTIONS:
+    - If NO certifications are found, return: "certifications": []
+    - If NO achievements are found, return: "achievements": []
+    - If NO languages are found, return: "languages": []
+    - If NO publications are found, return: "publications": []
+    - DO NOT create placeholder objects with null values for missing data
+    - Only include actual data that exists in the resume
+
+    CRITICAL: Return ONLY the JSON object. No explanations, no markdown, no additional text."""
 
         user_prompt = f"""Please extract and structure the following resume data:
 
-RESUME TEXT:
-{text}
+    RESUME TEXT:
+    {text}
 
-Parse this resume and return the structured data in the specified JSON format."""
+    Parse this resume and return the structured data in the specified JSON format. Remember: use empty arrays [] for missing list data, not objects with null values."""
 
         return system_prompt, user_prompt
-
+    
     def _create_ats_prompt(self, resume_data: dict) -> str:
         system_prompt = """You are an advanced Applicant Tracking System (ATS) evaluator specializing in resume assessment.
 

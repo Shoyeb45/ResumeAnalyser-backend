@@ -284,6 +284,60 @@ class ResumeRepository:
             ("updated_at", DESCENDING)
         ]).skip(offset).limit(limit).to_list()
     
+    
+    async def get_latest_resume_analysis(self, user_id: str) -> Dict[str, Any] | None:
+        try:
+            query_filter = {"user_id": PydanticObjectId(user_id)}
+            # Define projection to only include required fields
+            projection = {
+                "_id": 1,
+                "resume_id": 1,
+                "created_at": 1,
+                "updated_at": 1,
+                "ats_score": 1,
+                "job_match_score": 1,
+                "skill_match_percent": 1,
+                "llm_analysis.overall_analysis": 1  # Only get overall_analysis from llm_analysis
+            }
+    
+            # Find the latest analysis based on updated_at (descending order)
+            latest_analysis = await ResumeAnalysis.find_one(
+                query_filter,   
+                sort=[("updated_at", DESCENDING)]
+            )
+            
+            
+            if not latest_analysis:
+                logger.error(f"No resume analysis found for user: {user_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"No resume analysis found for user: {user_id}"
+                )
+            
+            return {
+                "success": True,
+                "message": "Successfully got latest resume analysis",
+                "resume_analysis": {
+                    "_id": str(latest_analysis.id),
+                    "resume_id": str(latest_analysis.resume_id),
+                    "created_at": latest_analysis.created_at.isoformat(),
+                    "updated_at": latest_analysis.updated_at.isoformat(),
+                    "ats_score": latest_analysis.ats_score.model_dump() if latest_analysis.ats_score else None,
+                    "job_match_score": latest_analysis.job_match_score,
+                    "skill_match_percent": latest_analysis.skill_match_percent,
+                    "llm_analysis": {"overall_analysis": (
+                        latest_analysis.llm_analysis.overall_analysis.model_dump()
+                        if latest_analysis.llm_analysis and latest_analysis.llm_analysis.overall_analysis
+                        else None
+                    )}
+                }
+            }
+        except Exception as e:
+            logger.error(f"Failed to get latest resume analysis object, error: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to get latest resume analysis object, error: {str(e)}"
+            ) 
     @staticmethod
     async def get_resume_analytics(user_id: PydanticObjectId) -> Dict[str, Any]:
         """
@@ -315,8 +369,7 @@ class ResumeRepository:
     @staticmethod
     async def update_resume(
         resume_id: PydanticObjectId,
-        update_data: Dict[str, Any],
-        upsert: bool = False
+        update_data: Dict[str, Any]
     ) -> Optional[Resume]:
         """
         Update resume with optimized field updates
@@ -340,8 +393,6 @@ class ResumeRepository:
         
         # Use atomic update operations
         resume = await Resume.get(resume_id)
-        if not resume and not upsert:
-            return None
         
         if resume:
             # Update existing document
@@ -349,9 +400,6 @@ class ResumeRepository:
                 setattr(resume, key, value)
             await resume.save()
             return resume
-        elif upsert:
-            # Create new document
-            return await ResumeRepository.create_resume(update_data)
     
     @staticmethod
     async def update_resume_section(

@@ -5,9 +5,9 @@ from typing import Optional, Annotated
 from features.resume.repository import resume_repository
 import os, json
 from dependency import get_current_user
+from typing import Dict, Any
 import logging
 logger = logging.getLogger(__name__)
-
 
 router = APIRouter(prefix = "/resume", tags = ["resume"])
 
@@ -303,6 +303,21 @@ async def delete_resume_analysis(resume_analysis_id: str, user: dict = Depends(g
     return await resume_repository.delete_resume_analysis(resume_analysis_id)
         
     
+    
+# API Endpoint to update the resume details
+@router.patch(
+    "/",
+    description="Update the resume details by entire resume detail object"
+)
+async def update_resume_detail(user: dict = Depends(get_current_user), resume_upate_data: str = Form(...)):
+    return await resume_repository.update_resume(user["user_id"])
+
+@router.get(
+    "/latest-analysis",
+    description="Get latest resume analysis object for user"
+)
+async def get_latest_resume_analysis(user: dict = Depends(get_current_user)):
+    return await resume_repository.get_latest_resume_analysis(user["user_id"])
 
 # API Endpoint to get all the resume analysis of the user    
 @router.get(

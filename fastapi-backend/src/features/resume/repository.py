@@ -2,7 +2,6 @@
 Resume Repository - CRUD Operations related to resume 
 Handles all database operations for Resume documents 
 """
-
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 from fastapi import HTTPException, status
@@ -184,19 +183,47 @@ class ResumeRepository:
     
  # ============= READ OPERATIONS =============
     
-    @staticmethod
-    async def get_all_resume_analysis_of_user(user_id: str) -> Optional[List[ResumeAnalysis]]:
+
+    async def get_all_resume_analysis_of_user(self, user_id: str) -> Optional[List[Dict[str, Any]]]:
         try:
             user_id = PydanticObjectId(user_id)
+
             result = await ResumeAnalysis.find(ResumeAnalysis.user_id == user_id).to_list()
-            if result is None:
-                raise Exception("DB error occurred to get all resume analysis object")
-            
-            return result
+            if not result:
+                return {"success": True, "resume_analysis": []}
+
+            resume_ids = [ra.resume_id for ra in result]
+
+            # Use In operator here
+            resumes = await Resume.find(In(Resume.id, resume_ids)).to_list()
+            resume_map = {resume.id: resume for resume in resumes}
+
+            final_result: List[Dict[str, Any]] = []
+
+            for analysis in result:
+                resume_doc = resume_map.get(analysis.resume_id)
+                if not resume_doc:
+                    continue
+
+                final_result.append({
+                    "resume_name": resume_doc.resume_name,
+                    "is_primary": resume_doc.is_primary,
+                    **analysis.model_dump(exclude={"id", "user_id", "resume_id", "llm_analysis"})
+                })
+
+            return {
+                "success": True,
+                "resume_analysis": final_result
+            }
+
         except Exception as e:
             logger.error(f"Failed to get all resume analysis objects from db, error: {str(e)}")
-            raise e
-    
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to get all resume analysis objects from db, error: {str(e)}"
+            )
+
+
     @staticmethod
     async def get_resume_by_id(resume_id: str) -> Optional[Resume]:
         """Get resume by ID with optimized query"""
@@ -347,12 +374,12 @@ class ResumeRepository:
                         latest_analysis.llm_analysis.overall_analysis.model_dump()
                         if latest_analysis.llm_analysis and latest_analysis.llm_analysis.overall_analysis
                         else None
-                    )}
+                    )},
+                    "resume_metadata": {
+                        "resume_name": resume.resume_name,
+                        "is_primary" : resume.is_primary 
+                    }
                 }, 
-                "resume_metadata": {
-                    "resume_name": resume.resume_name,
-                    "is_primary" : resume.is_primary 
-                },
                 "user_name": user["user"].name
             }
         except Exception as e:

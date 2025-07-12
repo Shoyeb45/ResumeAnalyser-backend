@@ -325,15 +325,4 @@ async def get_latest_resume_analysis(user: dict = Depends(get_current_user)):
     description="Get all resume analysis objects for user"
 )
 async def get_all_resume_analysis(user: dict = Depends(get_current_user)):
-    try:
-        response = await resume_repository.get_all_resume_analysis_of_user(user["user_id"])
-        return {
-            "success": True,
-            "resume_analysis": response
-        }
-    except Exception as e:
-        logger.error(f"Failed to get all resume analysis from database, error: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get all resume analysis from database, error: {str(e)}"
-        )
+    return await resume_repository.get_all_resume_analysis_of_user(user["user_id"])

@@ -1,6 +1,6 @@
 from beanie import Document
 from pydantic import EmailStr, Field
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 from bson import ObjectId
 
@@ -10,6 +10,11 @@ class User(Document):
     name: str
     isVerified: bool = False
 
+    # extra detauls
+    currentProfession: Optional[str] = None
+    mobileNumber: Optional[str] = None
+    location: Optional[str] = None
+    socialLinks: Optional[List[Dict[str, Any]]] = None
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     updatedAt: datetime = Field(default_factory=datetime.utcnow)
 

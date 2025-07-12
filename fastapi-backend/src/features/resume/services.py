@@ -80,8 +80,8 @@ class ResumeAnalyzer:
             # personal_info = self.personal_info_extractor.extract_personal_info(resume_text)
             
             # Step 3: Perform NLP analysis
-            logger.info("Step 3: Performing NLP analysis")
-            nlp_analysis = self.nlp_analyzer.analyze_text_with_nlp(resume_text, target_role)
+            logger.info("Step 3: Performing NLP analysis - skip....")
+            # nlp_analysis = self.nlp_analyzer.analyze_text_with_nlp(resume_text, target_role)
             
             # Step 4: Analyze skills
             logger.info("Step 4: Analyzing skills")
@@ -114,7 +114,6 @@ class ResumeAnalyzer:
             logger.info("Step 9: Formatting results for better response")
             
             # Step 9: Update database in background
-            logger.info("Step 10: Updating database in background")
             resume_metadata = {
                 "resume_name": file_path.split(".")[0].split("\\")[1],
                 "is_primary": True,
@@ -124,18 +123,17 @@ class ResumeAnalyzer:
             # Add ats score in resume details dictionary
             resume_details_for_db["ats_score"] = float(ats_score["ats_score"])
             
-            background_tasks.add_task(
-                resume_repository.create_resume,
-                user_id,
-                resume_metadata,
-                resume_details_for_db
-            )
-            
+            logger.info("Step 10: Updating database in background with both resume analysis and resume details")
             
             llm_analysis = {
                 "overall_analysis": overall_resume_analysis,
                 "section_wise_analysis": section_analysis
             }
+            
+            
+            if resume_details:
+                resume_details = resume_details["resume_details"]
+          
             
             resume_analysis = {
                 "ats_score": ats_score,
@@ -145,13 +143,18 @@ class ResumeAnalyzer:
                 "soft_skills": soft_skills,
                 "matched_skills": matched_skills,
                 "missing_skills": missing_skills,
-                "nlp_analysis": nlp_analysis,
+                # "nlp_analysis": nlp_analysis,
                 "llm_analysis": llm_analysis
             }
             
-            if resume_details:
-                resume_details = resume_details["resume_details"]
-          
+            background_tasks.add_task(
+                resume_repository.create_resume_detail_and_analysis,
+                user_id,
+                resume_metadata,
+                resume_details_for_db, 
+                resume_analysis
+            )
+            
             response = {
                 "success": True,
                 "message": "Successfully analysed resume and update the resume in database",
@@ -159,7 +162,7 @@ class ResumeAnalyzer:
                 "resume_analysis": resume_analysis,
                 "job_title": target_role
             }
-
+            
             logger.info("Resume analysis completed successfully")
             return response
             
@@ -456,7 +459,7 @@ class ResumeAnalyzer:
 
         return overall_score, skill_scores
 
-    async def get_resume_details(self, background_tasks: BackgroundTasks, user_id: str, file_path: str) -> Dict[str, any]:
+    async def get_resume_details(self, user_id: str, file_path: str) -> Dict[str, any]:
         try:
             if file_path is None:
                 raise HTTPException(

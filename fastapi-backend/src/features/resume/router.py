@@ -5,9 +5,7 @@ from typing import Optional, Annotated
 from features.resume.repository import resume_repository
 import os, json
 from dependency import get_current_user
-from typing import List
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -63,7 +61,6 @@ async def analyse_resume(
     description="API to extract all the api response"
 )
 async def resume_extraction(
-    background_tasks: BackgroundTasks,
     user: dict = Depends(get_current_user),
     resume_file: UploadFile = File(...)
 ):
@@ -83,7 +80,6 @@ async def resume_extraction(
         logger.info("Successfully saved file in temp directory")
         
         result = await resume_analyzer.get_resume_details(
-            background_tasks=background_tasks,
             user_id=user_id,
             file_path=temp_path
         )
@@ -278,7 +274,7 @@ def get_ats_score_of_resume(
 # API Endpoint to get the resume by resume id
 @router.get(
     "/resume/{resume_id}",
-    description="Give resume id and get the resume"
+    description="Get resume by resume id"
 )
 async def get_resume_by_id(
     resume_id: str,
@@ -296,4 +292,33 @@ async def get_resume_by_id(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get the resume, error: {str(e)}"
+        )
+
+
+@router.delete(
+    "/resume-analysis/{resume_analysis_id}",
+    description="Delete resume analysis document from resume id"
+)
+async def delete_resume_analysis(resume_analysis_id: str, user: dict = Depends(get_current_user)):
+    return await resume_repository.delete_resume_analysis(resume_analysis_id)
+        
+    
+
+# API Endpoint to get all the resume analysis of the user    
+@router.get(
+    "/resume-analysis",
+    description="Get all resume analysis objects for user"
+)
+async def get_all_resume_analysis(user: dict = Depends(get_current_user)):
+    try:
+        response = await resume_repository.get_all_resume_analysis_of_user(user["user_id"])
+        return {
+            "success": True,
+            "resume_analysis": response
+        }
+    except Exception as e:
+        logger.error(f"Failed to get all resume analysis from database, error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get all resume analysis from database, error: {str(e)}"
         )

@@ -5,6 +5,7 @@ Handles all database operations for Resume documents
 
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+from fastapi import HTTPException, status
 from beanie import PydanticObjectId
 from beanie.operators import In, RegEx, Eq, And, Or
 from pymongo import DESCENDING, ASCENDING
@@ -16,7 +17,9 @@ logger = logging.getLogger(__name__)
 from .models import (
     Resume, ContactInfo, ProjectDetails, Education, SkillGroup, 
     Achievement, Language, Certification, WorkExperience, 
-    Publication, Extracurricular, create_resume_model
+    Publication, Extracurricular, create_resume_model,
+    ResumeAnalysis, ATSScore, ResumeDetailDescription, OverallAnalysis, 
+    SectionDetail, SectionWiseAnalysis, LLMAnalysis
 )
 
 
@@ -24,6 +27,29 @@ class ResumeRepository:
     """Optimized repository for Resume CRUD operations"""
     
     # ============= CREATE OPERATIONS =============
+    
+    @staticmethod
+    async def create_resume_detail_and_analysis(user_id: str, resume_metadata: Dict[str, Any], resume_details: Dict[str, Any], resume_analysis: Dict[str, Any]):
+        try:
+            
+            # first create the resume details in database
+            resume = await ResumeRepository.create_resume(user_id, resume_metadata, resume_details)
+            resume_id = resume.id
+            
+            if not resume:
+                logger.error(f"Failed to create resume in database for user: {user_id}")
+                raise Exception("Failed to create resume in database")
+            
+            # Then create resume analysis in database
+            resume_analysis_in_db = await ResumeRepository.create_resume_analysis(resume_id, user_id, resume_analysis)
+            if not resume_analysis_in_db:
+                logger.error(f"Failed to create resume analysis in database for user: {user_id}")
+                raise Exception("Failed to create resume analysis in database")
+            
+
+        except Exception as e:
+            logger.error(f"Failed to create resume analysis and resume details in database for user: {user_id}, error: {e}")
+            raise e
     
     @staticmethod
     async def create_resume(user_id: str, resume_metadata: Dict[str, Any], resume_details: Dict[str, Any]) -> Resume:
@@ -59,38 +85,116 @@ class ResumeRepository:
         logger.info("Resume added in database")
         return resume
     
+
     @staticmethod
-    async def bulk_create_resumes(resumes_data: List[Dict[str, Any]]) -> List[Resume]:
-        """
-        Bulk create multiple resumes with validation
-        
+    async def create_resume_analysis(resume_id: str, user_id: str, resume_analysis: Dict[str, Any]) -> ResumeAnalysis:
+        """Method to create resume analysis in database
+
         Args:
-            resumes_data: List of resume data dictionaries
-            
+            resume_id (str): resume id in string format
+            user_id (str): user id in string format
+            resume_analysis (Dict[str, Any]): resume analysis object got from LLM
+
         Returns:
-            List of created Resume documents
+            ResumeAnalysis: Resume analysis document or None if error
         """
-        now = datetime.utcnow()
-        resumes = []
-        
-        for resume_data in resumes_data:
-            resume_data.update({
-                'created_at': now,
-                'updated_at': now
-            })
-            resumes.append(Resume(**resume_data))
-        
-        # Handle primary resume conflicts before bulk insert
-        primary_resumes = [r for r in resumes if r.is_primary]
-        if primary_resumes:
-            user_ids = {r.user_id for r in primary_resumes}
-            for user_id in user_ids:
-                await ResumeRepository._ensure_single_primary_resume(user_id)
-        
-        await Resume.insert_many(resumes)
-        return resumes
+        try:
+            logger.info(f"Creating ResumeAnalysis for user_id={user_id}, resume_id={resume_id}")
+
+            # Extract and create ATS Score
+            ats_data: Dict[str, Any] = resume_analysis.get("ats_score", {})
+            ats_score = ATSScore(**ats_data)
+
+            # Extract LLM analysis data
+            llm_analysis_raw: Dict[str, Any] = resume_analysis.get("llm_analysis", {})
+            overall: Dict[str, Any] = llm_analysis_raw.get("overall_analysis", {})
+            section: Dict[str, Any] = llm_analysis_raw.get("section_wise_analysis", {})
+
+            def map_detail_list(detail_list):
+                return [ResumeDetailDescription(**item) for item in detail_list] if detail_list else []
+
+            # Create overall analysis
+            overall_analysis = OverallAnalysis(
+                overall_strengths=map_detail_list(overall.get("overall_strengths")),
+                areas_for_improvement=map_detail_list(overall.get("areas_for_improvement")),
+                ats_optimization_suggestions=map_detail_list(overall.get("ats_optimization_suggestions")),
+                job_fit_assessment=overall.get("job_fit_assessment"),
+                recommendation_score=overall.get("recommendation_score"),
+                resume_summary=overall.get("resume_summary")
+            )
+
+            def map_section(section_data):
+                if not section_data:
+                    return SectionDetail()
+                return SectionDetail(
+                    description=section_data.get("description"),
+                    good=section_data.get("good", []),
+                    bad=section_data.get("bad", []),
+                    improvements=section_data.get("improvements", []),
+                    overall_review=section_data.get("overall_review")
+                )
+
+            # Create section-wise analysis
+            section_wise_analysis = SectionWiseAnalysis(
+                education=map_section(section.get("education")),
+                projects=map_section(section.get("projects")),
+                experience=map_section(section.get("experience")),
+                skills=map_section(section.get("skills")),
+                extracurricular=map_section(section.get("extracurricular"))
+            )
+
+            # Create LLM analysis
+            llm_analysis = LLMAnalysis(
+                overall_analysis=overall_analysis,
+                section_wise_analysis=section_wise_analysis
+            )
+
+            # Create skills group models
+            # tech_skill_model: List[SkillGroup] = []
+            # for skill in resume_analysis.get("technical_skills", []):
+            #     tech_skill_model.append(SkillGroup(**skill))
+                    
+            # soft_skill_model: List[SkillGroup] = []
+            # for skill in resume_analysis.get("soft_skills", []):
+            #     soft_skill_model.append(SkillGroup(**skill))
+            
+            # Create the main resume analysis document
+            resume_doc = ResumeAnalysis(
+                user_id=PydanticObjectId(user_id),
+                resume_id=PydanticObjectId(resume_id),
+                ats_score=ats_score,
+                job_match_score=resume_analysis.get("job_match_score"),
+                skill_match_percent=resume_analysis.get("skill_match_percent"),
+                technical_skills=resume_analysis.get("technical_skills", []),
+                soft_skills=resume_analysis.get("soft_skills", []),
+                matched_skills=resume_analysis.get("matched_skills", []),
+                missing_skills=resume_analysis.get("missing_skills", []),
+                llm_analysis=llm_analysis
+            )
+
+            # Insert the document
+            resume_analysis_doc = await resume_doc.insert()
+            logger.info("ResumeAnalysis document inserted successfully.")
+            return resume_analysis_doc
+            
+        except Exception as e:
+            logger.error(f"Error while adding resume analysis object in database: {e}", exc_info=True)
+            return None
     
-    # ============= READ OPERATIONS =============
+ # ============= READ OPERATIONS =============
+    
+    @staticmethod
+    async def get_all_resume_analysis_of_user(user_id: str) -> Optional[List[ResumeAnalysis]]:
+        try:
+            user_id = PydanticObjectId(user_id)
+            result = await ResumeAnalysis.find(ResumeAnalysis.user_id == user_id).to_list()
+            if result is None:
+                raise Exception("DB error occurred to get all resume analysis object")
+            
+            return result
+        except Exception as e:
+            logger.error(f"Failed to get all resume analysis objects from db, error: {str(e)}")
+            raise e
     
     @staticmethod
     async def get_resume_by_id(resume_id: str) -> Optional[Resume]:
@@ -337,6 +441,38 @@ class ResumeRepository:
     
     # ============= DELETE OPERATIONS =============
     
+    async def delete_resume_analysis(self, resume_analysis_id: str):
+        """CRUD function to delete resume analysis object
+
+        Args:
+            resume_analysis_id (str): id of resume analysis object that needs to be deleted
+
+        Raises:
+            HTTPException: if resume analysis object not found
+            HTTPException: Any runtime exceptions occur
+
+        Returns:
+            _type_: Dict
+        """
+        try:            
+            resume_analysis = await ResumeAnalysis.get(PydanticObjectId(resume_analysis_id))
+            
+            if not resume_analysis:
+                logger.error("Resume analysis object not found in database")
+                raise HTTPException(
+                    detail="Resume analysis object not found in database",
+                    status_code=status.HTTP_404_NOT_FOUND
+                )
+            await resume_analysis.delete()
+            return {
+                "success": True,
+                "message": f"Resume analysis object with id {resume_analysis_id} deleted succesfully"
+            }
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to delete resume analysis object, error: {str(e)}"
+            )
     @staticmethod
     async def delete_resume(resume_id: str) -> bool:
         """

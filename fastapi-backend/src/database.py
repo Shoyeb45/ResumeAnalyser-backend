@@ -4,11 +4,11 @@ from typing import Optional
 import logging
 
 from features.users.models import User
-from features.resume.models import Resume
+from features.resume.models import Resume, ResumeAnalysis
 from config import settings
 
 # Beanie models
-Models = [Resume, User]
+Models = [Resume, User, ResumeAnalysis]
 
 logger = logging.getLogger(__name__)
 

@@ -132,11 +132,76 @@ class Resume(Document):
             IndexModel("analysis_score"),
         ]
 
+class ATSScore(BaseModel):
+    """ATS Score model
 
-# class ResumeAnalysis(Document):
-#     # 
-#     resume_id: PydanticObjectId,
+    Args:
+        BaseModel (_type_): _description_
+    """
+    ats_score: Optional[float] = None
+    format_compliance: Optional[float] = None
+    keyword_optimization: Optional[float] = None
+    readability: Optional[float] = None
+
+
+class ResumeDetailDescription(BaseModel):
+    description: Optional[str] = None
+    weightage: Optional[float] = None
     
+class OverallAnalysis(BaseModel):
+    overall_strengths: Optional[List[ResumeDetailDescription]] = None
+    areas_for_improvement: Optional[List[ResumeDetailDescription]] = None
+    ats_optimization_suggestions: Optional[List[ResumeDetailDescription]] = None
+    job_fit_assessment: Optional[Dict] = None
+    recommendation_score: Optional[float] = None
+    resume_summary: Optional[str] = None
+
+
+class SectionDetail(BaseModel):
+    description: Optional[str] = None
+    good: Optional[List[str]] = None
+    bad: Optional[List[str]] = None
+    improvements: Optional[List[str]] = None
+    overall_review: Optional[str] = None
+    
+class SectionWiseAnalysis(BaseModel):
+    education: Optional[SectionDetail] = None
+    projects: Optional[SectionDetail] = None
+    experience: Optional[SectionDetail] = None
+    skills: Optional[SectionDetail] = None
+    extracurricular: Optional[SectionDetail] = None
+    
+class LLMAnalysis(BaseModel): 
+    """LLM Analysis Schema
+    """
+    overall_analysis: Optional[OverallAnalysis] = None
+    section_wise_analysis: Optional[SectionWiseAnalysis] = None
+    
+class ResumeAnalysis(Document):
+    """Resume Analysis Schema
+    """
+    user_id: PydanticObjectId 
+    resume_id: PydanticObjectId
+    
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    ats_score: Optional[ATSScore] = None
+    job_match_score: Optional[float] = None
+    skill_match_percent: Optional[float] = None
+    technical_skills: Optional[List[SkillGroup]] = None
+    soft_skills: Optional[List[SkillGroup]] = None
+    matched_skills: Optional[List[str]] = None
+    missing_skills: Optional[List[str]] = None
+    llm_analysis: Optional[LLMAnalysis] = None
+    
+    class Settings:
+        name = "resume_analysis"
+        indexes = [
+            IndexModel("user_id"),
+            IndexModel("resume_id"),
+            IndexModel("created_at"),
+        ]
 
 def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_details: Dict[str, Any]) -> Optional[Resume]:
     """
@@ -317,7 +382,7 @@ def create_resume_model(resume_metadata: Dict[str, Any], user_id: str, resume_de
             work_experiences=work_experience_models,
             publications=publication_models,
             extracurriculars=extracurricular_models,
-            ats_score=resume_details["ats_score"]
+            ats_score=resume_details.get("ats_score", None)
         )
         
         logger.info(f"Resume model created successfully for user: {user_id}")

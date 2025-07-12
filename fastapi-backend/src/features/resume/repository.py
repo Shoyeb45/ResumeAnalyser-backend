@@ -303,7 +303,7 @@ class ResumeRepository:
             def flatten_skills(skills_data):
                 skills = []
                 for skill_data in skills_data:
-                    for skill in skill_data["skills"]:
+                    for skill in skill_data.skills:
                         skills.append(skill)
                 return skills
         

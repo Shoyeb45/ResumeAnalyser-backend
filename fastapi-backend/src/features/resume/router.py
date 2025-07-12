@@ -134,22 +134,15 @@ def get_assessment_score(
         )
         
 # API Endpoint to get all the resumes for particular user
-@router.get("/")
+@router.get(
+    "/",
+    description="Get all resume"
+)
 async def get_all_resume(
     user: dict = Depends(get_current_user)
 ):
-    try:
-        user_id = user["user_id"]
-        logger.info(f"Getting all the resume for the user: {user_id}")
-        resumes = await resume_repository.get_user_resumes(user_id=user_id)
+    return await resume_repository.get_user_resumes(user_id=user['user_id'])
         
-        return resumes
-    except Exception as e:
-        logger.error(f"Error providing all the resume {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error occured while providing all the resume of the user, error: {str(e)}"
-        )
 
 # API endpoint to delete resume
 @router.delete(
@@ -160,28 +153,8 @@ async def delete_resume(
     resume_id: str,
     user: dict = Depends(get_current_user),
 ):
-    try:
-        logger.info(f"Deleting resume with resume id : {resume_id}")
-        
-        is_deleted = await resume_repository.delete_resume(resume_id)
-        
-        if not is_deleted:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to delete resume"
-            )
-        
-        return {
-            "status": True,
-            "message": f"Resume with id {resume_id}, deleted succesfully"
-        }
-    except Exception as e:
-        logger.error(f"Failed to delete resume(resume id: {resume_id})")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            details=f"Failed to delete resume, with resume id - {resume_id}"
-        )
-        
+    return await resume_repository.delete_resume(user["user_id"], resume_id)
+
 # API Endpoint to get project description point suggestion
 @router.post(
     "/project",
@@ -276,20 +249,7 @@ async def get_resume_by_id(
     resume_id: str,
     user: dict = Depends(get_current_user)
 ):
-    try:
-        logger.info("Resume get function called for getting the resume")
-        response = await resume_repository.get_resume_by_id(resume_id)
-        return {
-            "success": True,
-            "resume": response
-        }
-    except Exception as e:
-        logger.error(f"Failed to get the resume, error: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get the resume, error: {str(e)}"
-        )
-
+    return await resume_repository.get_resume_by_id(user['user_id'], resume_id)
 
 @router.delete(
     "/resume-analysis/{resume_analysis_id}",
@@ -311,8 +271,8 @@ async def get_resume_analysis_using_id(resume_analysis_id: str, user: dict = Dep
     "/",
     description="Update the resume details by entire resume detail object"
 )
-async def update_resume_detail(user: dict = Depends(get_current_user), resume_upate_data: str = Form(...)):
-    return await resume_repository.update_resume(user["user_id"])
+async def update_resume_detail(user: dict = Depends(get_current_user), resume_update_data: str = Form(...)):
+    return await resume_repository.update_resume(user["user_id"], resume_update_data)
 
 @router.get(
     "/latest-analysis",

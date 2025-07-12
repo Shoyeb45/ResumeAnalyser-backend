@@ -2,14 +2,17 @@
 Resume Repository - CRUD Operations related to resume 
 Handles all database operations for Resume documents 
 """
+import json
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 from fastapi import HTTPException, status
 from beanie import PydanticObjectId
 from beanie.operators import In, RegEx, Eq, And, Or
+from pydantic import ValidationError
 from pymongo import DESCENDING, ASCENDING
 from pymongo.errors import DuplicateKeyError
 import logging
+from bson import ObjectId
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +87,154 @@ class ResumeRepository:
         logger.info("Resume added in database")
         return resume
     
+    async def upsert_resume(
+        self,
+        user_id: str, 
+        resume_metadata: Dict[str, Any], 
+        resume_details: Dict[str, Any], 
+        resume_id: Optional[str] = None
+    ) -> Resume:
+        """
+        Update existing resume or create new one if it doesn't exist
+        
+        Args:
+            user_id: User ID string
+            resume_metadata: Dictionary containing resume metadata
+            resume_details: Dictionary containing all resume details
+            resume_id: Optional resume ID for update operation
+            
+        Returns:
+            Updated or created Resume document
+            
+        Raises:
+            ValueError: If required fields are missing or invalid
+            ValidationError: If data validation fails
+            NotFoundError: If resume_id provided but resume doesn't exist
+        """
+        try:
+            logger.info(f"Upserting resume for user: {user_id}, resume_id: {resume_id}")
+            
+            # Validate user_id format
+            try:
+                user_object_id = PydanticObjectId(user_id)
+            except Exception as e:
+                logger.error(f"Invalid user_id format: {user_id}")
+                raise ValueError(f"Invalid user_id format: {str(e)}")
+            
+            existing_resume = None
+            
+            # Check if resume exists when resume_id is provided
+            if resume_id:
+                try:
+                    resume_object_id = PydanticObjectId(resume_id)
+                    existing_resume = await Resume.find_one(
+                        {"_id": resume_object_id, "user_id": user_object_id}
+                    )
+                    
+                    if not existing_resume:
+                        logger.error(f"Resume not found with id: {resume_id} for user: {user_id}")
+                        raise ValueError(f"Resume not found with id: {resume_id}")
+                        
+                except Exception as e:
+                    logger.error(f"Invalid resume_id format: {resume_id}")
+                    raise ValueError(f"Invalid resume_id format: {str(e)}")
+            
+            # Set timestamps
+            now = datetime.utcnow()
+            
+            if existing_resume:
+                # UPDATE OPERATION
+                logger.info(f"Updating existing resume: {resume_id}")
+                
+                # Create updated resume model
+                updated_resume = create_resume_model(
+                    user_id=user_id,
+                    resume_details=resume_details,
+                    resume_metadata=resume_metadata
+                )
+                
+                # Preserve original creation time and ID
+                updated_resume.id = existing_resume.id
+                updated_resume.created_at = existing_resume.created_at
+                updated_resume.updated_at = now
+                
+              
+                # Replace the existing document
+                await updated_resume.replace()
+                logger.info(f"Resume updated successfully: {resume_id}")
+                return updated_resume
+                
+            else:
+                # CREATE OPERATION
+                logger.info(f"Creating new resume for user: {user_id}")
+                
+                # Handle primary resume logic for new resumes
+                if resume_metadata.get('is_primary', False):
+                    await ResumeRepository._ensure_single_primary_resume(user_object_id)
+                
+                # Create new resume model
+                resume = create_resume_model(
+                    user_id=user_id,
+                    resume_details=resume_details,
+                    resume_metadata=resume_metadata
+                )
+                
+                # Set timestamps for new resume
+                resume.created_at = now
+                resume.updated_at = now
+                
+                # Insert new resume
+                await resume.insert()
+                logger.info(f"Resume created successfully for user: {user_id}")
+                return resume
+                
+        except ValidationError as e:
+            logger.error(f"Validation error while upserting resume: {str(e)}")
+            raise
+        except ValueError as e:
+            logger.error(f"Value error while upserting resume: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error while upserting resume: {str(e)}")
+            raise Exception(f"Failed to upsert resume: {str(e)}")
 
+
+    async def update_resume(self, user_id: str, resume_detail_json: str):
+        try:
+            resume_details: Dict[str, Any] = json.loads(resume_detail_json)
+            resume_metadata = {
+                "resume_name": resume_details.get("resume_name", "no_name_provided"),
+                "is_primary": resume_details.get("is_primary", False)
+            }
+            
+            updated_resume = await self.upsert_resume(user_id, resume_metadata, resume_details, resume_details.get("_id", None))
+            if not updated_resume:
+                logger.error("Resume update failed")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to update ther resume due to internal server error"
+                )
+            
+            return {
+                "success": True,
+                "message": "Resume update/created succesfully",
+                "resume": updated_resume
+            }
+        except json.JSONDecodeError as e:
+            logger.error("Invalid json string")
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail="Invalid json string provided"
+            )
+        except HTTPException as http_exception:
+            raise http_exception
+        except Exception as e:
+            logger.error(f"Failed to update the resume, error: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Internal Server Error"
+            )
+        
     @staticmethod
     async def create_resume_analysis(resume_id: str, user_id: str, resume_analysis: Dict[str, Any]) -> ResumeAnalysis:
         """Method to create resume analysis in database
@@ -194,7 +344,7 @@ class ResumeRepository:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="No resume analysis found for user"
                 )
-
+            print(len(result))
             resume_ids = [ra.resume_id for ra in result]
 
             # Use In operator here
@@ -219,6 +369,7 @@ class ResumeRepository:
                     )
                 })
 
+            print(final_result)
             return {
                 "success": True,
                 "resume_analysis": final_result
@@ -232,36 +383,79 @@ class ResumeRepository:
             )
 
 
-    @staticmethod
-    async def get_resume_by_id(resume_id: str) -> Optional[Resume]:
-        """Get resume by ID with optimized query"""
-        return await Resume.get(PydanticObjectId(resume_id))
+    async def get_resume_by_id(self, user_id: str, resume_id: str) -> Any:
+        """Get resume by ID"""
+        try:
+            logger.info("API called for getting resume with resume id")
+            resume: Resume = await Resume.get(PydanticObjectId(resume_id))
+
+            if not resume:
+                logger.warning("No resume found with give resume id")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Resume not found with give resume id"
+                )
+            
+            # Check if the current user is the owner of the resume
+            if str(resume.user_id) != user_id:
+                logger.warning(f"Unauthorized access: attempt to get resume by user_id: {user_id} for resume owned by {resume.user_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Unauthorized request to access the resume"
+                )
+                
+            return {
+                "success": True,
+                "message": "Succesfully got the resume",
+                "resume": resume
+            }
+            
+        except HTTPException as http_excep:
+            raise http_excep
+        except Exception as e:
+            logger.error(f"Failed to get resume with id: {resume_id}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Internal Server Error"
+            )
     
-    @staticmethod
+    
     async def get_user_resumes(
+        self,
         user_id: str
-        # limit: int = 50,
-        # offset: int = 0,
-        # sort_by: str = "updated_at",
-        # sort_order: int = DESCENDING
     ) -> List[Resume]:
         """
         Get all resumes for a user with pagination and sorting
         
         Args:
-            user_id: User's ObjectId
-            limit: Maximum number of resumes to return
-            offset: Number of resumes to skip
-            sort_by: Field to sort by
-            sort_order: Sort order (ASCENDING or DESCENDING)
+            user_id: User's ObjectId in string
         """
-        user_id = PydanticObjectId(user_id)
-        return await Resume.find(
-            Resume.user_id == user_id
-        ).to_list()
-        # return await Resume.find(
-        #     Resume.user_id == user_id
-        # ).sort([(sort_by, sort_order)]).skip(offset).limit(limit).to_list()
+        try:
+                
+            logger.info(f"Getting all the resume for the user: {user_id}")
+            user_id = PydanticObjectId(user_id)
+            results =  await Resume.find(Resume.user_id == user_id).to_list()
+            
+            if not results:
+                return {
+                    "success": True,
+                    "message": "No resume found",
+                    "resume": []
+                }
+            
+            return {
+                "success": True,
+                "message": "Resume found succesfully",
+                "resume": results
+            }
+        except HTTPException as http_exception:
+            raise http_exception
+        except Exception as e:
+            logger.error(f"Failed to get all the resume, error: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Internal server error"
+            )
     
     @staticmethod
     async def get_primary_resume(user_id: PydanticObjectId) -> Optional[Resume]:
@@ -323,7 +517,7 @@ class ResumeRepository:
     
     async def get_latest_resume_analysis(self, user: Dict[str, Any]) -> Dict[str, Any] | None:
         try:
-            query_filter = {"user_id": PydanticObjectId(user["user_id"])}
+            query_filter = {"user_id": ObjectId(user["user_id"])}
        
             def flatten_skills(skills_data):
                 skills = []
@@ -343,17 +537,16 @@ class ResumeRepository:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="No latest resume analysis found for user"
                 )
-            
             resume_id = latest_analysis.resume_id
             
             # find resume and give resume metadata
             resume = await Resume.get(document_id=resume_id) 
             
-            if not latest_analysis:
-                logger.error(f"No resume analysis found for user: {user['user_id']}")
+            if not resume:
+                logger.error(f"No resume found for resume analysis for user: {user['user_id']}")
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"No resume analysis found for user: {user['user_id']}"
+                    detail="No resume found for resume analysis for user"
                 )
             
             technical_skills = flatten_skills(latest_analysis.technical_skills)
@@ -385,12 +578,16 @@ class ResumeRepository:
                 }, 
                 "user_name": user["user"].name
             }
+            
+        except HTTPException as http_exception:
+            raise http_exception
         except Exception as e:
             logger.error(f"Failed to get latest resume analysis object, error: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=str(e)
+                detail="Internal server error"
             ) 
+  
     @staticmethod
     async def get_resume_analytics(user_id: PydanticObjectId) -> Dict[str, Any]:
         """
@@ -436,39 +633,39 @@ class ResumeRepository:
     # ============= UPDATE OPERATIONS =============
     
     @staticmethod
-    async def update_resume(
-        resume_id: PydanticObjectId,
-        update_data: Dict[str, Any]
-    ) -> Optional[Resume]:
-        """
-        Update resume with optimized field updates
+    # async def update_resume(
+    #     resume_id: PydanticObjectId,
+    #     update_data: Dict[str, Any]
+    # ) -> Optional[Resume]:
+    #     """
+    #     Update resume with optimized field updates
         
-        Args:
-            resume_id: Resume ID to update
-            update_data: Fields to update
-            upsert: Create if doesn't exist
+    #     Args:
+    #         resume_id: Resume ID to update
+    #         update_data: Fields to update
+    #         upsert: Create if doesn't exist
             
-        Returns:
-            Updated Resume document
-        """
-        # Handle primary resume logic
-        if 'is_primary' in update_data and update_data['is_primary']:
-            resume = await Resume.get(resume_id)
-            if resume:
-                await ResumeRepository._ensure_single_primary_resume(resume.user_id, exclude_id=resume_id)
+    #     Returns:
+    #         Updated Resume document
+    #     """
+    #     # Handle primary resume logic
+    #     # if 'is_primary' in update_data and update_data['is_primary']:
+    #     #     resume = await Resume.get(resume_id)
+    #     #     if resume:
+    #     #         await ResumeRepository._ensure_single_primary_resume(resume.user_id, exclude_id=resume_id)
         
-        # Add updated timestamp
-        update_data['updated_at'] = datetime.utcnow()
+    #     # Add updated timestamp
+    #     update_data['updated_at'] = datetime.utcnow()
         
-        # Use atomic update operations
-        resume = await Resume.get(resume_id)
+    #     # Use atomic update operations
+    #     resume = await Resume.get(resume_id)
         
-        if resume:
-            # Update existing document
-            for key, value in update_data.items():
-                setattr(resume, key, value)
-            await resume.save()
-            return resume
+    #     if resume:
+    #         # Update existing document
+    #         for key, value in update_data.items():
+    #             setattr(resume, key, value)
+    #         await resume.save()
+    #         return resume
     
     @staticmethod
     async def update_resume_section(
@@ -590,22 +787,54 @@ class ResumeRepository:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to delete resume analysis object, error: {str(e)}"
             )
-    @staticmethod
-    async def delete_resume(resume_id: str) -> bool:
+    
+    
+    async def delete_resume(self, user_id: str, resume_id: str) -> bool:
         """
         Delete resume by ID
-        
+
         Returns:
             True if deleted, False if not found
         """
-        
-        resume = await Resume.get(PydanticObjectId(resume_id))
-        if not resume:
-            return False
-        
-        await resume.delete()
-        return True
-    
+        try:
+            logger.info(f"Deleting resume with resume_id: {resume_id} for user_id: {user_id}")
+
+            # Fetch the resume document
+            resume = await Resume.get(PydanticObjectId(resume_id))
+            if not resume:
+                logger.warning(f"No resume found with id: {resume_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="No resume found with given resume ID"
+                )
+
+            # Check if the current user is the owner of the resume
+            if str(resume.user_id) != user_id:
+                logger.warning(f"Unauthorized delete attempt by user_id: {user_id} for resume owned by {resume.user_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Unauthorized access to delete resume; this resume doesn't belong to the user"
+                )
+
+            # Delete associated resume analyses
+            delete_result = await ResumeAnalysis.find({"resume_id": ObjectId(resume_id)}).delete()
+            logger.info(f"Deleted {delete_result} resume_analysis documents associated with resume_id: {resume_id}")
+
+            # Delete the resume itself
+            await resume.delete()
+            logger.info(f"Successfully deleted resume with id: {resume_id}")
+
+            return True
+
+        except HTTPException as http_exception:
+            raise http_exception
+        except Exception as e:
+            logger.error(f"Failed to delete resume with id: {resume_id}, error: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Internal Server Error"
+            )
+            
     @staticmethod
     async def delete_user_resumes(user_id: PydanticObjectId) -> int:
         """

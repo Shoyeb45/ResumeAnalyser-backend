@@ -3,67 +3,75 @@ from typing import List, Any, Dict, Optional, Tuple
 class PromptCreator:
     def __init__(self):
         pass
-    
+      
     def _create_analysis_prompt(
-        self, 
-        text: str, 
-        target_role: str, 
-        job_description: str, 
-    ) -> str:
-        """Create prompt for resume analysis returning only a JSON object"""
-        system_prompt = """You are an expert resume analyst with 15+ years of experience in talent acquisition and career development.
-
-INSTRUCTIONS:
-- Return only a valid JSON object.
-- Do NOT include any explanations, comments, or extra text.
-- Output should begin with '{' and end with '}' — return only the JSON.
-
-OUTPUT FORMAT (JSON ONLY):
+            self, 
+            text: str, 
+            target_role: str, 
+            job_description: str, 
+        ) -> str:
+            """Create a precise and structured prompt for resume analysis, ensuring JSON-only output."""
+            
+            system_prompt = """
+You are a highly experienced Resume Analyst with over 15 years in talent acquisition, career development, and ATS optimization.
+🛠 OBJECTIVE:
+You must analyze a resume against a specific job description and role. Return *only* a strictly valid JSON object summarizing the analysis.
+🚫 RESTRICTIONS:
+- Do NOT include explanations, markdown, comments, or natural language outside the JSON.
+- Do NOT wrap JSON in code blocks or add any leading/trailing text.
+- Your response MUST start with { and end with }. Return JSON only.
+📦 REQUIRED OUTPUT FORMAT (JSON):
 {
-  "overall_strengths": [   // list of objects with 'description' and 'weightage'
-    {"description": "Specific strength with evidence", "weightage": 85},
-    {"description": "Another strength with context", "weightage": 78}
+  "overall_strengths": [
+    { "description": "Clearly stated strength backed by evidence", "weightage": 85 },
+    { "description": "Another unique strength with measurable value", "weightage": 78 }
   ],
-  "areas_for_improvement": [ // list of objects with 'description' and 'weightage'
-    {"description": "Specific improvement area", "weightage": 70},
-    {"description": "Another area needing attention", "weightage": 65}
+  "areas_for_improvement": [
+    { "description": "Specific aspect where the resume lacks", "weightage": 70 },
+    { "description": "Another improvement area with explanation", "weightage": 65 }
   ],
-  "ats_optimization_suggestions": [ // list of objects with 'description' and 'weightage'
-    {"description": "Actionable ATS improvement", "weightage": 80},
-    {"description": "Another ATS enhancement", "weightage": 75}
+  "ats_optimization_suggestions": [
+    { "description": "Precise ATS improvement idea", "weightage": 80 },
+    { "description": "Another actionable ATS fix", "weightage": 75 }
   ],
-  "job_fit_assessment": {  // object with 'score' and 'notes'
-    "score": 82,
-    "notes": "Detailed assessment of role alignment and growth potential"
+  "job_fit_assessment": {
+    "score": 82,  // Integer from 1–100
+    "notes": "Critical evaluation of alignment with job requirements and potential growth"
   },
-  "recommendation_score": 82,  // integer (1–100)
-  "resume_summary": "Compelling 2-3 sentence summary of the candidate's profile and potential",
-  "matched_skills": "List of matched skills from job description and resume, each element should be string",
-  "missing_skills": "List of missing skills from job description and resume, each element should be string",
+  "recommendation_score": 82,  // Integer from 1–100
+  "resume_summary": "Concise and compelling 2-3 sentence summary of the candidate's profile and fit for the role.",
+  "matched_skills": [
+    "react", "python", "dataanalysis" 
+    // One-word technical or domain-relevant keywords derived from job description and resume
+  ],
+  "missing_skills": [
+    "typescript", "cloud", "agile"
+    // One-word technical or domain-relevant keywords derived from job description and resume that is missing
+  ]
 }
+✅ EVALUATION GUIDELINES:
+1. Depth of role-specific skills and technologies
+2. Measurable achievements (quantified where possible)
+3. Career growth and progression indicators
+4. ATS-friendliness, keyword richness, formatting quality
+5. Overall presentation, clarity, and professionalism""".strip()
 
-EVALUATION CRITERIA:
-1. Role-specific skill alignment and depth
-2. Quantifiable achievements and impact metrics
-3. Career progression and growth trajectory
-4. ATS compatibility and keyword optimization
-5. Professional presentation and clarity
+            user_prompt = f"""
+        Analyze the following resume for its suitability for the role below and provide your analysis in the defined JSON structure only.
 
-Return only the JSON object with no additional text or formatting."""
+        🎯 TARGET ROLE:
+        {target_role}
 
-        user_prompt = f"""Please analyze the following resume for the specified role:
+        📄 JOB DESCRIPTION:
+        {job_description or "No specific JD provided — perform general analysis based on industry norms."}
 
-TARGET ROLE: {target_role}
+        📌 RESUME CONTENT:
+        {text}
 
-JOB DESCRIPTION: {job_description or "General role analysis"}
+        Follow the evaluation criteria strictly and return only the JSON object as instructed.
+        """.strip()
 
-RESUME CONTENT:
-{text}
-
-Analyze this resume according to the evaluation criteria and return the analysis in the specified JSON format.""".strip()
-
-        return system_prompt, user_prompt
-    
+            return system_prompt, user_prompt 
     def _create_scoring_prompt(self, text: str, target_role: str, job_description: str) -> str:
         """Create prompt for resume scoring"""
 

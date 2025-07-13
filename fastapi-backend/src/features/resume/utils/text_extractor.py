@@ -87,8 +87,7 @@ class TextExtractor:
                     text += page_text + "\\"
                 doc.close()
                 if len(text.strip()) > 50:
-                    with open("out.txt", "w") as file:
-                        file.write(text.strip())
+        
                     logger.info("PyMuPDF extraction successful")
                     return text.strip()
             except Exception as e:
@@ -105,8 +104,7 @@ class TextExtractor:
                         text += page_text + "\n"
                 if len(text.strip()) > 50:
                     logger.info("PyPDF2 extraction successful")
-                    with open("out.txt", "w") as file:
-                        file.write(text.strip())
+                 
                     return text.strip()
             except Exception as e:
                 logger.warning(f"PyPDF2 failed: {e}")
@@ -131,8 +129,7 @@ class TextExtractor:
 
                 if len(text.strip()) > 50:
                     logger.info("OCR extraction successful")
-                    with open("out.txt", "w") as file:
-                        file.write(text.strip())
+                   
                         
                     return text.strip()
             except Exception as e:

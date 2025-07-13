@@ -340,11 +340,11 @@ class ResumeRepository:
 
             result = await ResumeAnalysis.find(ResumeAnalysis.user_id == user_id).to_list()
             if not result:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="No resume analysis found for user"
-                )
-            print(len(result))
+                return {
+                    "success": True,
+                    "resume_analysis": []
+                }
+                
             resume_ids = [ra.resume_id for ra in result]
 
             # Use In operator here
@@ -369,7 +369,6 @@ class ResumeRepository:
                     )
                 })
 
-            print(final_result)
             return {
                 "success": True,
                 "resume_analysis": final_result

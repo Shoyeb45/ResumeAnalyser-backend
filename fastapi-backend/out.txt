@@ -1,0 +1,51 @@
+ARYAN CHAUHAN
+
+Bengaluru, Karnataka
+
+& +91 7800700083 s arynch24@gmail.com a aryneh 9 arynch24 ® aryanchauhan.com
+EDUCATION
+Indian Institute of Technology Guwahati 10 2023 - Current
+
+B.Se.(Honors) in Data Science and Artificial Technology - Guwahati, Assam
+
+Physies Wallah Institute of Innovation 10 2023 - Current
+
+Certification in Computer Science and Artificial Intelligence - Bengaluru, Karnataka
+
+CBSE Board 04 2021 - 0g 2022
+
+Senior Secondary Examination - Ghazipur, Uuar Pradesh
+
+CBSE Board 04 2019 - 04 2020
+
+Higher Secondary Examination - Ghasipur, Uttar Pradesh
+
+PROJECTS
+Cuttly | Next.is, TypeScript, Tailwind CSS, Postgres, Prisma ORM, Nextauth Dec 2024
+
+* Developed a custom link shortener using Cuttly API to generate and manage short URLs. Integrated analytics to
+track click performance and improve link sharing efficiency.
+
+* https: //cuttely.vercel.app/
+UploadThing | N js, Tailwind CSS, Github oAuth, MongoDB, ShadCN, Cloudinary API Mar 2025
+
+* Built a file-uploading platform, enabling users to upload media to cloud storage Cloudinary and generate
+sharable links. Implemented GitHub authentication, a user dashboard, and a backend API, deploying the project
+on Railway for scalability.
+
+-thine-alpha.v
+EXPERIENCE
+
+Physics Wallah Jun 2025 - Nov 2025
+Frontend Developer Intern Bengaluru, Karnataka
+
+Developed and maintained web applications using React and Node.js
+Collaborated with cross-functional teams to deliver high-quality software solutions
+Participated in code reviews and followed agile development practices
+
+TECHNICAL SKILLS
+
+Languages: Python, JavaScript, Java, C++, SQL
+Developer Tools: VS Code, Git, Docker, AWS, Postman
+
+Technologies/Frameworks: React, Node.js, Express, MongoDB, PostgreSQL

@@ -76,21 +76,25 @@ class ResumeAnalyzer:
             
             # Step 2: Extract personal information
             logger.info("Step 2: Extracting resume information")
-            resume_details = self.ai_analyzer.get_resume_details(text=resume_text)
+            resume_details: Dict[str, Any] = self.ai_analyzer.get_resume_details(text=resume_text)
             # personal_info = self.personal_info_extractor.extract_personal_info(resume_text)
+            
             
             # Step 3: Perform NLP analysis
             logger.info("Step 3: Performing NLP analysis - skip....")
             # nlp_analysis = self.nlp_analyzer.analyze_text_with_nlp(resume_text, target_role)
             
             # Step 4: Analyze skills
-            logger.info("Step 4: Analyzing skills")
-            tech_skills, soft_skills = self.skills_analyzer.detect_skills_by_groups(resume_text)
+            logger.info("Step 4: Analyzing skills, skipped...")
+            # get tech skills and soft skills
+            
+            # tech_skills, soft_skills = self.skills_analyzer.detect_skills_by_groups(resume_text)
             
             # Step 5: Match skills with job description
             logger.info("Step 5: Matching skills with job description")
             matched_skills, missing_skills, skill_match_percent = \
                 self.skills_analyzer.match_skills_with_job_description(resume_text, job_description)
+            
             
             # Step 6: Calculate job match score
             logger.info("Step 6: Calculating job match score")
@@ -134,6 +138,21 @@ class ResumeAnalyzer:
             if resume_details:
                 resume_details = resume_details["resume_details"]
           
+            tech_skills, soft_skills = resume_details.get("technical_skills", []), resume_details.get("soft_skills", [])
+        
+            resume_details.pop("technical_skills", [])
+            resume_details.pop("soft_skills", [])
+            
+            # add skills in resume_details
+            resume_details["skills"] = tech_skills + soft_skills
+            
+            
+            # matched skills and missing skills
+            matched_skills, missing_skills = resume_details.get("matched_skills", []), resume_details.get("missing_skills", [])
+            print(f"Matched skills => {matched_skills}")
+            print(f"Missing skills => {missing_skills}")
+            resume_details.pop("missing_skills", [])
+            resume_details.pop("matched_skills", [])
             
             resume_analysis = {
                 "ats_score": ats_score,
@@ -167,6 +186,8 @@ class ResumeAnalyzer:
             logger.info("Resume analysis completed successfully")
             return response
             
+        except HTTPException as http_exception:
+            raise HTTPException
         except Exception as e:
             logger.error(f"Error in resume analysis: {e}")
             return {

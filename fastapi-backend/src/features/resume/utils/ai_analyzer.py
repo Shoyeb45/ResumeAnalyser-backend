@@ -130,7 +130,9 @@ class AIAnalyzer:
             
             system_prompt, user_prompt = self.prompt_creator._create_resume_parser_prompt(text)
             analysis = self.llm_util.chat_with_openai(system_prompt, user_prompt)
-            
+            with open("new.txt", 'w') as file:
+                file.write(analysis)
+                
             # extracted_json = self.extract_json_from_response(analysis)
             return ResumeDetailsExtractor.parse_resume_with_json_extraction(analysis)
         except Exception as e:

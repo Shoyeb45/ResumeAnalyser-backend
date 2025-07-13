@@ -36,7 +36,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         }
     )
     
-# Include routers
+# Include route22rs
 app.include_router(resumes_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")
 
@@ -48,19 +48,8 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
-@app.get('/get-all-users')
-async def get_all():
-    from features.users.models import User
-    users = await User.get("686189be9e09fb7d73dc08b5")
-    
-    return {
-        "users": users
-    }
-    
-def main():
-    
-    
-    
+
+def main():    
     logger.info(f"Environment variables loaded successfully, test env: {os.getenv('TEST')}")
     uvicorn.run("main:app")
     

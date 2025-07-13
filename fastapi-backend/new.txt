@@ -1,0 +1,170 @@
+{
+  "resume_details": {
+    "personal_info": {
+      "name": "Aryan Chauhan",
+      "contact_info": {
+        "email": "arynch24@gmail.com",
+        "mobile": "+91 7800700083",
+        "location": "Bengaluru, Karnataka",
+        "social_links": {
+          "linkedin": "",
+          "github": "https://github.com/arynch24",
+          "portfolio": "aryanchauhan.com"
+        }
+      },
+      "professional_summary": ""
+    },
+    "educations": [
+      {
+        "institute_name": "Indian Institute of Technology Guwahati",
+        "degree": "B.Se.(Honors)",
+        "specialisation": "Data Science and Artificial Technology",
+        "dates": {
+          "start": "2023",
+          "end": "Current"
+        },
+        "location": "Guwahati, Assam",
+        "gpa": "",
+        "relevant_coursework": []
+      },
+      {
+        "institute_name": "Physies Wallah Institute of Innovation",
+        "degree": "Certification",
+        "specialisation": "Computer Science and Artificial Intelligence",
+        "dates": {
+          "start": "2023",
+          "end": "Current"
+        },
+        "location": "Bengaluru, Karnataka",
+        "gpa": "",
+        "relevant_coursework": []
+      },
+      {
+        "institute_name": "CBSE Board",
+        "degree": "Senior Secondary Examination",
+        "specialisation": "",
+        "dates": {
+          "start": "04 2021",
+          "end": "0g 2022"
+        },
+        "location": "Ghazipur, Uttar Pradesh",
+        "gpa": "",
+        "relevant_coursework": []
+      },
+      {
+        "institute_name": "CBSE Board",
+        "degree": "Higher Secondary Examination",
+        "specialisation": "",
+        "dates": {
+          "start": "04 2019",
+          "end": "04 2020"
+        },
+        "location": "Ghazipur, Uttar Pradesh",
+        "gpa": "",
+        "relevant_coursework": []
+      }
+    ],
+    "work_experiences": [
+      {
+        "company_name": "Physics Wallah",
+        "job_title": "Frontend Developer Intern",
+        "date": {
+          "start": "Jun 2025",
+          "end": "Nov 2025"
+        },
+        "location": "Bengaluru, Karnataka",
+        "bullet_points": [
+          "Developed and maintained web applications using React and Node.js",
+          "Collaborated with cross-functional teams to deliver high-quality software solutions",
+          "Participated in code reviews and followed agile development practices"
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "title": "Cuttly",
+        "project_link": "https://cuttely.vercel.app/",
+        "date": {
+          "start": "",
+          "end": "Dec 2024"
+        },
+        "location": "",
+        "organization": "",
+        "bullet_points": [
+          "Developed a custom link shortener using Cuttly API to generate and manage short URLs.",
+          "Integrated analytics to track click performance and improve link sharing efficiency."
+        ],
+        "technologies_used": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Postgres",
+          "Prisma ORM",
+          "Nextauth"
+        ]
+      },
+      {
+        "title": "UploadThing",
+        "project_link": "",
+        "date": {
+          "start": "",
+          "end": "Mar 2025"
+        },
+        "location": "",
+        "organization": "",
+        "bullet_points": [
+          "Built a file-uploading platform, enabling users to upload media to cloud storage Cloudinary and generate sharable links.",
+          "Implemented GitHub authentication, a user dashboard, and a backend API, deploying the project on Railway for scalability."
+        ],
+        "technologies_used": [
+          "Next.js",
+          "Tailwind CSS",
+          "Github oAuth",
+          "MongoDB",
+          "ShadCN",
+          "Cloudinary API"
+        ]
+      }
+    ],
+    "technical_skills": [
+      {
+        "skill_group": "Programming Languages",
+        "skills": [
+          "Python",
+          "JavaScript",
+          "Java",
+          "C++",
+          "SQL"
+        ]
+      },
+      {
+        "skill_group": "Developer Tools",
+        "skills": [
+          "VS Code",
+          "Git",
+          "Docker",
+          "AWS",
+          "Postman"
+        ]
+      },
+      {
+        "skill_group": "Technologies/Frameworks",
+        "skills": [
+          "React",
+          "Node.js",
+          "Express",
+          "MongoDB",
+          "PostgreSQL"
+        ]
+      }
+    ],
+    "soft_skills": [],
+    "achievements": [],
+    "certifications": [],
+    "languages": [],
+    "publications": [],
+    "extracurriculars": [],
+    "matched_skills": [],
+    "missing_skills": []
+  }
+}

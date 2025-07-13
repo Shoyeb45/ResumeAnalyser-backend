@@ -1,4 +1,6 @@
 import os
+import platform
+from shutil import which
 
 class ResumeAnalyzerConfig:
     """Configuration class for resume analyzer settings"""
@@ -13,8 +15,12 @@ class ResumeAnalyzerConfig:
     OPENAI_ENDPOINT = os.getenv("OPENAI_ENDPOINT")
     
     # OCR Configuration
-    TESSERACT_PATH = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
-    
+    if platform.system() == "Windows":
+        TESSERACT_PATH = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+    else:
+        # On Linux or macOS, attempt to find tesseract in PATH
+        TESSERACT_PATH = which("tesseract")
+        
     # Skills Database
     TECHNICAL_SKILLS = {
         "Programming Languages": [
@@ -76,3 +82,4 @@ class ResumeAnalyzerConfig:
             "change management", "continuous learning"
         ]
     }
+

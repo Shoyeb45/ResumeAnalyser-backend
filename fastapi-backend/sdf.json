@@ -1,116 +1,140 @@
 {
-      "_id": "6872d6b8387b4da3c531f5f0",
-      "resume_name": "Update_resume",
-      "is_primary": true,
-      "created_at": "2025-07-12T21:42:16.037000",
-      "updated_at": "2025-07-12T22:15:15.035000",
-      "personal_info": {
-        "name": "Mohammad Shoyeb Ansari",
-        "contact_info": {
-          "email": "shoyebff45@gmail.com",
-          "mobile": "+91 9327156940",
-          "location": "Bangalore, Karnataka",
-          "social_links": {
-            "linkedin": "shoyebansari45",
-            "github": "https://github.com/Shoyeb45",
-            "portfolio": "https://shoyeb.vercel.app"
-          }
-        },
-        "professional_summary": "Learning new things and applying them in real life is completely different things. Just eager to apply my skills in some handful projects and use them in real life to get better understanding of my skills and learn something new."
-      },
-      "projects": [
-        {
-          "title": "Space Invader Game",
-          "project_link": "",
-          "date": {
-            "start": "",
-            "end": ""
-          },
-          "location": "",
-          "organization": "",
-          "bullet_points": [
-            "Built completely with javascript without using any external library.",
-            "Used canvas API of HTML to render the graphics"
-          ],
-          "technologies_used": [
-            "JavaScript",
-            "HTML Canvas"
-          ]
-        },
-        {
-          "title": "Solanti: Solana Indexing Platform",
-          "project_link": "",
-          "date": {
-            "start": "",
-            "end": ""
-          },
-          "location": "",
-          "organization": "",
-          "bullet_points": [
-            "Developed a full-stack NFT and token indexing platform on the Solana blockchain, integrating real-time webhook listeners and PostgreSQL support, enabling 1000+ blockchain events per hour to be processed and queried via a responsive Next.js dashboard.",
-            "Implemented modular backend architecture using Node.js and Express, optimizing API latency by 30% through caching and batch processing, while ensuring secure user-level data isolation with dynamic PostgreSQL connection pools."
-          ],
-          "technologies_used": [
-            "Solana",
-            "PostgreSQL",
-            "Next.js",
-            "Node.js",
-            "Express"
-          ]
-        }
+  "_id": { "$oid": "6873b029ddf9b4d53a8935ce" },
+  "user_id": { "$oid": "6862ab572c24f5f503f957da" },
+  "resume_name": "SATYA_final_resume",
+  "is_primary": true,
+  "created_at": { "$date": { "$numberLong": "1752412201200" } },
+  "updated_at": { "$date": { "$numberLong": "1752417332576" } },
+  "personal_info": {
+    "name": "Satyabrata Mohanty",
+    "contact_info": {
+      "email": "satyabrata.tech",
+      "mobile": "+91 6372506476",
+      "location": "Bengaluru, Karnataka",
+      "social_links": {
+        "linkedin": "linkedln.com/satyabrata-me",
+        "github": "github.com/Satya900",
+        "portfolio": ""
+      }
+    },
+    "professional_summary": "Aspiring Software Development Engineer with a strong foundation in Data Structures, Algorithms, and Object-Oriented Programming. Proficient in Java, Python, and full-stack web development, with hands-on experience in building dynamic projects and contributing to open-source communities. Passionate about solving real-world problems through scalable, clean code and actively preparing for SDE roles through competitive programming and system design exploration."
+  },
+  "projects": [
+    {
+      "title": "Dev Elevate – Developer Learning & Progress Tracking Platform",
+      "project_link": "",
+      "date": { "start": "", "end": "" },
+      "location": "",
+      "organization": "",
+      "bullet_points": [
+        "Built a responsive platform to teach DSA, System Design, and Web Development via curated content, projects, and learning paths.",
+        "Integrated Markdown rendering, user auth, progress tracking, and SEO optimizations like rich metadata and sitemaps."
       ],
-      "educations": [
-        {
-          "institute_name": "Indian Institute of Technology, Guwahati",
-          "degree": "Online Bsc(Hons)",
-          "specialisation": "DS and Al",
-          "date": {
-            "start": "Oct. 2023",
-            "end": "2027"
-          },
-          "location": "",
-          "gpa": "9 CGPA",
-          "relevant_coursework": []
-        },
-        {
-          "institute_name": "Jawahar Navodaya Vidyalaya, Dumra",
-          "degree": "HSC",
-          "specialisation": "CBSE Board",
-          "date": {
-            "start": "Apr. 2021",
-            "end": "2022"
-          },
-          "location": "Dumra",
-          "gpa": "94%",
-          "relevant_coursework": []
-        },
-        {
-          "institute_name": "Jawahar Navodaya Vidyalaya, Dumra",
-          "degree": "SSC",
-          "specialisation": "CBSE Board",
-          "date": {
-            "start": "Apr. 2019",
-            "end": "2020"
-          },
-          "location": "Dumra",
-          "gpa": "94%",
-          "relevant_coursework": []
-        }
+      "technologies_used": [
+        "React",
+        "TypeScript",
+        "Firebase",
+        "Tailwind",
+        "Markdown"
+      ]
+    },
+    {
+      "title": "CodeRadar – Developer Portfolio & Coding Analytics Platform",
+      "project_link": "",
+      "date": { "start": "", "end": "" },
+      "location": "",
+      "organization": "",
+      "bullet_points": [
+        "Built a full-stack app aggregating GitHub, LeetCode, and Codeforces data into unified profiles with DSA tracking, dashboards, and public portfolios.",
+        "Used Firebase, third-party APIs, and real-time data visualizations."
       ],
-
-      "achievements": [
-        {
-          "title": "President of the college Tech Club",
-          "description": "Leading a thrival community of coders and developers to foster innovation and technical skill development.",
-          "date_achieved": null,
-          "organization": ""
-        },
-        {
-          "title": "Solved 950+ problems across LeetCode and Codeforces",
-          "description": "Achieving a peak rating of 1758 on LeetCode and Pupil rank (1255) on Codeforces, showcasing strong algorithmic-thinking skills.",
-          "date_achieved": null,
-          "organization": ""
-        }
-      ],
-      "ats_score": 60
+      "technologies_used": [
+        "React",
+        "Firebase",
+        "Tailwind",
+        "GitHub/LeetCode/Codeforces APIs"
+      ]
     }
+  ],
+  "educations": [
+    {
+      "institute_name": "Indian Institute of Technology, MADRAS",
+      "degree": "Bachelor of Science",
+      "specialisation": "Data Science and Application",
+      "date": { "start": "Oct 2023", "end": "Aug 2027" },
+      "location": "",
+      "gpa": "",
+      "relevant_coursework": ["Data Science", "Full-Stack Development"]
+    },
+    {
+      "institute_name": "PW Institute of Innovation, Bengaluru",
+      "degree": "Certification",
+      "specialisation": "Computer Science and Artificial Intelligence",
+      "date": { "start": "Oct 2023", "end": "Aug 2027" },
+      "location": "Bengaluru",
+      "gpa": "",
+      "relevant_coursework": ["Full-Stack Development"]
+    }
+  ],
+  "skills": [
+    {
+      "skill_group": "Programming Languages",
+      "skills": ["Java", "Python", "JavaScript", "TypeScript"]
+    },
+    {
+      "skill_group": "Frameworks & Libraries",
+      "skills": ["React", "Tailwind CSS", "Markdown"]
+    },
+    {
+      "skill_group": "Platforms & Tools",
+      "skills": [
+        "Firebase",
+        "Git/GitHub",
+        "REST APIs",
+        "SEO Optimization",
+        "Project Management",
+        "GitHub/LeetCode/Codeforces APIs",
+        "Real-time Data Tracking"
+      ]
+    }
+  ],
+  "achievements": [
+    {
+      "title": "Platform Contribution Recognition",
+      "description": "Recognized for actively contributing to the platform’s growth by answering 100+ learner queries, enhancing content clarity, and significantly improving overall learner satisfaction.",
+      "date_achieved": null,
+      "organization": null
+    }
+  ],
+  "languages": [
+    { "language": "English", "proficiency": "" },
+    { "language": "Hindi", "proficiency": "" }
+  ],
+  "certifications": [
+    {
+      "certification_name": "hooooooooooooooooooolallalaalalaooooooooooooooooooo",
+      "issuing_organisation": "lallalalalaallallalla",
+      "date_issued": "2025-07-10",
+      "expiry_date": "2025-07-17",
+      "description": "Relevant coursework in Full-Stack Development.\n\nSAtya noobada hai\n"
+    }
+  ],
+  "work_experiences": [
+    {
+      "company_name": "Geeks For Geeks",
+      "date": { "start": "Jan 2024", "end": "December 2024" },
+      "location": "",
+      "job_title": "Technical Content Writer Intern",
+      "bullet_points": [
+        "Authored 30+ high-impact technical articles, increasing platform engagement by 15% through beginner-friendly explanations and real-world coding examples.",
+        "Collaborated with senior developers and editors to ensure technical accuracy and content alignment with the latest curriculum trends.",
+        "Contributed to the growth of the GeeksforGeeks learning community by answering 100+ queries on published content and improving learner satisfaction."
+      ]
+    }
+  ],
+  "publications": [],
+  "extracurriculars": [],
+  "keywords": [],
+  "last_analyzed": null,
+  "ats_score": { "$numberDouble": "60.0" }
+}

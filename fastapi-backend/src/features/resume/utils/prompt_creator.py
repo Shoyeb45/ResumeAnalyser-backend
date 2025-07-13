@@ -516,7 +516,13 @@ Generate exactly {len(bullet_points)} enhanced technical bullet points that show
             "technologies_used": ["tech1", "tech2"]
           }
         ],
-        "skills": [
+        "technical_skills": [
+          {
+            "skill_group": "Programming Languages",
+            "skills": ["Python", "Java", "JavaScript"]
+          }
+        ],
+        "soft_skills": [
           {
             "skill_group": "Programming Languages",
             "skills": ["Python", "Java", "JavaScript"]
@@ -567,8 +573,10 @@ Generate exactly {len(bullet_points)} enhanced technical bullet points that show
             "certificate": "certificate link or null",
             "location": "activity location"
           }
-        ]
-      }
+        ],
+      "matched_skills": "list of matched skills from resume and job description, and each element should be string",
+      "missing_skills": "list of missing skills from resume and job description, and each element should be string",
+      },
     }
 
     PARSING RULES:

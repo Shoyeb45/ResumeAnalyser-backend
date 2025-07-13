@@ -618,10 +618,33 @@ class ResumeRepository:
             logger.info("API endpoint called for getting resume analysis")
             result = await ResumeAnalysis.get(PydanticObjectId(resume_analysis_id))
             
+            if not result:
+                logger.error("No resume analysis object found")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="No resume analysis found for given resume analysis id"
+                )
+            
+            # get resume
+            resume: Resume = await Resume.get(result.resume_id)
+            resume_metadata = {
+                "resume_name": None,
+                "is_verified": False
+            }
+            
+            if not resume:
+                logger.error("No resume found for given analysis")
+            else:
+                resume_metadata["resume_name"] = resume.resume_name
+                resume_metadata["is_verified"] = resume.is_primary
+                
             return {
                 "success": True,
-                "resume_analysis": result
+                "resume_analysis": result,
+                "resume_metadata": resume_metadata
             }
+        except HTTPException as http_excep:
+            raise http_excep
         except Exception as e:
             logger.error(f"Failed to get resume analysis with id: {resume_analysis_id}, error: {str(e)}")
             raise HTTPException(

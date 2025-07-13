@@ -22,9 +22,7 @@ class AIAnalyzer:
         self, 
         text: str, 
         target_role: str, 
-        job_description: str = "",
-        matched_skills: Optional[List[str]] = None,
-        missing_skills: Optional[List[str]] = None
+        job_description: str = ""
     ) -> Dict[str, Any]:
         """
         Get comprehensive LLM analysis of resume
@@ -40,13 +38,11 @@ class AIAnalyzer:
             str: AI-generated analysis and recommendations
         """
         try:
-            # Prepare skill information
-            matched_str = ", ".join(matched_skills or [])
-            missing_str = ", ".join(missing_skills or [])
+
             
             # Create comprehensive prompt
             system_prompt, user_prompt = self.prompt_creator._create_analysis_prompt(
-                text, target_role, job_description, matched_str, missing_str
+                text, target_role, job_description
             )
             
             
@@ -130,9 +126,7 @@ class AIAnalyzer:
             
             system_prompt, user_prompt = self.prompt_creator._create_resume_parser_prompt(text)
             analysis = self.llm_util.chat_with_openai(system_prompt, user_prompt)
-            with open("new.txt", 'w') as file:
-                file.write(analysis)
-                
+        
             # extracted_json = self.extract_json_from_response(analysis)
             return ResumeDetailsExtractor.parse_resume_with_json_extraction(analysis)
         except Exception as e:

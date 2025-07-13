@@ -9,8 +9,6 @@ class PromptCreator:
         text: str, 
         target_role: str, 
         job_description: str, 
-        matched_skills: str, 
-        missing_skills: str
     ) -> str:
         """Create prompt for resume analysis returning only a JSON object"""
         system_prompt = """You are an expert resume analyst with 15+ years of experience in talent acquisition and career development.
@@ -39,7 +37,9 @@ OUTPUT FORMAT (JSON ONLY):
     "notes": "Detailed assessment of role alignment and growth potential"
   },
   "recommendation_score": 82,  // integer (1–100)
-  "resume_summary": "Compelling 2-3 sentence summary of the candidate's profile and potential"
+  "resume_summary": "Compelling 2-3 sentence summary of the candidate's profile and potential",
+  "matched_skills": "List of matched skills from job description and resume, each element should be string",
+  "missing_skills": "List of missing skills from job description and resume, each element should be string",
 }
 
 EVALUATION CRITERIA:
@@ -57,14 +57,10 @@ TARGET ROLE: {target_role}
 
 JOB DESCRIPTION: {job_description or "General role analysis"}
 
-MATCHED SKILLS: {matched_skills or "None identified"}
-
-MISSING SKILLS: {missing_skills or "None identified"}
-
 RESUME CONTENT:
 {text}
 
-Analyze this resume according to the evaluation criteria and return the analysis in the specified JSON format."""
+Analyze this resume according to the evaluation criteria and return the analysis in the specified JSON format.""".strip()
 
         return system_prompt, user_prompt
     
@@ -573,9 +569,7 @@ Generate exactly {len(bullet_points)} enhanced technical bullet points that show
             "certificate": "certificate link or null",
             "location": "activity location"
           }
-        ],
-      "matched_skills": "list of matched skills from resume and job description, and each element should be string",
-      "missing_skills": "list of missing skills from resume and job description, and each element should be string",
+        ]
       },
     }
 

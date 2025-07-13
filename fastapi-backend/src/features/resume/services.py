@@ -105,8 +105,20 @@ class ResumeAnalyzer:
             # Step 7: Get AI analysis and scoring
             logger.info("Step 7: Getting AI analysis and scoring")
             overall_resume_analysis = self.ai_analyzer.get_llm_analysis(
-                resume_text, target_role, job_description, matched_skills, missing_skills
+                resume_text, target_role, job_description
             )
+            
+            # matched and missing skills from ai
+            matched_skills = overall_resume_analysis.get("matched_skills", [])
+            missing_skills = overall_resume_analysis.get("missing_skills", [])
+            
+            # delete both
+            overall_resume_analysis.pop("matched_skills", [])
+            overall_resume_analysis.pop("missing_skills", [])
+            
+            # print once
+            print(f"Matched skills -> {matched_skills}")
+            print(f"Missing skills -> {missing_skills}")
             ats_score = self.ai_analyzer.compute_resume_score(
                 resume_text, target_role, job_description
             )
@@ -146,14 +158,7 @@ class ResumeAnalyzer:
             # add skills in resume_details
             resume_details["skills"] = tech_skills + soft_skills
             
-            
-            # matched skills and missing skills
-            matched_skills, missing_skills = resume_details.get("matched_skills", []), resume_details.get("missing_skills", [])
-            print(f"Matched skills => {matched_skills}")
-            print(f"Missing skills => {missing_skills}")
-            resume_details.pop("missing_skills", [])
-            resume_details.pop("matched_skills", [])
-            
+       
             resume_analysis = {
                 "ats_score": ats_score,
                 "job_match_score": job_match_score,

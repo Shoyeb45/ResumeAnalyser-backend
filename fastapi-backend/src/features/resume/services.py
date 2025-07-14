@@ -1,4 +1,4 @@
-import logging
+import logging, json
 from fastapi import HTTPException, BackgroundTasks, status
 from features.resume.utils.utils import (
     AIAnalyzer, TextExtractor, NLPAnalyzer, PersonalInfoExtractor,
@@ -76,21 +76,25 @@ class ResumeAnalyzer:
             
             # Step 2: Extract personal information
             logger.info("Step 2: Extracting resume information")
-            resume_details = self.resume_details_extractor.get_resume_details(text=resume_text)
+            resume_details: Dict[str, Any] = self.ai_analyzer.get_resume_details(text=resume_text)
             # personal_info = self.personal_info_extractor.extract_personal_info(resume_text)
             
+            
             # Step 3: Perform NLP analysis
-            logger.info("Step 3: Performing NLP analysis")
-            nlp_analysis = self.nlp_analyzer.analyze_text_with_nlp(resume_text, target_role)
+            logger.info("Step 3: Performing NLP analysis - skip....")
+            # nlp_analysis = self.nlp_analyzer.analyze_text_with_nlp(resume_text, target_role)
             
             # Step 4: Analyze skills
-            logger.info("Step 4: Analyzing skills")
-            tech_skills, soft_skills = self.skills_analyzer.detect_skills_by_groups(resume_text)
+            logger.info("Step 4: Analyzing skills, skipped...")
+            # get tech skills and soft skills
+            
+            # tech_skills, soft_skills = self.skills_analyzer.detect_skills_by_groups(resume_text)
             
             # Step 5: Match skills with job description
             logger.info("Step 5: Matching skills with job description")
             matched_skills, missing_skills, skill_match_percent = \
                 self.skills_analyzer.match_skills_with_job_description(resume_text, job_description)
+            
             
             # Step 6: Calculate job match score
             logger.info("Step 6: Calculating job match score")
@@ -101,8 +105,20 @@ class ResumeAnalyzer:
             # Step 7: Get AI analysis and scoring
             logger.info("Step 7: Getting AI analysis and scoring")
             overall_resume_analysis = self.ai_analyzer.get_llm_analysis(
-                resume_text, target_role, job_description, matched_skills, missing_skills
+                resume_text, target_role, job_description
             )
+            
+            # matched and missing skills from ai
+            matched_skills = overall_resume_analysis.get("matched_skills", [])
+            missing_skills = overall_resume_analysis.get("missing_skills", [])
+            
+            # delete both
+            overall_resume_analysis.pop("matched_skills", [])
+            overall_resume_analysis.pop("missing_skills", [])
+            
+            # print once
+            print(f"Matched skills -> {matched_skills}")
+            print(f"Missing skills -> {missing_skills}")
             ats_score = self.ai_analyzer.compute_resume_score(
                 resume_text, target_role, job_description
             )
@@ -112,30 +128,37 @@ class ResumeAnalyzer:
             
             # Step 8: Format response in proper format
             logger.info("Step 9: Formatting results for better response")
-            print(file_path)
             
             # Step 9: Update database in background
-            logger.info("Step 10: Updating database in background")
             resume_metadata = {
                 "resume_name": file_path.split(".")[0].split("\\")[1],
                 "is_primary": True,
             }
             
             resume_details_for_db = resume_details.get("resume_details", resume_details) if resume_details else {}
+            # Add ats score in resume details dictionary
+            resume_details_for_db["ats_score"] = float(ats_score["ats_score"])
             
-            background_tasks.add_task(
-                resume_repository.create_resume,
-                user_id,
-                resume_metadata,
-                resume_details_for_db
-            )
-            
+            logger.info("Step 10: Updating database in background with both resume analysis and resume details")
             
             llm_analysis = {
                 "overall_analysis": overall_resume_analysis,
                 "section_wise_analysis": section_analysis
             }
             
+            
+            if resume_details:
+                resume_details = resume_details["resume_details"]
+          
+            tech_skills, soft_skills = resume_details.get("technical_skills", []), resume_details.get("soft_skills", [])
+        
+            resume_details.pop("technical_skills", [])
+            resume_details.pop("soft_skills", [])
+            
+            # add skills in resume_details
+            resume_details["skills"] = tech_skills + soft_skills
+            
+       
             resume_analysis = {
                 "ats_score": ats_score,
                 "job_match_score": job_match_score,
@@ -144,13 +167,19 @@ class ResumeAnalyzer:
                 "soft_skills": soft_skills,
                 "matched_skills": matched_skills,
                 "missing_skills": missing_skills,
-                "nlp_analysis": nlp_analysis,
-                "llm_analysis": llm_analysis
+                # "nlp_analysis": nlp_analysis,
+                "llm_analysis": llm_analysis,
+                "job_title": target_role
             }
             
-            if resume_details:
-                resume_details = resume_details["resume_details"]
-          
+            background_tasks.add_task(
+                resume_repository.create_resume_detail_and_analysis,
+                user_id,
+                resume_metadata,
+                resume_details_for_db, 
+                resume_analysis
+            )
+            
             response = {
                 "success": True,
                 "message": "Successfully analysed resume and update the resume in database",
@@ -158,10 +187,12 @@ class ResumeAnalyzer:
                 "resume_analysis": resume_analysis,
                 "job_title": target_role
             }
-
+            
             logger.info("Resume analysis completed successfully")
             return response
             
+        except HTTPException as http_exception:
+            raise HTTPException
         except Exception as e:
             logger.error(f"Error in resume analysis: {e}")
             return {
@@ -172,25 +203,45 @@ class ResumeAnalyzer:
             }
     
     
+    def __convert_json_to_python_object(self, json_string):
+        try:
+            python_object = json.loads(json_string)
+            return python_object
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON string provided, error: {str(e)}")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to convert json string into python object, error: {str(e)}")
+            return None
+        
     def get_project_enhanced_description(
         self,
         project_name: str,
         tech_stack: str,
-        description: Optional[str] = None
+        bullet_points: Optional[str] = "@"
     ):
         try:
+            
             logger.info("Sent all project details to llm for generating description")
-            response = self.ai_analyzer.generate_project_section_description(project_name, tech_stack, description)
+            # convert bullet points into python list
+            bullet_points = bullet_points.split("@")
+            
+            response = self.ai_analyzer.generate_project_section_description(project_name, tech_stack, bullet_points)
+            if response is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=""
+                )
             return {
                 "success": True,
                 "message": "Succesfully generated description for project section",
-                "description": response,
+                "bullet_points": response.split("@"),
             }
         except Exception as e:
             logger.error(f"Error while generating project description, error message: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detils=f"Error while generating project description, error message: {str(e)}"
+                detail=f"Error while generating project description, error message: {str(e)}"
             )
 
         
@@ -199,15 +250,23 @@ class ResumeAnalyzer:
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        bullet_points: Optional[str] = "@"
     ):
         try:
             logger.info("Sent all experience details to llm for generating description")
-            response = self.ai_analyzer.generate_experience_section_description(organisation_name, position, location, description)
+            bullet_points = bullet_points.split("@")
+            
+            response = self.ai_analyzer.generate_experience_section_description(organisation_name, position, location, bullet_points)
+            if response is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to produce output from LLM"
+                )
+                
             return {
                 "success": True,
                 "message": "Succesfully generated description for experience",
-                "description": response,
+                "bullet_points": response.split("@"),
             }
         except Exception as e:
             logger.error(f"Error while generating experience description, error message: {str(e)}")
@@ -221,15 +280,24 @@ class ResumeAnalyzer:
         organisation_name: str, 
         position: str, 
         location: str, 
-        description: Optional[str] = None
+        bullet_points: Optional[str] = "@"
     ):
         try:
             logger.info("Sent all extracurricular details to llm for generating description")
-            response = self.ai_analyzer.generate_extracurricular_section_description(organisation_name, position, location, description)
+            bullet_points = bullet_points.split("@")
+            
+            response = self.ai_analyzer.generate_extracurricular_section_description(organisation_name, position, location, bullet_points)
+            
+            if response is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to produce output from LLM"
+                )
+                
             return {
                 "success": True,
                 "message": "Succesfully generated description for extracurricular",
-                "description": response,
+                "bullet_points": response.split("@"),
             }
         except Exception as e:
             logger.error(f"Error while generating extracurricular description, error message: {str(e)}")
@@ -344,10 +412,26 @@ class ResumeAnalyzer:
             )
 
 
-    def analyse_assessment_score(self, skills: List):
+    def analyse_assessment_score(self, skills: str):
         try:
-            logger.info("Finding socres based on the input")
-            overall_score, skill_scores = self.calculate_scores(skills=skills)
+            logger.info("Converting given skills json string into python object")
+            
+            try:
+                skill_list = json.loads(skills)
+            except json.JSONDecoder as e:
+                logger.error(f"Invalid json format of given string, error: {str(e)}")
+                raise HTTPException(
+                    detail=f"Invalid JSON format of given string, error: {str(e)}",
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE
+                )
+            except Exception as e:
+                logger.error(f"Failed to convert skills json string into python object, error: {str(e)}")
+                raise HTTPException(
+                    detail=f"Failed to convert skills json string into python object, error: {str(e)}",
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE
+                )
+                
+            overall_score, skill_scores = self.calculate_scores(skills=skill_list)
             
             suggestions = self.ai_analyzer.get_career_suggestions_based_on_score(skill_scores=skill_scores, overall_score=overall_score)
             return {
@@ -402,7 +486,7 @@ class ResumeAnalyzer:
 
         return overall_score, skill_scores
 
-    async def get_resume_details(self, background_tasks: BackgroundTasks, user_id: str, file_path: str) -> Dict[str, any]:
+    async def get_resume_details(self, user_id: str, file_path: str) -> Dict[str, any]:
         try:
             if file_path is None:
                 raise HTTPException(
@@ -417,11 +501,19 @@ class ResumeAnalyzer:
             )
                     
             logger.info("Step 2: Extracting resume information")
-            resume_details = self.resume_details_extractor.get_resume_details(text) 
+            resume_details: Dict[str, Any] = self.ai_analyzer.get_resume_details(text) 
             
             if resume_details:
                 resume_details = resume_details["resume_details"]
             
+            logger.info("Step 3: Calculating ats score")
+            ats_score = self.ai_analyzer.compute_resume_score(text=text, target_role="No specific target role", job_description="No specific job description")
+
+            if ats_score:
+                ats_score = ats_score["ats_score"]
+            
+            # Add ats score in resume details 
+            resume_details["ats_score"] = float(ats_score)
             
             resume_metadata =  {
                 "resume_name": file_path.split(".")[0].split("\\")[1],
@@ -429,8 +521,7 @@ class ResumeAnalyzer:
             }
             
             logger.info(f"Adding background task for saving resume data for user with id {user_id} in database")
-            background_tasks.add_task(
-                resume_repository.create_resume,
+            resume = await resume_repository.create_resume(
                 user_id,
                 resume_metadata,
                 resume_details
@@ -441,7 +532,7 @@ class ResumeAnalyzer:
                 "success": True,
                 "message": "Successfully extracted details from resume and updated the resume in database",
                 "resume_metadata": resume_metadata,
-                "resume_details": resume_details
+                "resume_details": resume
             }
             
             return result
@@ -451,6 +542,44 @@ class ResumeAnalyzer:
                 status_code=500,
                 detail=f"Failed to extract details from resume, {str(e)}"
             )
+            
+    def get_ats_score(self, resume_json: str):
+        try:
+            
+            # Convert resume json string to python dictionary
+            
+            try:
+                resume_data = json.loads(resume_json)
+            except json.JSONDecoder as js:
+                logger.error(f"Invalid json format of the provided resume data, error: {str(js)}")
+                raise HTTPException(
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail=f"Invalid json format of the provided resume data, error: {str(js)}"
+                )
+            except Exception as e:
+                logger.error(f"Failed to convert resume json text to correct json format, error: {str(e)}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Failed to convert resume json text to correct json format, error: {str(e)}"
+                )
+                
+            ats_score = self.ai_analyzer.get_ats_score(resume_data=resume_data)    
+            
+            
+            if ats_score is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to analyze resume and get ATS score"
+                )
+            
+            return {
+                "success": True,
+                "message": "Succesfully computed resume score",
+                "ats_score": ats_score
+            }       
+        except Exception as e:
+            logger.error(f"Failed to get ats score in resume service, error: {str(e)}")
+            raise e
             
 
         

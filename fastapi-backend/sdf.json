@@ -1,171 +1,140 @@
 {
-<<<<<<< HEAD
-    "success": true,
-    "message": "Successfully analysed resume and update the resume in database",
-    "resume_metadata": {
-        "resume_name": "Shoyeb_Ansari___Resume__dummy_",
-        "is_primary": true
+  "_id": { "$oid": "6873b029ddf9b4d53a8935ce" },
+  "user_id": { "$oid": "6862ab572c24f5f503f957da" },
+  "resume_name": "SATYA_final_resume",
+  "is_primary": true,
+  "created_at": { "$date": { "$numberLong": "1752412201200" } },
+  "updated_at": { "$date": { "$numberLong": "1752417332576" } },
+  "personal_info": {
+    "name": "Satyabrata Mohanty",
+    "contact_info": {
+      "email": "satyabrata.tech",
+      "mobile": "+91 6372506476",
+      "location": "Bengaluru, Karnataka",
+      "social_links": {
+        "linkedin": "linkedln.com/satyabrata-me",
+        "github": "github.com/Satya900",
+        "portfolio": ""
+      }
     },
-    "resume_analysis": {
-        "ats_score": {
-            "ats_score": 60,
-            "format_compliance": 80,
-            "keyword_optimization": 70,
-            "readability": 85
-        },
-        "job_match_score": 11.28,
-        "skill_match_percent": 33.33,
-        "technical_skills": [],
-        "soft_skills": [],
-        "matched_skills": [
-            "Databases"
-        ],
-        "missing_skills": [
-            "Testing",
-            "Cloud Platforms"
-        ],
-        "nlp_analysis": {
-            "word_count": 407,
-            "entities": [],
-            "keywords": [],
-            "role_match_score": 75.0,
-            "role_matched": null
-        },
-        "llm_analysis": {
-            "overall_analysis": {
-                "overall_strengths": [
-                    {
-                        "description": "Strong understanding of databases and data structures",
-                        "weightage": 30
-                    },
-                    {
-                        "description": "Hands-on experience in full-stack web development",
-                        "weightage": 20
-                    },
-                    {
-                        "description": "Good problem-solving skills and competitive programming experience",
-                        "weightage": 15
-                    },
-                    {
-                        "description": "Basic knowledge of web technologies (HTML, CSS, JavaScript, React)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Relevant education and coursework in computer science",
-                        "weightage": 25
-                    }
-                ],
-                "areas_for_improvement": [
-                    {
-                        "description": "Lack of experience with testing and debugging",
-                        "weightage": 20
-                    },
-                    {
-                        "description": "No experience with cloud platforms (AWS/Azure)",
-                        "weightage": 15
-                    },
-                    {
-                        "description": "Limited experience with TypeScript and modern frontend frameworks (React/Vue/Angular)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "No mention of experience with Agile methodologies and version control (Git)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Lack of specific examples of collaboration and teamwork experience",
-                        "weightage": 15
-                    }
-                ],
-                "ats_optimization_suggestions": [
-                    {
-                        "description": "Highlight specific achievements and impact in previous projects",
-                        "weightage": 20
-                    },
-                    {
-                        "description": "Emphasize relevant skills and technologies (e.g., Node.js, Express.js, MongoDB)",
-                        "weightage": 15
-                    },
-                    {
-                        "description": "Include specific examples of problem-solving and debugging experience",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Clearly mention any experience with Agile methodologies and version control (Git)",
-                        "weightage": 10
-                    },
-                    {
-                        "description": "Quantify achievements and impact in previous projects (e.g., 30% API latency reduction)",
-                        "weightage": 15
-                    }
-                ],
-                "job_fit_assessment": {
-                    "score": 70,
-                    "notes": "The candidate has a strong foundation in computer science, but lacks experience in testing, cloud platforms, and specific modern frontend frameworks. Additionally, they could improve their problem-solving skills and provide more specific examples of collaboration and teamwork experience."
-                },
-                "recommendation_score": 60,
-                "resume_summary": "The candidate has a strong understanding of databases, data structures, and full-stack web development. They have hands-on experience in Java, Python, and JavaScript and have developed multiple projects. However, they lack experience in testing, cloud platforms, and specific modern frontend frameworks, making them a 60% match for the Full Stack Web Developer role."
-            },
-            "section_wise_analysis": {
-
-            } {"education\": [{"good\": [\"Online Bsc(Hons) in DS and Al from Indian Institute of Technology, Guwahati with 9 CGPA, relevant coursework in Data Structures and Algorithms, Object-Oriented Programming, Database Management Systems, and Operating Systems\"],"bad\": [\"No work experience directly related to the role\"],"improvements\": [\"Consider adding relevant projects or certifications to demonstrate hands-on experience\"],"overall_review\": \"good\"}],"projects\": [{"good\": [\"AVL Tree Visualizer: JavaFX - showcases problem-solving skills, Solantix: Solana Indexing Platform - demonstrates full-stack development skills, LAN Messanger: Real-Time Peer-to-Peer Chat Application - shows modular design skills\"],"bad\": [\"Projects lack context and description of technical challenges and solutions\"],"improvements\": [\"Add more details on the technical aspects of each project, such as design decisions and challenges overcome\"],"overall_review\": \"good\"}],"experience\": [{"good\": [],"bad\": [\"No relevant work experience mentioned\"],"improvements\": [\"Add relevant work experience or internships to demonstrate practical skills\"],"overall_review\": \"needs_improvement\"}],"skills\": [{"good\": [\"Familiarity with Java, Python, React, and SQL, strong problem-solving skills\"],"bad\": [\"No direct experience with Node.js, Express, and MongoDB mentioned\"],"improvements\": [\"Highlight relevant skills and technologies from the job description, consider adding a skills section with specific examples\"],"overall_review\": \"good\"}],"extracurricular\": [{"good\": [\"President of the college Tech Club, Second Runner-Up in the Rajasthan Police Hackathon\"],"bad\": [\"No direct relevance to the role or industry\"],"improvements\": [\"Highlight skills or experiences that demonstrate teamwork, leadership, or innovation\"],"overall_review\": \"good\"}]"
-        }
+    "professional_summary": "Aspiring Software Development Engineer with a strong foundation in Data Structures, Algorithms, and Object-Oriented Programming. Proficient in Java, Python, and full-stack web development, with hands-on experience in building dynamic projects and contributing to open-source communities. Passionate about solving real-world problems through scalable, clean code and actively preparing for SDE roles through competitive programming and system design exploration."
+  },
+  "projects": [
+    {
+      "title": "Dev Elevate – Developer Learning & Progress Tracking Platform",
+      "project_link": "",
+      "date": { "start": "", "end": "" },
+      "location": "",
+      "organization": "",
+      "bullet_points": [
+        "Built a responsive platform to teach DSA, System Design, and Web Development via curated content, projects, and learning paths.",
+        "Integrated Markdown rendering, user auth, progress tracking, and SEO optimizations like rich metadata and sitemaps."
+      ],
+      "technologies_used": [
+        "React",
+        "TypeScript",
+        "Firebase",
+        "Tailwind",
+        "Markdown"
+      ]
+    },
+    {
+      "title": "CodeRadar – Developer Portfolio & Coding Analytics Platform",
+      "project_link": "",
+      "date": { "start": "", "end": "" },
+      "location": "",
+      "organization": "",
+      "bullet_points": [
+        "Built a full-stack app aggregating GitHub, LeetCode, and Codeforces data into unified profiles with DSA tracking, dashboards, and public portfolios.",
+        "Used Firebase, third-party APIs, and real-time data visualizations."
+      ],
+      "technologies_used": [
+        "React",
+        "Firebase",
+        "Tailwind",
+        "GitHub/LeetCode/Codeforces APIs"
+      ]
     }
+  ],
+  "educations": [
+    {
+      "institute_name": "Indian Institute of Technology, MADRAS",
+      "degree": "Bachelor of Science",
+      "specialisation": "Data Science and Application",
+      "date": { "start": "Oct 2023", "end": "Aug 2027" },
+      "location": "",
+      "gpa": "",
+      "relevant_coursework": ["Data Science", "Full-Stack Development"]
+    },
+    {
+      "institute_name": "PW Institute of Innovation, Bengaluru",
+      "degree": "Certification",
+      "specialisation": "Computer Science and Artificial Intelligence",
+      "date": { "start": "Oct 2023", "end": "Aug 2027" },
+      "location": "Bengaluru",
+      "gpa": "",
+      "relevant_coursework": ["Full-Stack Development"]
+    }
+  ],
+  "skills": [
+    {
+      "skill_group": "Programming Languages",
+      "skills": ["Java", "Python", "JavaScript", "TypeScript"]
+    },
+    {
+      "skill_group": "Frameworks & Libraries",
+      "skills": ["React", "Tailwind CSS", "Markdown"]
+    },
+    {
+      "skill_group": "Platforms & Tools",
+      "skills": [
+        "Firebase",
+        "Git/GitHub",
+        "REST APIs",
+        "SEO Optimization",
+        "Project Management",
+        "GitHub/LeetCode/Codeforces APIs",
+        "Real-time Data Tracking"
+      ]
+    }
+  ],
+  "achievements": [
+    {
+      "title": "Platform Contribution Recognition",
+      "description": "Recognized for actively contributing to the platform’s growth by answering 100+ learner queries, enhancing content clarity, and significantly improving overall learner satisfaction.",
+      "date_achieved": null,
+      "organization": null
+    }
+  ],
+  "languages": [
+    { "language": "English", "proficiency": "" },
+    { "language": "Hindi", "proficiency": "" }
+  ],
+  "certifications": [
+    {
+      "certification_name": "hooooooooooooooooooolallalaalalaooooooooooooooooooo",
+      "issuing_organisation": "lallalalalaallallalla",
+      "date_issued": "2025-07-10",
+      "expiry_date": "2025-07-17",
+      "description": "Relevant coursework in Full-Stack Development.\n\nSAtya noobada hai\n"
+    }
+  ],
+  "work_experiences": [
+    {
+      "company_name": "Geeks For Geeks",
+      "date": { "start": "Jan 2024", "end": "December 2024" },
+      "location": "",
+      "job_title": "Technical Content Writer Intern",
+      "bullet_points": [
+        "Authored 30+ high-impact technical articles, increasing platform engagement by 15% through beginner-friendly explanations and real-world coding examples.",
+        "Collaborated with senior developers and editors to ensure technical accuracy and content alignment with the latest curriculum trends.",
+        "Contributed to the growth of the GeeksforGeeks learning community by answering 100+ queries on published content and improving learner satisfaction."
+      ]
+    }
+  ],
+  "publications": [],
+  "extracurriculars": [],
+  "keywords": [],
+  "last_analyzed": null,
+  "ats_score": { "$numberDouble": "60.0" }
 }
-=======
-  "evaluation": {
-    "Overall Strengths": [
-      {
-        "category": "Technical Skills",
-        "strengths": [
-          "Hands-on experience in full-stack web development",
-          "Strong understanding of JavaScript and modern frameworks like React",
-          "Experience with backend frameworks like Express",
-          "Strong knowledge of databases and writing efficient queries",
-          "Familiarity with version control (Git)"
-        ],
-        "weightage": 80
-      },
-      {
-        "category": "Achievements",
-        "strengths": [
-          "Second Runner-Up in the Rajasthan Police Hackathon",
-          "Solved 950+ problems across LeetCode and Codeforces",
-          "President of the college Tech Club"
-        ],
-        "weightage": 15
-      },
-      {
-        "category": "Education",
-        "strengths": [
-          "Online Bsc(Hons) in DS and Al from Indian Institute of Technology, Guwahati",
-          "Relevant Coursework: Data Structures and Algorithms, Object-Oriented Programming, Database Management Systems (SQL, RDBMS), Operating Systems"
-        ],
-        "weightage": 5
-      }
-    ],
-    "Areas for Improvement": [
-      {
-        "category": "Missing Skills",
-        "improvement": "AWS, Docker, TypeScript, Agile methodologies, TypeScript"
-      },
-      {
-        "category": "Lack of Industry Experience",
-        "improvement": "1-3 years of hands-on experience in full-stack web development"
-      }
-    ],
-    "ATS Optimization Suggestions": [
-      {
-        "category": "Keywords",
-        "suggestion": "Highlight keywords like 'full-stack web development', 'React', 'Express', 'JavaScript', 'Node.js' in the resume"
-      },
-      {
-        "category": "Format",
-        "suggestion": "Use a clean and concise format, with clear headings and bullet points to make it easy to scan"
-      }
-    ],
-    "Job Fit Assessment": 85,
-    "Recommendation Score": 75
-  }
-}
->>>>>>> 357710e (Clean commit: removed Groq key and history)

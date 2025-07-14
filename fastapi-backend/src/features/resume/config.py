@@ -1,4 +1,6 @@
 import os
+import platform
+from shutil import which
 
 class ResumeAnalyzerConfig:
     """Configuration class for resume analyzer settings"""
@@ -7,9 +9,18 @@ class ResumeAnalyzerConfig:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
     MODEL = "llama3-8b-8192"
     
-    # OCR Configuration
-    TESSERACT_PATH = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+    # OpenAI API configurations
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    OPENAI_MODEL = "gpt-4.1"
+    OPENAI_ENDPOINT = os.getenv("OPENAI_ENDPOINT")
     
+    # OCR Configuration
+    if platform.system() == "Windows":
+        TESSERACT_PATH = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+    else:
+        # On Linux or macOS, attempt to find tesseract in PATH
+        TESSERACT_PATH = which("tesseract")
+        
     # Skills Database
     TECHNICAL_SKILLS = {
         "Programming Languages": [
@@ -71,3 +82,4 @@ class ResumeAnalyzerConfig:
             "change management", "continuous learning"
         ]
     }
+

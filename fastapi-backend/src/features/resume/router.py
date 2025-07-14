@@ -5,14 +5,13 @@ from typing import Optional, Annotated
 from features.resume.repository import resume_repository
 import os, json
 from dependency import get_current_user
-from typing import List
+from typing import Dict, Any
 import logging
-
 logger = logging.getLogger(__name__)
-
 
 router = APIRouter(prefix = "/resume", tags = ["resume"])
 
+# API endpoint to analyse and extract the resume details 
 @router.post(
     "/analyse", 
     description = "API endpoint which will analyse the resume and extract necessary details and keep it in database and give scores"
@@ -62,7 +61,6 @@ async def analyse_resume(
     description="API to extract all the api response"
 )
 async def resume_extraction(
-    background_tasks: BackgroundTasks,
     user: dict = Depends(get_current_user),
     resume_file: UploadFile = File(...)
 ):
@@ -82,7 +80,6 @@ async def resume_extraction(
         logger.info("Successfully saved file in temp directory")
         
         result = await resume_analyzer.get_resume_details(
-            background_tasks=background_tasks,
             user_id=user_id,
             file_path=temp_path
         )
@@ -95,8 +92,6 @@ async def resume_extraction(
         logger.error(f"Failed to analyse resume, error : {str(e)}")
         raise HTTPException(status_code = 500, detail = f"Failed to analyse resume, error : {str(e)}")
     
-
-
 # API Endpoint to get questions related to skills
 @router.post(
     "/skill-assessment", 
@@ -128,24 +123,9 @@ def get_assessment_score(
 ):
     try:
         '''It will calculate skill assessment score and it will also suggest some job roles depending upon the score
-        '''
-        
-        logger.info("Skill-assessment-score API called")
-        skills_list: List = json.loads(skills)
-
-        if skills_list is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Some error occurred while converting the skills json string into python object"
-            )
-            
-        return resume_analyzer.analyse_assessment_score(skills_list)
-    except json.JSONDecodeError as e:
-        logger.error(f"Invalid JSON string provided, error: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Invalid JSON string provided, error: {str(e)}"
-        )
+        ''' 
+        logger.info("Skill-assessment-score API called") 
+        return resume_analyzer.analyse_assessment_score(skills)
     except Exception as e:
         logger.error(f"Failed to analyse MCQ question based on provided skill wise scores, error: {str(e)}")
         raise HTTPException(
@@ -154,24 +134,15 @@ def get_assessment_score(
         )
         
 # API Endpoint to get all the resumes for particular user
-@router.get("/")
+@router.get(
+    "/",
+    description="Get all resume"
+)
 async def get_all_resume(
     user: dict = Depends(get_current_user)
 ):
-    try:
-        user_id = user["user_id"]
-        logger.info(f"Getting all the resume for the user: {user_id}")
-        resumes = await resume_repository.get_user_resumes(user_id=user_id)
+    return await resume_repository.get_user_resumes(user_id=user['user_id'])
         
-        return resumes
-    except Exception as e:
-        logger.error(f"Error providing all the resume {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error occured while providing all the resume of the user, error: {str(e)}"
-        )
-
-
 
 # API endpoint to delete resume
 @router.delete(
@@ -182,28 +153,7 @@ async def delete_resume(
     resume_id: str,
     user: dict = Depends(get_current_user),
 ):
-    try:
-        logger.info(f"Deleting resume with resume id : {resume_id}")
-        
-        is_deleted = await resume_repository.delete_resume(resume_id)
-        
-        if not is_deleted:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to delete resume"
-            )
-        
-        return {
-            "status": True,
-            "message": f"Resume with id {resume_id}, deleted succesfully"
-        }
-    except Exception as e:
-        logger.error(f"Failed to delete resume(resume id: {resume_id})")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            details=f"Failed to delete resume, with resume id - {resume_id}"
-        )
-        
+    return await resume_repository.delete_resume(user["user_id"], resume_id)
 
 # API Endpoint to get project description point suggestion
 @router.post(
@@ -213,14 +163,13 @@ async def delete_resume(
 def get_project_description_suggestion(
     project_name: str = Form(...),
     tech_stack: str = Form(...),
-    description: Optional[str] = Form(None),
+    bullet_points: Optional[str] = Form("@"),
     user: dict = Depends(get_current_user)
 ):
     try:
-        logger.info(project_name)
         user_id = user["user_id"]
         logger.info(f"Project endpoint called to get AI generated description point, called by user - {user_id}")
-        return resume_analyzer.get_project_enhanced_description(project_name, tech_stack, description)
+        return resume_analyzer.get_project_enhanced_description(project_name, tech_stack, bullet_points)
     except Exception as e:
         logger.error(f"Failed to generate AI Suggestion for project section, error message: {str(e)}")
         raise HTTPException(
@@ -234,12 +183,12 @@ async def get_experience_description_suggestion(
     organisation_name: str = Form(...),
     position: str = Form(...),
     location: str = Form(...),
-    description: Optional[str] = Form(None),
+    bullet_points: Optional[str] = Form("@"),
     user: dict = Depends(get_current_user)
 ):
     try:
         logger.info(f"Experience endpoint called to get AI generated description point, called by user-{user['user_id']}")
-        return resume_analyzer.get_experience_enhanced_description(organisation_name, position, location, description)
+        return resume_analyzer.get_experience_enhanced_description(organisation_name, position, location, bullet_points)
     except Exception as e:
         logger.error(f"Failed to generate AI Suggestion for experience section, error message: {str(e)}")
         raise HTTPException(
@@ -256,16 +205,86 @@ async def get_extracurricular_description_suggestion(
     organisation_name: str = Form(...),
     position: str = Form(...),
     location: str = Form(...),
-    description: Optional[str] = Form(None),
+    bullet_points: Optional[str] = Form("@"),
     user: dict = Depends(get_current_user)
 ):
     try:
         logger.info(f"Extracurricular endpoint called to get AI generated description point, called by user-{user['user_id']}")
         
-        return resume_analyzer.get_extracurricular_enhanced_description(organisation_name, position, location, description)
+        return resume_analyzer.get_extracurricular_enhanced_description(organisation_name, position, location, bullet_points)
     except Exception as e:
         logger.error(f"Failed to generate AI Suggestion for extracurricular section, error message: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate AI suggestion for extracurricular experience, error message: {str(e)}"
         )
+        
+# API Endpoint to get resume score bases on provided resume detail in json format
+@router.post(
+    "/ats-score",
+    description="Get ATS score of resume by sending the json object of the resume"
+)
+def get_ats_score_of_resume(
+    user: dict = Depends(get_current_user),
+    resume_json: str = Form(...)
+):
+    try:
+        logger.info(f"ATS score endpoint called with, resume object as:  {resume_json}")
+        
+        return resume_analyzer.get_ats_score(resume_json)        
+    except Exception as e:
+        logger.error(f"Failed to provide ats score, error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to provide ats score, error: {str(e)}"
+        )
+
+
+# API Endpoint to get the resume by resume id
+@router.get(
+    "/resume/{resume_id}",
+    description="Get resume by resume id"
+)
+async def get_resume_by_id(
+    resume_id: str,
+    user: dict = Depends(get_current_user)
+):
+    return await resume_repository.get_resume_by_id(user['user_id'], resume_id)
+
+@router.delete(
+    "/resume-analysis/{resume_analysis_id}",
+    description="Delete resume analysis document from resume id"
+)
+async def delete_resume_analysis(resume_analysis_id: str, user: dict = Depends(get_current_user)):
+    return await resume_repository.delete_resume_analysis(resume_analysis_id)
+        
+# API endpoint to get resume analysis object by id
+@router.get(
+    "/resume-analysis/{resume_analysis_id}",
+    description="Get resume analysis object of the resume by resume analysis id"
+)
+async def get_resume_analysis_using_id(resume_analysis_id: str, user: dict = Depends(get_current_user)):
+    return await resume_repository.get_resume_analysis_by_id(resume_analysis_id)
+
+# API Endpoint to update the resume details
+@router.patch(
+    "/",
+    description="Update the resume details by entire resume detail object"
+)
+async def update_resume_detail(user: dict = Depends(get_current_user), resume_update_data: str = Form(...)):
+    return await resume_repository.update_resume(user["user_id"], resume_update_data)
+
+@router.get(
+    "/latest-analysis",
+    description="Get latest resume analysis object for user"
+)
+async def get_latest_resume_analysis(user: dict = Depends(get_current_user)):
+    return await resume_repository.get_latest_resume_analysis(user)
+
+# API Endpoint to get all the resume analysis of the user    
+@router.get(
+    "/resume-analysis",
+    description="Get all resume analysis objects for user"
+)
+async def get_all_resume_analysis(user: dict = Depends(get_current_user)):
+    return await resume_repository.get_all_resume_analysis_of_user(user["user_id"])

@@ -1,5 +1,22 @@
 # Express Backend
 
+## Project Structure
+
+```
+.
+├── prisma
+│   └── migrations
+│       ├── 20250619130950_init
+└── src
+    ├── config
+    ├── controllers
+    ├── mailtrap
+    ├── middlewares
+    ├── routes
+    └── utils
+
+```
+
 ## Follow below steps to run
 
 1. Create `.env` file in root folder and paste relevant content

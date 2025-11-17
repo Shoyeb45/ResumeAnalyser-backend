@@ -49,22 +49,41 @@ Intelli Resume is a comprehensive resume management platform that helps job seek
 - Version control for resume iterations
 - Easy access to all your resume variants
 
+<p>
+    <img src="./public/resume-manager.png">
+</p>
+
 ### Resume Building
 - ATS-friendly templates
 - Real-time preview
 - Export to multiple formats
 - Customizable sections and layouts
 
+<p>
+    <img src="./public/resume-builder.png">
+</p>
+
 ### Profile Building
 - Centralized professional profile
 - Reusable information across resumes
 - Skills and experience management
+<p>
+    <img src="./public/dashboard1.png">
+</p>
 
 ### AI-Powered Analysis
 - Job description matching
 - Keyword optimization suggestions
 - ATS compatibility scoring
 - Personalized improvement recommendations
+
+<p>
+    <img src="./public/ai-analysis-1.png">
+</p>
+
+<p>
+    <img src="./public/ai-analysis-2.png">
+</p>
 
 ---
 
@@ -89,6 +108,13 @@ Intelli Resume is a comprehensive resume management platform that helps job seek
 - **OAuth 2.0** (Google)
 
 ---
+
+## Project Architecture
+
+<p align="center">
+    <img src="./public/project-arch.png">
+</p>
+
 
 ## 📁 Project Structure
 

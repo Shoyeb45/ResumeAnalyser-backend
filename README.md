@@ -133,6 +133,6 @@ intelli-resume/
 
 **[⬆ Back to Top](#-intelli-resume-smart-resume-analyser)**
 
-Made with ❤️ by the Intelli Resume Team
+
 
 </div>

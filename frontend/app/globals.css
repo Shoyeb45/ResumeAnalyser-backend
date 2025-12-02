@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Core theme colors */
+  --color-background: #0c1017;
+  --color-foreground: #f8fafc;
+  --color-card: #0f141c;
+  --color-card-foreground: #f8fafc;
+  --color-popover: #0f141c;
+  --color-popover-foreground: #f8fafc;
+  --color-primary: 	#2563eb;
+  --color-primary-foreground: #0c1017;
+  --color-secondary: #181d24;
+  --color-secondary-foreground: #f8fafc;
+  --color-muted: #181d24;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #ba55d3;
+  --color-accent-foreground: #0c1017;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f8fafc;
+  --color-border: #272e38;
+  --color-input: #272e38;
+  --color-ring: 	#2563eb;
+
+  /* Sidebar colors */
+  --color-sidebar-background: #0c1017;
+  --color-sidebar-foreground: #f8fafc;
+  --color-sidebar-primary: 	#2563eb;
+  --color-sidebar-primary-foreground: #0c1017;
+  --color-sidebar-accent: #181d24;
+  --color-sidebar-accent-foreground: #f8fafc;
+  --color-sidebar-border: #272e38;
+  --color-sidebar-ring: 	#2563eb;
+
+  /* Custom IntelliResume colors */
+  --color-intelliresume-navy: #1a365d;
+
+
+
+  /* Border radius */
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply  font-sans;
+    font-family: Inter, system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;         /* Firefox */
+    -ms-overflow-style: none;      /* Internet Explorer 10+ */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;                 /* Safari and Chrome */
+  }
+}
